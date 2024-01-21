@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreActivityRequest extends FormRequest
+class BatchStoreActivityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,11 @@ class StoreActivityRequest extends FormRequest
     {
         return [
             'date' => 'required|date_format:Y-m-d',
-            'activities.*.project_id' => 'required|exists:projects,id',
-            'activities.*.user_id' => 'required|exists:users,id',
-            'activities.*.task_category_id' => 'required|exists:task_categories,id',
-            'activities.*.date' => 'required|date_format:Y-m-d',
-            'activities.*.duration' => 'required|integer|min:60',
+            'logGroups.activities.*.project_id' => 'required|exists:projects,id',
+            'logGroups.activities.*.user_id' => 'required|exists:users,id',
+            'logGroups.activities.*.task_category_id' => 'required|exists:task_categories,id',
+            'logGroups.activities.*.date' => 'required|date_format:Y-m-d',
+            'logGroups.activities.*.duration' => 'required|integer|min:60',
         ];
     }
 }
