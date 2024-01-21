@@ -15,55 +15,27 @@
 
 </script>
 
-<table class="mt-16">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Project</th>
-            <th>Duration</th>
-        </tr>
-    </thead>
-    <tbody>
-    {#each entries ?? [] as entry}
-        <tr>
-            <td>{new Date(entry.date).toLocaleDateString()}</td>
-            <td>{new Date(entry.in_time).toLocaleTimeString()}</td>
-            <td>{entry.out_time ? new Date(entry.out_time).toLocaleTimeString() : "-"}</td>
-            <td>{entry.project?.name ?? ""}</td>
-            <td>
-                {Duration.toHHMM(entry.total_duration ?? $elapsedSeconds)}
-            </td>
-        </tr>     
-    {/each}
-    </tbody>
-</table>
-
-<style>
-    .in {
-        color: green;
-    }
-
-    .out {
-        color: red;
-    }
-
-    .in, .out {
-        font-weight: bold;
-        font-size: larger;
-    }
-
-    th,td {
-        padding: 10px;
-        border: 1px solid #f2f2f2;
-    }
-
-    tr:nth-child(even) {
-        background-color: rgba(250,250,250, 0.05);
-    }
-
-    th {
-        color: white;
-    }
-</style>
+<div class="w-1/3 overflow-x-auto mx-auto">
+    <table class="mt-16 table table-pin-cols">
+        <thead>
+            <tr>
+                <th>Start</th>
+                <th>End</th>
+                <th>Project</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+        {#each entries ?? [] as entry}
+            <tr>
+                <td>{new Date(entry.in_time).toLocaleTimeString()}</td>
+                <td>{entry.out_time ? new Date(entry.out_time).toLocaleTimeString() : "-"}</td>
+                <td>{entry.project?.name ?? ""}</td>
+                <td>
+                    {Duration.toHHMM(entry.total_duration ?? $elapsedSeconds)}
+                </td>
+            </tr>     
+        {/each}
+        </tbody>
+    </table>
+</div>
