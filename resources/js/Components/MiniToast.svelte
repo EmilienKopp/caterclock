@@ -17,6 +17,11 @@
 
     const yOffset = position?.split('-')[0] + '-' + yOffsetRem;
     const xOffset = position?.split('-')[1] + '-' + xOffsetRem;
+    const alertClasses: any = {
+        "success": "alert-success",
+        "error": "alert-error",
+        "info": "alert-info",
+    }
 
     onMount(() => {
         $toast.show = false;
@@ -44,31 +49,25 @@
     }
 
     $: show = $toast.show;
-    $: console.log("TOAST",xOffset, yOffset);
+    $: console.log("TOAST",$toast.type);
 </script>
 
-<div class="fixed top-0 right-72">
-    <Toast color={$toast.options?.color}
-        bind:open={show} on:close={close}>
-
-        <svelte:fragment slot="icon">
-            <!-- Insert n Icon component or a <i>, whatever suits you. -->
-            {#if $toast.type == "success"}
-                <CheckCircleFill class={textColors[$toast.type]}/>
-            {:else if $toast.type == "error"}
-                <Fire class={textColors[$toast.type]}/>
-            {:else if $toast.type == "info"}
-                <InfoSquareFill class={textColors[$toast.type]}/>
-            {/if}
-        </svelte:fragment>
-        <div class="flex flex-col items-start">
-            {@html $toast.message}
-            <br/>
-            {#if href}
-                <Link {href}>{linkText ?? href}</Link>
-            {/if}
-        </div>
-        <slot name="link"/>
-    </Toast>
-
+{#if show}
+<div class="toast toast-top toast-center z-[999]">
+    <div role="alert" class="alert {alertClasses[$toast.type]}">
+        {#if $toast.type == "success"}
+            <CheckCircleFill　class="bg-inherit" />
+        {:else if $toast.type == "error"}
+            <Fire class="bg-inherit"/>
+        {:else if $toast.type == "info"}
+            <InfoSquareFill class="bg-inherit"　/>
+        {/if}
+        {@html $toast.message}
+        <br/>
+        {#if href}
+            <Link {href}>{linkText ?? href}</Link>
+        {/if}
+    </div>
+    <slot name="link"/>
 </div>
+{/if}
