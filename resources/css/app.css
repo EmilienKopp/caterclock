@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* WebKit-based browsers */
+textarea::-webkit-scrollbar {
+    width: 8px;
+    cursor: auto !important;
+}
+
+textarea::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: auto !important;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+    cursor: auto !important;
+}
+
+/* Firefox and Edge */
+textarea {
+    scrollbar-width: thin;
+    scrollbar-color: #555 rgba(0, 0, 0, 0.2);
+    cursor: auto;
+}
+
+/* WebKit-based browsers */
+*::-webkit-scrollbar {
+    width: 8px;
+    cursor: auto !important;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: auto !important;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+    cursor: auto !important;
+}
+
+/* Firefox and Edge */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #555 rgba(0, 0, 0, 0.2);
+}
