@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for larasvelte on 2023-12-18T16:20:20+09:00
+# fly.toml app configuration file generated for fleaclock on 2024-01-20T17:55:50+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = "larasvelte"
-primary_region = "hkg"
+primary_region = "nrt"
 console_command = "php /var/www/html/artisan tinker"
 
 [build]
@@ -14,22 +14,22 @@ console_command = "php /var/www/html/artisan tinker"
 
 [env]
   APP_ENV = "production"
+  BROADCAST_DRIVER = "log"
+  CACHE_DRIVER = "file"
+  DB_CONNECTION = "pgsql"
+  DB_DATABASE = "postgres"
+  DB_HOST = "db.gmeqvdtoqxiuhccadhfk.supabase.co"
+  DB_PORT = "5432"
+  DB_USERNAME = "postgres"
+  FILESYSTEM_DISK = "local"
   LOG_CHANNEL = "stderr"
+  LOG_DEPRECATIONS_CHANNEL = "null"
   LOG_LEVEL = "info"
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
+  QUEUE_CONNECTION = "sync"
+  SESSION_DRIVER = "cookie"
+  SESSION_LIFETIME = "120"
   SESSION_SECURE_COOKIE = "true"
-  LOG_DEPRECATIONS_CHANNEL="null"
-  DB_CONNECTION="pgsql"
-  DB_HOST="db.gmeqvdtoqxiuhccadhfk.supabase.co"
-  DB_PORT="5432"
-  DB_DATABASE="postgres"
-  DB_USERNAME="postgres"
-  BROADCAST_DRIVER="log"
-  CACHE_DRIVER="file"
-  FILESYSTEM_DISK="local"
-  QUEUE_CONNECTION="sync"
-  SESSION_DRIVER="file"
-  SESSION_LIFETIME="120"
 
 [http_service]
   internal_port = 8080

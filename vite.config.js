@@ -31,6 +31,7 @@ export default defineConfig({
             '$types': '/resources/js/types.ts',
             '$layouts': '/resources/js/Layouts',
             '$pages': '/resources/js/Pages',
+            '$lang': '/lang',
         },
     },
 });
