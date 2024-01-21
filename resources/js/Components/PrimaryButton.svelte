@@ -3,8 +3,9 @@
     import { Link } from '@inertiajs/svelte';
 
     export let href: string | undefined = undefined;
+    export let loading: boolean = false;
 
-    const cssClass = `inline-flex items-center m-2 px-4 py-2 bg-gray-800 justify-center dark:bg-gray-200 
+    const cssClass = `inline-flex items-center m-2 px-4 py-2 bg-gray-800 justify-center dark:bg-gray-200 min-w-[8rem]
     border border-transparent rounded-md font-semibold text-xs text-white 
     dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white 
     focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 
@@ -20,15 +21,22 @@
     on:click on:blur on:keydown on:keyup on:keypress
     {...$$restProps} >
 
-    <slot />
-    
+    {#if loading}
+        <span class="loading loading-dots loading-xs"></span>
+    {:else}
+        <slot />
+    {/if}
 </button>
 {:else}
     <Link {href} class={twMerge(cssClass,$$restProps.class)}
         on:click on:blur on:keydown on:keyup on:keypress
         {...$$restProps} 
     >
+    {#if loading}
+        <span class="loading loading-dots loading-xs"></span>
+    {:else}
         <slot />
+    {/if}
     </Link>
 {/if}
 

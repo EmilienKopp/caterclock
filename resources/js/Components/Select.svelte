@@ -65,9 +65,7 @@
 
 </script>
 
-{#if label}
-    <Label for={name}　class="my-0">{label}</Label>
-{/if}
+
 <!-- <input type="hidden" name={name} bind:value={value}/>
 <Button color="light" class={twMerge("w-full flex justify-between whitespace-nowrap mb-0",sizes[size],$$restProps.class)} on:keyup={handleKeyup}>
     {#if value} 
@@ -100,8 +98,10 @@
         <slot />
     {/if}
 </Dropdown> -->
-<select class="bg-transparent rounded p-1 pr-10" bind:value>
-    {#each options ?? [] as item, index}
-        <option value={item.value}>{item.label}</option>
-    {/each}
-</select>
+<label class="form-control">
+    <select class="select select-bordered" bind:value>
+        {#each options ?? [] as item, index}
+            <option value={item.value}>{item.label}</option>
+        {/each}
+    </select>
+</label>
