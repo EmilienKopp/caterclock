@@ -25,6 +25,21 @@ class Activity extends Model
         'end_time' => 'datetime',
     ];
 
+    public function getByYearMonth($year, $month)
+    {
+        return Activity::where('user_id', auth()->user()->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->with('project')
+            ->with('taskCategory')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->transform(function ($activity) {
+                $activity->dailyLog = $activity->dailyLog();
+                return $activity;
+            });
+    }
+
     public function dailyLog()
     {
         return DailyLog::where('user_id', $this->user_id)
