@@ -1,0 +1,17 @@
+{
+    "Coding": "実装",
+    "Testing": "テスト",
+    "Design": "デザイン",
+    "Architecture": "設計",
+    "Code Review": "コードレビュー",
+    "Deployment": "デプロイ",
+    "Documentation": "ドキュメント",
+    "Research": "調査",
+    "Planning": "計画",
+    "Bug Fixing": "バグ対応",
+    "Refactoring": "リファクタリング",
+    "Training": "研修・教育",
+    "Support": "サポート",
+    "Meeting": "会議",
+    "Other": "その他"
+}
