@@ -1,10 +1,20 @@
 import { leftPad } from "./Text";
 
 export class Duration {
+    private totalSeconds = 0;
     private seconds = 0;
+    private minutes = 0;
+    private hours = 0;
 
     constructor(seconds: number) {
-        this.seconds = seconds;
+        this.totalSeconds = seconds;
+        this.hours = Math.floor(seconds / 3600);
+        this.minutes = Math.floor(seconds / 60) % 60;
+        this.seconds = this.totalSeconds - (this.hours * 3600) - (this.minutes * 60);
+    }
+
+    public getTotalSeconds(): number {
+        return this.totalSeconds;
     }
 
     public getSeconds(): number {
@@ -12,7 +22,11 @@ export class Duration {
     }
 
     public getMinutes(): number {
-        return Math.floor(this.seconds / 60);
+        return this.minutes;
+    }
+
+    public getHours(): number {
+        return this.hours;
     }
 
     public static getMinutes(seconds: number): number {
@@ -21,8 +35,7 @@ export class Duration {
     }
 
     public static flooredToMinute(seconds: number): number {
-        const duration = new Duration(seconds);
-        return Math.floor(duration.getMinutes()) * 60;
+        return Math.floor(seconds / 60) * 60;
     }
 
     public static nextRoundMinute(seconds: number): number {
@@ -32,17 +45,13 @@ export class Duration {
         return minutes * 60;
     }
 
-    public getHours(): number {
-        return Math.floor(this.seconds / 3600);
-    }
-
     public static getHours(seconds: number): number {
         const duration = new Duration(seconds);
         return duration.getHours();
     }
 
     public getDays(): number {
-        return Math.floor(this.seconds / 86400);
+        return Math.floor(this.totalSeconds / 86400);
     }
 
     public toHHMM(): string {
@@ -54,6 +63,13 @@ export class Duration {
     public static toHHMM(seconds: number): string {
         const duration = new Duration(seconds);
         return duration.toHHMM();
+    }
+
+    public static toHrMinString(seconds: number): string {
+        const duration = new Duration(seconds);
+        const hourPart = `${duration.getHours()} hr`
+        const minutesPart = `${duration.getMinutes()} min`;
+        return (duration.getHours() > 0) ? `${hourPart} ${minutesPart}` : minutesPart;
     }
 
     public toHHMMSS(): string {
