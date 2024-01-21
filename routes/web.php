@@ -56,6 +56,8 @@ Route::prefix('projects')->middleware('auth')->group(function () {
 Route::prefix('activities')->middleware('auth')->group(function () {
     Route::get('/', [ActivityController::class, 'index'])->name('activities.index');
     Route::post('/', [ActivityController::class, 'store'])->name('activities.store');
+    Route::get('/show', [ActivityController::class, 'show'])->name('activities.show');
+
 });
 
 Route::middleware('auth')->group(function () {
