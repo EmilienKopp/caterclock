@@ -42,4 +42,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function companies() {
+        return $this->belongsToMany(Company::class)
+            ->withPivot('position')->withTimestamps();
+    }
+
+    public function ownedCompanies() {
+        return $this->companies()
+            ->wherePivot('position', 'owner')
+            ->orderByPivot('created_at', 'desc');
+    }
+
+    public function employingCompanies() {
+        return $this->companies()
+            ->wherePivot('position', 'employee')
+            ->orderByPivot('created_at', 'desc');
+    }
+
+    public function contractedCompanies() {
+        return $this->companies()
+            ->wherePivot('position', 'hired_freelance')
+            ->orderByPivot('created_at', 'asc');
+    }
+
+    public function managedCompanies() {
+        return $this->companies()
+            ->wherePivot('position', 'admin')
+            ->orderByPivot('created_at', 'desc');
+    }
+
+    public function sentConnectionRequests() {
+        return $this->hasMany(ConnectionRequest::class, 'sender_id')
+            ->with(['company','sender','receiver']);
+    }
 }

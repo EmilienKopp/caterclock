@@ -8,6 +8,10 @@ use Inertia\Inertia;
 use App\Http\Controllers\DiaryEntryController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ConnectionRequestController;
 
 
 /*
@@ -22,6 +26,7 @@ use App\Http\Controllers\ProjectController;
 */
 
 Route::get('/', function () {
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -57,7 +62,28 @@ Route::prefix('activities')->middleware('auth')->group(function () {
     Route::get('/', [ActivityController::class, 'index'])->name('activities.index');
     Route::post('/', [ActivityController::class, 'store'])->name('activities.store');
     Route::get('/show', [ActivityController::class, 'show'])->name('activities.show');
+});
 
+Route::prefix('companies')->middleware('auth')->group(function () {
+    Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
+    Route::post('/', [CompanyController::class, 'store'])->name('companies.store');
+    Route::get('/show', [CompanyController::class, 'show'])->name('companies.show');
+});
+
+Route::prefix('positions')->middleware('auth')->group(function () {
+    Route::post('/', [PositionController::class, 'store'])->name('positions.store');
+});
+
+Route::prefix('connection-requests')->middleware('auth')->group(function () {
+    Route::post('/', [ConnectionRequestController::class, 'store'])->name('connection-requests.store');
+    Route::delete('/{connectionRequest}', [ConnectionRequestController::class, 'destroy'])->name('connection-requests.destroy');
+    Route::put('/{connectionRequest}', [ConnectionRequestController::class, 'update'])->name('connection-requests.update');
+    Route::post('/{connectionRequest}/accept', [ConnectionRequestController::class, 'accept'])->name('connection-requests.accept');
+    Route::post('/{connectionRequest}/decline', [ConnectionRequestController::class, 'decline'])->name('connection-requests.decline');
+});
+
+Route::prefix('employees')->middleware('auth')->group(function () {
+    Route::get('/', [EmployeeController::class, 'index'])->name('employees.index');
 });
 
 Route::middleware('auth')->group(function () {
