@@ -12,6 +12,7 @@
     export let headers: string[] = [];
     export let data: any[] = [];
     export let date: Date;
+    export let activities: any[] = [];
 
     const latestDateWithLogs = Object.keys(data).sort().reverse()[0];
     let detailsOpen: boolean[] = Array.from({ length: 31 }, () => false);
@@ -19,7 +20,6 @@
     let latestNonEmptyRow: HTMLTableRowElement;
     let scrollY: number = 0;
     $: allOpen = detailsOpen.every(b => b);
-    $: console.log(scrollY);
 
     onMount(() => {
         scrollToLatest();
@@ -52,11 +52,13 @@
             (_, i) => {
                 let day = i + 1;
                 let date = `${year}-${month}-${leftPad(day,'0',2)}`;
-                return [date, data[date] ?? {}];
+                return [date, data[date]];
             }
         )
     );
     $: datesArray = Object.entries(dateMap);
+
+    $: console.log(datesArray);
 </script>
 <svelte:window bind:scrollY={scrollY} />
 
@@ -97,14 +99,13 @@
                     <td>
                         <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full">
                             {#if logs?.length}
-                                {#each groupBy(
-                                    logs,
-                                    'project_id',{
-                                        mapToNestedProp: 'project.name', 
-                                        asEntries: true}
-                                ) as [key, activities]}
-
-                                    <ActivityInlineReport projectName={key} id={`${key}_${index}`} {activities} detailsOpen={detailsOpen[index]}/>
+                                {#each logs as log, logIndex}
+                                    
+                                    <ActivityInlineReport 
+                                        id={`activity_${key.replaceAll('-','')}${index}${logIndex}`}  
+                                        {log}
+                                        detailsOpen={detailsOpen[index]}
+                                    />
 
                                 {/each}
 

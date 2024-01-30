@@ -3,12 +3,11 @@
     import { Duration } from "$lib/Duration";
     import DurationInput from "$components/DurationInput.svelte";
     import { toast } from "$lib/stores";
-    import PrimaryButton from "$components/PrimaryButton.svelte";
-    import SecondaryButton from "$components/SecondaryButton.svelte";
+    import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
+    import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import { router, useForm } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import MiniButton from "$components/MiniButton.svelte";
-    import DangerButton from "$components/DangerButton.svelte";
     import { Lock, LockFill, PenFill, UnlockFill } from "svelte-bootstrap-icons";
 
     export let activities: any[];
@@ -26,8 +25,6 @@
     })
 
     $: console.log($form);
-
-    
     
     $: activitiesTotal = $form.activities
         .filter((a: any) => a.project_id == log.project_id)
@@ -147,7 +144,7 @@
                     <SecondaryButton on:click={() => addRow(log.project_id)} disabled={$form.processing}>
                         Add Activity
                     </SecondaryButton>
-                    <PrimaryButton 
+                    <PrimaryButton type="submit"
                         title={aboveMax ? 'Total duration cannot be greater than ' + Duration.toHHMM(log.total_seconds) : 'Save activities'}
                         loading={$form.processing}
                         disabled={aboveMax || activitiesTotal == 0 || activities.some(a => !a.task_category_id)} >

@@ -7,7 +7,7 @@
 
 
     export let activities: Activity[] = [];
-    export let title: string = activities?.[0]?.project?.name ?? '';
+    export let title: string;
     export let width: number | string = 400;
     export let height: number | string = 400;
 
@@ -36,7 +36,7 @@
     }
 </script>
 
-<div class="modal-action flex justify-center">
+<div class="modal-action flex justify-center h-[400px]">
     <canvas bind:this={canvas} {width} {height}></canvas>
 </div>
 
