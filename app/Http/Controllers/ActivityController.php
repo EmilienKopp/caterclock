@@ -42,7 +42,12 @@ class ActivityController extends Controller
             ->whereYear('date', Carbon::parse($date)->year)
             ->whereMonth('date', Carbon::parse($date)->month)
             ->orderBy('date', 'desc')
-            ->get();
+            ->get()
+            ->transform(function ($dailyLog) {
+                $dailyLog->activities = $dailyLog->activities();
+                return $dailyLog;
+            })
+            ->groupBy('date');
 
         return inertia('Activity/Index', compact('activities', 'projects', 'dailyLogs', 'taskCategories', 'date'));
     }
@@ -82,7 +87,6 @@ class ActivityController extends Controller
             $taskCategory->name = __($taskCategory->name);
             return $taskCategory;
         });
-
         
         $activities = Activity::where('user_id', auth()->user()->id)
             ->where('date', $date)
@@ -105,6 +109,7 @@ class ActivityController extends Controller
             ->orderBy('date', 'desc')
             ->get();
         
+
         return inertia('Activity/Daily/Index', compact('activities', 'projects', 'dailyLogs', 'taskCategories'));
     }
 
