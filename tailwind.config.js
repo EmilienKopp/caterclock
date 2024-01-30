@@ -10,6 +10,10 @@ export default {
         './resources/js/**/*.svelte',
     ],
 
+    daisyui: {
+        themes: ["forest","light", "dark"],
+    },
+
     theme: {
         extend: {
             fontFamily: {
