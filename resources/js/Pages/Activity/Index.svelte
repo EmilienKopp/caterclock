@@ -1,25 +1,18 @@
 <script lang="ts">
-
     import MonthTable from "$components/MonthTable.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { groupBy } from "$lib/Array";
-
 
     export let activities: any[] = [];
     export let dailyLogs: any[] = [];
     export let taskCategories: any[] = [];
     export let date: Date = new Date();
 
-
-
-    $: logs = groupBy(activities, 'date');
-    $: console.log(date)
 </script>
 
 <AuthenticatedLayout>
-
     <div class="w3/4 mx-auto">
-        <MonthTable headers={["Date", "Project", "Activity", "Duration"]} data={logs} {date} />
+        <MonthTable headers={["Date", "Project", "Activity", "Duration"]} data={dailyLogs} {date} {activities}/>
     </div>
 </AuthenticatedLayout>
 

@@ -5,9 +5,8 @@
     import { toast } from "$lib/stores";
     import { router, useForm } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
-    import PrimaryButton from '$components/PrimaryButton.svelte';
-    import SecondaryButton from '$components/SecondaryButton.svelte';
-    import DangerButton from '$components/DangerButton.svelte';
+    import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+
 
     export let activities: any[];
     export let dailyLogs: any[];

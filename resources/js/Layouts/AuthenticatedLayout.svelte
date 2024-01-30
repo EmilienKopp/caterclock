@@ -15,9 +15,11 @@
 
     const menu: RouteItem[] = [
         {label: 'Dashboard', route: 'dashboard'},
+        {label: 'Employees', route: 'employees.index'},
         {label: 'Clock', route: 'timelog.index'},
         {label: 'Activity', route: 'activities.index'},
         {label: 'Projects', route: 'projects.index'},
+        {label: 'Companies', route: 'companies.index'},
         // {label: 'Team', route: 'team.index'},
         {label: 'Profile', route: 'profile.edit'},
     ]

@@ -1,10 +1,10 @@
 <script lang="ts">
     import GuestLayout from "../../Layouts/GuestLayout.svelte";
-    import Checkbox from "../../Components/Checkbox.svelte";
-    import InputError from "../../Components/InputError.svelte";
-    import InputLabel from "../../Components/InputLabel.svelte";
-    import PrimaryButton from "../../Components/PrimaryButton.svelte";
-    import TextInput from "../../Components/TextInput.svelte";
+    import Checkbox from "$components/Checkbox.svelte";
+    import InputError from "$components/InputError.svelte";
+    import InputLabel from "$components/InputLabel.svelte";
+    import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
+    import TextInput from "$components/TextInput.svelte";
     import { Link, router } from "@inertiajs/svelte";
     import route from '../../../../vendor/tightenco/ziggy';
 

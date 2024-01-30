@@ -1,7 +1,7 @@
 <script lang="ts">
 import InputError from '$components/InputError.svelte';
 import InputLabel from '$components/InputLabel.svelte';
-import PrimaryButton from '$components/PrimaryButton.svelte';
+import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
 import TextInput from '$components/TextInput.svelte';
 import route from '$vendor/tightenco/ziggy';
 import { Link, page, router, useForm } from '@inertiajs/svelte';

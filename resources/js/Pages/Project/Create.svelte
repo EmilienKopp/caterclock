@@ -1,7 +1,7 @@
 <script lang="ts">
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-    import PrimaryButton from '$components/PrimaryButton.svelte';
-    import SecondaryButton from '$components/SecondaryButton.svelte';
+    import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+    import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
     import PageTitle from '$components/PageTitle.svelte';
     import InputLabel from '$components/InputLabel.svelte';
     import TextInput from '$components/TextInput.svelte';

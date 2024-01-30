@@ -1,6 +1,6 @@
 <script lang="ts">
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-    import PrimaryButton from '$components/PrimaryButton.svelte';
+    import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import PageTitle from '$components/PageTitle.svelte';
     import route from '$vendor/tightenco/ziggy';
 

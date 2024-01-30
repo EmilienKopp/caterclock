@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import MiniButton from './MiniButton.svelte';
+    import { twMerge } from 'tailwind-merge';
 
     export let title: string = '';
     export let open: boolean = false;
@@ -32,8 +33,8 @@
 
 </script>
 
-<dialog id="my_modal_1" class="modal" bind:this={dialog}>
-    <div class="modal-box">
+<dialog class="modal" bind:this={dialog} >
+    <div class={twMerge("modal-box border border-gray-400",$$restProps.class)} >
         <h3 class="font-bold text-lg flex items-center justify-between">
             {title}
         </h3>

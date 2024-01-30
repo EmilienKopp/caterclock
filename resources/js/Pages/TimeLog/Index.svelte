@@ -1,7 +1,7 @@
 <script lang="ts">
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
     import Clock from '$components/Clock.svelte';
-    import PrimaryButton from '$components/PrimaryButton.svelte';
+    import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import Select from '$components/Select.svelte';
     import ClockEntriesTable from './TimeLogTable.svelte';
     import { router, useForm, page } from '@inertiajs/svelte';
@@ -47,9 +47,9 @@
             <Clock />
             <form method="POST" on:submit|preventDefault={clock} class="grid grid-cols-2 gap-4 items-center">
                 {#if switchingProjects}
-                    <PrimaryButton disabled={!$form.project_id}>Switch Project</PrimaryButton>
+                    <PrimaryButton disabled={!$form.project_id} type="submit">Switch Project</PrimaryButton>
                 {:else}
-                    <PrimaryButton disabled={!$form.project_id}>Clock {action}</PrimaryButton>
+                    <PrimaryButton disabled={!$form.project_id}  type="submit">Clock {action}</PrimaryButton>
                 {/if}
 
                 <Select name="project_id" placeholder="プロジェクト選択" bind:value={$form.project_id} 

@@ -1,8 +1,8 @@
 <script lang="ts">
-import InputError from '../../../Components/InputError.svelte';
-import InputLabel from '../../../Components/InputLabel.svelte';
-import PrimaryButton from '../../../Components/PrimaryButton.svelte';
-import TextInput from '../../../Components/TextInput.svelte';
+import InputError from '$components/InputError.svelte';
+import InputLabel from '$components/InputLabel.svelte';
+import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+import TextInput from '$components/TextInput.svelte';
 import { Link, page, router, useForm } from '@inertiajs/svelte';
 import route from '../../../../../vendor/tightenco/ziggy';
 import { toast } from '$lib/stores';

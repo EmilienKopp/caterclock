@@ -1,9 +1,9 @@
 <script lang="ts">
-import DangerButton from '$components/DangerButton.svelte';
+import DangerButton from '$components/Buttons/DangerButton.svelte';
 import InputError from '$components/InputError.svelte';
 import InputLabel from '$components/InputLabel.svelte';
 import Modal from '$components/Modal.svelte';
-import SecondaryButton from '$components/SecondaryButton.svelte';
+import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
 import TextInput from '$components/TextInput.svelte';
 import { router, useForm } from '@inertiajs/svelte';
 import { tick } from 'svelte';
