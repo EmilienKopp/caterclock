@@ -1,0 +1,16 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_8">
+   <text fill="#000000" stroke-width="0" x="321.69338" y="322.02306" id="svg_1" font-size="24" font-family="'Comfortaa'" text-anchor="start" xml:space="preserve" stroke="#000" transform="matrix(7.1982 0 0 7.1982 -2020.61 -2048.86)">O</text>
+   <path fill="none" stroke="#000" stroke-linejoin="undefined" stroke-linecap="undefined" opacity="undefined" d="m382.00004,300.57144" id="svg_3"/>
+   <text fill="#000000" x="87.11067" y="253.22731" id="svg_4" stroke-width="0" font-size="24" font-family="'Comfortaa'" text-anchor="start" xml:space="preserve" stroke="#000" transform="matrix(3.01858 0 0 2.67713 -8.78004 -464.309)">L</text>
+   <text fill="#000000" x="120.3811" y="314.21522" id="svg_5" stroke-width="0" font-size="24" font-family="'Comfortaa'" text-anchor="start" xml:space="preserve" stroke="#000" transform="matrix(7.7816 0 0 7.7816 -752.758 -2168.74)">C</text>
+   <text fill="#000000" x="152.25115" y="313.9582" id="svg_6" stroke-width="0" font-size="24" font-family="'Comfortaa'" text-anchor="start" xml:space="preserve" stroke="#000" transform="matrix(7.7816 0 0 7.7816 -752.758 -2168.74)">C</text>
+  </g>
+  <text transform="matrix(2.64993 0 0 2.64993 -334.936 -489.723)" stroke="#fff" xml:space="preserve" text-anchor="start" font-family="'Comfortaa'" font-size="24" stroke-width="0" id="svg_11" y="311.96212" x="200.84361" fill="#000000">FLEACLOCK</text>
+  <ellipse ry="7.14284" rx="7.14284" id="svg_18" cy="163.14156" cx="573.99726" stroke-width="0" stroke="#fff" fill="#000000"/>
+  <text transform="rotate(90 529.675 202.381) matrix(4.28441 0 0 2.60461 -1106.38 -214.321)" stroke="#000" xml:space="preserve" text-anchor="start" font-family="'Comfortaa'" font-size="24" id="svg_19" y="167.7222" x="373.27131" stroke-width="0" fill="#000000">V</text>
+ </g>
+
+</svg>
