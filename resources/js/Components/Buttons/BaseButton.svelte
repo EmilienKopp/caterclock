@@ -48,12 +48,12 @@
         type="button"
         on:click
         {...$$restProps}
-        class={twMerge(classes, $$restProps.class)}
+        class={twMerge(classes,"min-h-fit h-8", $$restProps.class)}
     >
         <slot />
     </button>
 {:else}
-    <Link href={href} class={classes} {...$$restProps} on:click>
+    <Link href={href} {...$$restProps} class={twMerge(classes,"min-h-fit h-8",$$restProps.class)}  on:click >
         <slot />
     </Link>
 {/if}

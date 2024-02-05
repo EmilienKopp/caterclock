@@ -1,6 +1,7 @@
 <script lang="ts">
     import BaseButton from "./BaseButton.svelte";
     import type { ButtonSize, ButtonShape, ButtonVariant } from "$types";
+    import { twMerge } from "tailwind-merge";
     
     export let href: string | undefined = undefined;
     export let loading: boolean = false;

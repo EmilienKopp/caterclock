@@ -22,6 +22,14 @@
         class={cssClass}
     ></textarea>
 {:else}
+<label class="form-control w-full max-w-xs">
+    {#if $$slots.label}
+    <div class="label">
+        <span class="label-text">
+            <slot name="label" />
+        </span>
+    </div>
+    {/if}
     <input
         bind:this={elem}
         bind:value
@@ -29,5 +37,6 @@
         {...$$restProps}
         class={cssClass}
     />
+</label>
 {/if}
 
