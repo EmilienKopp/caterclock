@@ -47,3 +47,7 @@ export const elapsedMinutes = derived(elapsedSeconds, ($elapsedSeconds) => {
 export const elapsedHours = derived(elapsedSeconds, ($elapsedSeconds) => {
     return Math.floor($elapsedSeconds / 3600);
 });
+
+export const user = derived(page, ($page) => {
+    return $page.props.auth.user;
+});
