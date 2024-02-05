@@ -23,33 +23,13 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $taskCategories = TaskCategory::all();
-        $projects = Project::all();
+        $projects = auth()->user()->involvedProjects;
 
         $date = $request->query('date') ?? Carbon::today()->format('Y-m-d');
 
-        $activities = Activity::where('user_id', auth()->user()->id)
-            ->whereYear('date', Carbon::parse($date)->year)
-            ->whereMonth('date', Carbon::parse($date)->month)
-            ->with('project', 'taskCategory')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->transform(function ($activity) {
-                $activity->dailyLog = $activity->dailyLog();
-                return $activity;
-            });
+        $dailyLogs = DailyLog::getMonthly($date);
 
-        $dailyLogs = DailyLog::where('user_id', auth()->user()->id)
-            ->whereYear('date', Carbon::parse($date)->year)
-            ->whereMonth('date', Carbon::parse($date)->month)
-            ->orderBy('date', 'desc')
-            ->get()
-            ->transform(function ($dailyLog) {
-                $dailyLog->activities = $dailyLog->activities();
-                return $dailyLog;
-            })
-            ->groupBy('date');
-
-        return inertia('Activity/Index', compact('activities', 'projects', 'dailyLogs', 'taskCategories', 'date'));
+        return inertia('Activity/Index', compact( 'projects', 'dailyLogs', 'taskCategories', 'date'));
     }
 
     /**
@@ -104,10 +84,7 @@ class ActivityController extends Controller
                 return $activity;
             });
         
-        $dailyLogs = DailyLog::where('user_id', auth()->user()->id)
-            ->where('date', $date)
-            ->orderBy('date', 'desc')
-            ->get();
+        $dailyLogs = DailyLog::getDaily($date);
         
 
         return inertia('Activity/Daily/Index', compact('activities', 'projects', 'dailyLogs', 'taskCategories'));
