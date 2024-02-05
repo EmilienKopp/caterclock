@@ -10,8 +10,25 @@
     import InputLabel from "$components/InputLabel.svelte";
     import TextInput from "$components/TextInput.svelte";
     import dayjs from "dayjs";
+    import { Label, P } from "flowbite-svelte";
 
     export let auth, companies: any[], ownedCompanies: any[], managedCompanies: any[], employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;
+
+    const form = useForm({
+        code: ""
+    });
+
+    async function updateInviteCode(company: any) {
+        $form = {...$form, ...company};
+        console.log($form);
+        $form.put(route("companies.update", company), {
+            preserveScroll: true,
+            preserveState: true,
+            onError: (errors: any) => {
+                console.log(errors);
+            }
+        });
+    }
 
     async function acceptRequest(request: any) {
         request.status = "accepted"; 
@@ -33,6 +50,11 @@
             {#each companies as company}
                 <div class="p-2 border rounded pb-12">
                     <h3 class="font-bold">Employees @{company.name}</h3>
+                    <div class="flex items-center gap-3">
+                        <label for="code_{company.id}">Code:</label>
+                        <TextInput name="code_{company.id}" bind:value={company.code} />
+                        <PrimaryButton on:click={() => updateInviteCode(company)}>Save</PrimaryButton>
+                    </div>
                     <ul>
                         {#each company.employees as employee}
                             <li>
