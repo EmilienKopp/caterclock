@@ -16,8 +16,10 @@ class TimeLogFactory extends Factory
      */
     public function definition(): array
     {
+        $in = $this->faker->dateTimeThisMonth;
         return [
-            //
+            'in_time' => $in,
+            'out_time' => $this->faker->dateTimeAfter($in),
         ];
     }
 }

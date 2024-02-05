@@ -12,14 +12,6 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        $dummyUser = User::find(1);
-        \App\Models\Project::factory()->create([
-            'name' => '正進社',
-            'user_id' => $dummyUser->id,
-        ]);
-        \App\Models\Project::factory()->create([
-            'name' => 'NAiN',
-            'user_id' => $dummyUser->id,
-        ]);
+        //
     }
 }
