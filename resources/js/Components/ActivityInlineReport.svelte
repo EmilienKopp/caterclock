@@ -5,12 +5,12 @@
     import ActivityPieChart from './ActivityPieChart.svelte';
     import ActivityLogItem from './ActivityLogItem.svelte';
     import { Duration } from "$lib/Duration";
-    import type { Activity } from "$types";
     import Dialog from './Dialog.svelte';
     import MiniPie from './MiniPie.svelte';
-    import { Popover } from 'flowbite-svelte';
     import { slide } from 'svelte/transition';
     import { InfoCircleFill, PencilSquare } from 'svelte-bootstrap-icons';
+    import { useForm } from '@inertiajs/svelte';
+    import { toast, user } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy/src/js';
 
     export let log: any;
@@ -20,8 +20,25 @@
     let open: boolean = false;
     let projectName: string = log?.project_name;
 
-    // Ensures popovers are only ever open one at a time, and that they close when opening the dialog
-    $: popoverOpen = open && openPopoverId === id;
+
+    const form = useForm({
+        user_id: $user.id,
+        project_id: log.project_id,
+        date: null,
+        in_project_id: null,
+        out_project_id: null,
+    })
+
+    async function clock() {
+        const logId = log.timeLogs.find( (l: any) => l.is_running)?.id;
+        await $form.put(route('timelog.update',{timelog: logId}),{
+            onSuccess: () => {
+                toast.success('Clocked out successfully');
+                log.is_running = false;
+            }
+        });
+    }
+
     function handleClick() {
         open = !open;
         openPopoverId = open ? id : '';
@@ -32,9 +49,22 @@
     <h3 class="text-lg font-semibold flex items-center gap-2">
         
         {projectName}
-        <div class="badge md:text-md text-xs whitespace-nowrap">
-            {Duration.toHrMinString(log.total_seconds)}
-        </div>
+        
+        <form class="dropdown" on:submit|preventDefault={clock} >
+            <input type="hidden" name="project_id" value={$form.project_id} />
+            <button type="button" class="badge md:text-md text-xs whitespace-nowrap" class:text-red-500={log.is_running} >
+                {#if log.is_running}
+                <span class="loading loading-infinity loading-xs mr-2"></span>
+                {/if}
+                {Duration.toHrMinString(log.total_seconds)}
+            </button>
+            <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                {#if log.is_running}
+                    <li><button on:click={clock}>Clock Out</button></li>
+                {/if}
+                <li><a href={route('activities.show',{date: log.date})}>Edit</a></li>
+            </ul>
+        </form>
         {#if log.activities.length}
             <button {id} class="ml-2" title="Click to enlarge" on:click={handleClick} on:mouseenter={() => openPopoverId = id}>
                 <!-- <PieChartFill /> -->
