@@ -6,10 +6,13 @@ use App\Http\Requests\GetTimeLogRequest;
 use App\Models\TimeLog;
 use App\Http\Requests\StoreTimeLogRequest;
 use App\Http\Requests\UpdateTimeLogRequest;
+use App\Http\Requests\BatchUpdateTimeLogRequest;
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Services\TimeCalculation;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class TimeLogController extends Controller
 {
@@ -18,21 +21,17 @@ class TimeLogController extends Controller
      */
     public function index()
     {
-
-        $userId = auth()->user()->id;
-        $entries = TimeLog::where('user_id', $userId)
+        $user = User::authenticated();
+        $entries = TimeLog::where('user_id', $user->id)
                     ->where('date', Carbon::today())
                     ->with('project')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
-        $projects = Project::all();
+        $projects = $user->getInvolvedProjects();
 
         $calculator = new TimeCalculation($entries);
-
         $projectDurations = $calculator->perProject();
-
-        Log::debug($projectDurations);
 
         return inertia('TimeLog/Index', compact('entries', 'projects', 'projectDurations'));
     }
@@ -54,13 +53,6 @@ class TimeLogController extends Controller
         
         $clockEntry = TimeLog::latestRunning(auth()->user()->id);
 
-        // if out time is before 4am, set "today" to yesterday
-        // if(Carbon::now()->hour < 4) {
-        //     $validated['date'] = Carbon::yesterday();
-        // } else {
-        //     $validated['date'] = Carbon::today();
-        // }
-
         if(!$clockEntry) { // if there is no "running" clock entry, create one
             $clockEntry = TimeLog::clockIn($validated);
         } else { // if there is a clock entry, stop it
@@ -71,7 +63,7 @@ class TimeLogController extends Controller
             }
         }
 
-        return to_route('timelog.index');
+        return redirect()->back();
     }
 
     /**
@@ -93,9 +85,37 @@ class TimeLogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTimeLogRequest $request, TimeLog $timeLog)
+    public function update(UpdateTimeLogRequest $request, TimeLog $timelog)
     {
-        //
+        try {
+            $timelog = TimeLog::find($request->id);
+            $timelog->out();
+            return response(status: 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response(status: 500, content: $e->getMessage());
+        }
+    }
+
+    public function batchUpdate(BatchUpdateTimeLogRequest $request)
+    {
+        
+        try {
+            $validated = $request->validated();
+            DB::transaction(function () use ($validated) {
+                foreach ($validated['entries'] as $entry) {
+                    $timelog = TimeLog::find($entry['id']);
+                    $timelog->in_time = $entry['in_time'];
+                    $timelog->out_time = $entry['out_time'];
+                    $timelog->save();
+                }
+            });
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response(status: 500, content: $e->getMessage());
+        }
     }
 
     /**
