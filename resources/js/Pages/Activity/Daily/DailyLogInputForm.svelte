@@ -2,13 +2,17 @@
     import Select from "$components/Select.svelte";
     import { Duration } from "$lib/Duration";
     import DurationInput from "$components/DurationInput.svelte";
-    import { toast } from "$lib/stores";
+    import { toast, user } from "$lib/stores";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import { router, useForm } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import MiniButton from "$components/MiniButton.svelte";
     import { Lock, LockFill, PenFill, UnlockFill } from "svelte-bootstrap-icons";
+    import OutlineButton from "$components/Buttons/OutlineButton.svelte";
+    import WarningButton from "$components/Buttons/WarningButton.svelte";
+    import Dialog from "$components/Dialog.svelte";
+    import dayjs from "dayjs";
 
     export let activities: any[];
     export let taskCategories: any[];
@@ -17,14 +21,23 @@
     let aboveMax: boolean = true;
     let loading: boolean = false;
     let safetyOn: boolean = true;
+    let clockEntryModalOpen = false;
+
+    const clockEntriesForm = useForm({
+        entries: log.timeLogs.map((entry: any) => {
+            return {
+                ...entry,
+                in_time: dayjs(entry.in_time).format('YYYY-MM-DDTHH:mm'),
+                out_time: entry.out_time ? dayjs(entry.out_time).format('YYYY-MM-DDTHH:mm') : ''
+            }
+        })
+    });
 
     $: form = useForm({
         date: log.date,
         project_id: log.project_id,
         activities: activities.filter((a: any) => a.project_id == log.project_id)
-    })
-
-    $: console.log($form);
+    });
     
     $: activitiesTotal = $form.activities
         .filter((a: any) => a.project_id == log.project_id)
@@ -83,6 +96,20 @@
     function clear(index: any) {
         $form.activities[index].duration = 0;
     }
+
+    async function updateClockEntries() {
+        $clockEntriesForm.put(route('timelog.batch-update'), {
+            onSuccess: () => {
+                toast.success('Clock entries updated successfully');
+                clockEntryModalOpen = false;
+            },
+            onError: () => {
+                toast.error('Error updating clock entries');
+                console.log($clockEntriesForm.errors);
+            }
+        });
+    }
+
 </script>
 
 <form class="rounded border p-5" on:submit|preventDefault={save}
@@ -90,8 +117,11 @@
     class:border-red-600={aboveMax}
     class:border-green-600={!aboveMax && !$form.isDirty}
 >
-    <h2>
-        {log.date} {log.project_name} ({Duration.toHHMM(log.total_seconds)})
+    <h2 class="flex justify-between text-lg">
+        <div>
+            {log.date}・{log.project_name}・({Duration.toHrMinString(log.total_seconds)})
+            <MiniButton class="text-xs mx-4" on:click={() => clockEntryModalOpen = true}>Edit clock entries</MiniButton>
+        </div>
         {#key safetyOn}
         <MiniButton class="text-xs" color="{safetyOn ? 'green' : 'yellow'}" on:click={() => safetyOn = !safetyOn}>
             Input safety: {safetyOn ? 'On' : 'Off'}
@@ -107,7 +137,7 @@
             </tr>
         </thead>
         <tbody>
-            {#each $form.activities as activity, index (activity.id)}
+            {#each $form.activities as activity, index}
                 <tr>
                     <td>
                         <Select name="activity_{activity.project_id}[{index}]" 
@@ -141,21 +171,38 @@
             {/each}
             <tr>
                 <td colspan="3">
-                    <SecondaryButton on:click={() => addRow(log.project_id)} disabled={$form.processing}>
+                    <OutlineButton on:click={() => addRow(log.project_id)} disabled={$form.processing}>
                         Add Activity
-                    </SecondaryButton>
-                    <PrimaryButton type="submit"
-                        title={aboveMax ? 'Total duration cannot be greater than ' + Duration.toHHMM(log.total_seconds) : 'Save activities'}
-                        loading={$form.processing}
-                        disabled={aboveMax || activitiesTotal == 0 || activities.some(a => !a.task_category_id)} >
-                            Save
-                    </PrimaryButton>
-                    
+                    </OutlineButton>
+                    {#if $form.isDirty}
+                        <PrimaryButton type="submit"
+                            title={aboveMax ? 'Total duration cannot be greater than ' + Duration.toHHMM(log.total_seconds) : 'Save activities'}
+                            loading={$form.processing}
+                            disabled={aboveMax || activitiesTotal == 0 || activities.some(a => !a.task_category_id)} >
+                                Save
+                        </PrimaryButton>
+                    {/if}
                 </td>
             </tr>
         </tbody>
-        
     </table>
-    
 </form>
+
+<Dialog title="Clock entries" bind:open={clockEntryModalOpen} >
+
+    {#each $clockEntriesForm.entries as entry,index}
+        <div>
+            <input bind:value={entry.in_time} class="rounded bg-transparent" 
+                type="datetime-local" />
+            ~
+            <input bind:value={entry.out_time}
+                class="rounded bg-transparent" type="datetime-local" />
+        </div>
+    {/each}
+
+    <div slot="buttons">
+        <PrimaryButton on:click={updateClockEntries}>Save</PrimaryButton>
+    </div>
+
+</Dialog>
 
