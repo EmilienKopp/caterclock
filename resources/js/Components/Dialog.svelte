@@ -34,7 +34,7 @@
 </script>
 
 <dialog class="modal" bind:this={dialog} >
-    <div class={twMerge("modal-box border border-gray-400",$$restProps.class)} >
+    <form on:submit class={twMerge("modal-box border border-gray-400 flex flex-col w-full",$$restProps.class)} >
         <h3 class="font-bold text-lg flex items-center justify-between">
             {title}
         </h3>
@@ -42,7 +42,10 @@
             Press ESC key or click the button below to close
             <MiniButton color="gray" class="text-xs" on:click={close}>close</MiniButton>
         </div>
-        <slot />
-    </div>
+        <div class="my-4">
+            <slot />
+        </div>
+        <slot name="buttons"/>
+    </form>
 </dialog>
 
