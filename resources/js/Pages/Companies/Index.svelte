@@ -9,10 +9,15 @@
     import MiniButton from "$components/MiniButton.svelte";
     import InputLabel from "$components/InputLabel.svelte";
     import TextInput from "$components/TextInput.svelte";
+    import TabLayout from "$components/TabLayout.svelte";
+    import TabItem from "$components/TabItem.svelte";
+    import SimpleTable from "$components/SimpleTable.svelte";
+    import CompanyCard from "$components/CompanyCard.svelte";
 
     export let auth, companies: any[], ownedCompanies: any[], managedCompanies: any[], 
     employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;
 
+    let activeTab: string = "Employers";
     let searchString = '';
 
     const modals = {
@@ -45,7 +50,7 @@
                 console.log($employerForm);
             },
             onError: () => {
-                console.log($employerForm);
+                console.log($employerForm.errors);
             }
         });
         modals.addEmployer = false;
@@ -65,109 +70,117 @@
         });
         modals.addClient = false;
     }
+
+    console.log(clients);
 </script>
 
 <AuthenticatedLayout>
     <h1 class="p-3 font-bold my-2 text-white text-xl">Companies</h1>
 
-    <div class="grid grid-cols-2 gap-5">
-
-        <div>
-            <h2 class="p-3 font-bold my-2 text-white text-lg">Employers</h2>
-            <ul class="list-disc list-inside">
-                {#each employers ?? [] as company}
-                    <li class="p-3 my-2 text-white text-lg">
-                        <a href={route('companies.show', company.id)}>{company.name}</a>
-                    </li>
-                {/each}
-                {#if $employerForm.processing}
-                    <li class="p-3 my-2 text-white text-lg flex gap-2 items-end">
-                        Adding Employer<span class="loading loading-dots loading-sm"></span>
-                    </li>
-                {/if}
-                {#each sentConnectionRequests as request}
-                    <li class="p-3 my-2 text-white text-lg flex gap-2 items-end">
-                        {request.sender.name} wants to join {request.company.name}
-                    </li>
-                {/each}
-                <PrimaryButton on:click={() => modals.addEmployer = true } >
+    <TabLayout class="px-32" >
+        <TabItem title="Employers" open>
+            <div slot="head" class="w-full flex justify-end">
+                <MiniButton on:click={() => modals.addEmployer = true } >
                     Add Employer
-                </PrimaryButton>
-                <Dialog title="Add Employer" bind:open={modals.addEmployer} >
-                    <div class="h-full flex flex-col gap-3">
-                        <div class="flex flex-col">
-                            <InputLabel for="name" >Search</InputLabel>
-                            <input type="text" id="name" bind:value={searchString} />
-                        </div>
-                        <ul>
-                            {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
-                                <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
-                                    <span>
-                                        {@html FilterService.fuzzyHighlight(company.name, searchString)}
-                                    </span>
-                                    {#if company.is_public}
-                                    <MiniButton on:click={() => addEmployer(company.id)} >
-                                        Add
-                                    </MiniButton>
-                                    {:else}
-                                    <div class="flex gap-2">
-                                        <TextInput name="code"placeholder="Invite Code" bind:value={$employerForm.code} />
-                                        <SecondaryButton on:click={() => addEmployer(company.id)} disabled={$employerForm.code != company.code} >
-                                            Go!
-                                        </SecondaryButton>
-                                    </div>
-                                    {/if}
-                                </li>
-                            {/each}
-                        </ul>
-                        
-                        
-                    </div>
-                </Dialog>
-            </ul>
-        </div>
+                </MiniButton>
+            </div>
+            {#if !employers.length}
+                <div class="p-3 my-2 text-white text-lg">
+                    No employers registered yet
+                </div>
+            {:else}
+                <SimpleTable data={employers} title="Employers"  headers={[
+                    { label: "Company", key: "name", route: "companies.show" },
+                    { label: "Position", key: "position.position" },
+                    { label: "Status", key: "status" },
+                ]} />
+            {/if}
+        </TabItem>
+        <TabItem title="Clients" >
+            <div slot="head" class="w-full flex justify-end">
+                <MiniButton on:click={() => modals.addClient = true } >
+                    New Client
+                </MiniButton>
+            </div>
+            {#if !clients.length}
+                <div class="p-3 my-2 text-white text-lg">
+                    No clients registered yet
+                </div>
+            {:else}
+                <SimpleTable data={clients} title="Clients"  headers={[
+                    { label: "Company", key: "name" },
+                    { label: "Position", key: "position.position" },
+                ]} />
+            {/if}
+        </TabItem>
+        <TabItem title="Connection Requests">
+            {#if !sentConnectionRequests.length}
+                <div class="p-3 my-2 text-white text-lg">
+                    No projects registered yet
+                </div>
+            {:else}
+                <SimpleTable data={sentConnectionRequests} title="Projects"  headers={[
+                    { label: "To: User", key: "receiver.name" },
+                    { label: "To: Company", key: "company.name", popoverComponent: CompanyCard, popoverProp: "company" },
+                    { label: "Status", key: "status", asBadge: true},
+                ]} />
+            {/if}
+        </TabItem>
+    </TabLayout>
 
-        <div>
-            <h2 class="p-3 font-bold my-2 text-white text-lg">Clients</h2>
-            <ul class="list-disc list-inside">
-                {#each clients ?? [] as company}
-                    <li class="p-3 my-2 text-white text-lg">
-                        <a href={route('companies.show', company.id)}>{company.name}</a>
+    <Dialog title="Add Employer" bind:open={modals.addEmployer} >
+        <div class="h-full flex flex-col gap-3">
+            <div class="flex flex-col">
+                <InputLabel for="name" >Search</InputLabel>
+                <input type="text" id="name" bind:value={searchString} />
+            </div>
+            <ul>
+                {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
+                    <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
+                        <span>
+                            {@html FilterService.fuzzyHighlight(company.name, searchString)}
+                        </span>
+                        {#if company.is_public}
+                        <MiniButton on:click={() => addEmployer(company.id)} >
+                            Add
+                        </MiniButton>
+                        {:else}
+                        <div class="flex gap-2">
+                            <TextInput name="code"placeholder="Invite Code" bind:value={$employerForm.code} />
+                            <SecondaryButton on:click={() => addEmployer(company.id)} disabled={$employerForm.code != company.code} >
+                                Go!
+                            </SecondaryButton>
+                        </div>
+                        {/if}
                     </li>
                 {/each}
-                {#if $clientForm.processing}
-                    <li class="p-3 my-2 text-white text-lg flex gap-2 items-end">
-                        Adding Client<span class="loading loading-dots loading-sm"></span>
+            </ul>
+            
+            
+        </div>
+    </Dialog>
+    <Dialog title="Add Client" bind:open={modals.addClient} >
+        <div class="h-full flex flex-col">
+            <div class="flex flex-col">
+                <label for="name">Search</label>
+                <input type="text" id="name" bind:value={searchString} />
+            </div>
+            <ul>
+                {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
+                    <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
+                        <span>
+                            {@html FilterService.fuzzyHighlight(company.name, searchString)}
+                        </span>
+                        <MiniButton on:click={() => addClient(company.id)}>
+                            Add
+                        </MiniButton>
                     </li>
-                {/if}
-                <PrimaryButton on:click={() => modals.addClient = true }>
-                    Add Client
-                </PrimaryButton>
-                <Dialog title="Add Client" bind:open={modals.addClient} >
-                    <div class="h-full flex flex-col">
-                        <div class="flex flex-col">
-                            <label for="name">Search</label>
-                            <input type="text" id="name" bind:value={searchString} />
-                        </div>
-                        <ul>
-                            {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
-                                <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
-                                    <span>
-                                        {@html FilterService.fuzzyHighlight(company.name, searchString)}
-                                    </span>
-                                    <MiniButton on:click={() => addClient(company.id)}>
-                                        Add
-                                    </MiniButton>
-                                </li>
-                            {/each}
-                        </ul>
-                    </div>
-                </Dialog>
+                {/each}
             </ul>
         </div>
+    </Dialog>
 
 
-    </div>
 </AuthenticatedLayout>
 
 
