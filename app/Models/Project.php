@@ -19,22 +19,35 @@ class Project extends Model
         'end_date',
     ];
 
+
+    public static function getAllRelated($user) {
+        $companies = $user->companies;
+        $projects = $companies->map(function($company) {
+            return $company->projects()->with('company')->get();
+        })->flatten();
+
+        return $projects;
+    }
+
     public static function getOwnedByAuthUser(): Collection
     {
         return Project::where('user_id', auth()->user()->id)
                         ->get();
     }
 
-    
-
     public function company()
     {
-        // return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function timeLogs()
+    {
+        return $this->hasMany(TimeLog::class);
     }
 
     public function tasks()

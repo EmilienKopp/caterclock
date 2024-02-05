@@ -36,6 +36,11 @@ class Company extends Model
         return $this->users()->wherePivot('position', 'admin');
     }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
     public function connectionRequests()
     {
         return $this->hasMany(ConnectionRequest::class)

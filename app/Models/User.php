@@ -43,8 +43,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public static function authenticated() {
+        return User::find(auth()->user()->id);
+    }
+
     public function companies() {
         return $this->belongsToMany(Company::class)
+            ->as('position')
             ->withPivot('position')->withTimestamps();
     }
 
@@ -75,5 +80,24 @@ class User extends Authenticatable
     public function sentConnectionRequests() {
         return $this->hasMany(ConnectionRequest::class, 'sender_id')
             ->with(['company','sender','receiver']);
+    }
+
+    public function projects() {
+        return $this->hasMany(Project::class);
+    }
+
+    public function getInvolvedProjects() {
+        // Get projects from companies where the user has a certain position
+        $companyProjects = Project::whereHas('company', function ($query) {
+            $query->whereHas('users', function ($subQuery) {
+                $subQuery->where('user_id', $this->id)
+                        ->whereIn('position', ['owner', 'admin', 'employee', 'hired_freelance']);
+            });
+        })->get();
+
+        // Get projects owned by the user
+        $ownedProjects = $this->projects;
+
+        return $companyProjects->merge($ownedProjects)->unique('id');
     }
 }
