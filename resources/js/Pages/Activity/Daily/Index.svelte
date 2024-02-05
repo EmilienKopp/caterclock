@@ -6,6 +6,8 @@
     import { router, useForm } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+    import WarningButton from '$components/Buttons/WarningButton.svelte';
+    import OutlineButton from '$components/Buttons/OutlineButton.svelte';
 
 
     export let activities: any[];
@@ -47,6 +49,7 @@
         });
     }
 
+$: console.log(dailyLogs);
 </script>
 
 <AuthenticatedLayout>
@@ -55,7 +58,10 @@
     
     <div class="grid 2xl:grid-cols-2 grid-cols-1 gap-4 my-3">
         {#if dailyLogs.length == 0}
-            <p class="col-span-2">No daily logs found for this date.</p>
+            <p class="col-span-2">
+                No daily logs found for this date.
+                
+            </p>
         {/if}
         
         {#each dailyLogs as log}
@@ -65,5 +71,6 @@
         {/each}
     </div>
     <PrimaryButton on:click={saveAll} loading={$form.processing}>Save All</PrimaryButton>
-    <PrimaryButton on:click={saveAllAndReturn} loading={$form.processing}>Save All and Go Back</PrimaryButton>
+    <OutlineButton on:click={saveAllAndReturn} loading={$form.processing}>Save All and Go Back</OutlineButton>
+    <WarningButton href={route("activities.index")} class="mx-12">Cancel</WarningButton>
 </AuthenticatedLayout>
