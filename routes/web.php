@@ -44,8 +44,9 @@ Route::prefix('time-logs')->middleware('auth')->group(function () {
     Route::get('/', [TimeLogController::class, 'index'])->name('timelog.index');
     Route::post('/', [TimeLogController::class, 'store'])->name('timelog.store');
     Route::post('/switch', [TimeLogController::class, 'switch'])->name('timelog.switch');
-    Route::post('/{clockEntry}/update', [TimeLogController::class, 'update'])->name('timelog.update');
-    Route::delete('/{clockEntry}/delete', [TimeLogController::class, 'destroy'])->name('timelog.destroy');
+    Route::put('/{timelog}/update', [TimeLogController::class, 'update'])->name('timelog.update');
+    Route::put('/batch', [TimeLogController::class, 'batchUpdate'])->name('timelog.batch-update');
+    Route::delete('/{timelog}/delete', [TimeLogController::class, 'destroy'])->name('timelog.destroy');
 
 });
 
@@ -56,6 +57,7 @@ Route::prefix('projects')->middleware('auth')->group(function () {
     Route::get('/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::patch('/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::get('/{project}', [ProjectController::class, 'show'])->name('projects.show');
 });
 
 Route::prefix('activities')->middleware('auth')->group(function () {
@@ -68,6 +70,7 @@ Route::prefix('companies')->middleware('auth')->group(function () {
     Route::get('/', [CompanyController::class, 'index'])->name('companies.index');
     Route::post('/', [CompanyController::class, 'store'])->name('companies.store');
     Route::get('/show', [CompanyController::class, 'show'])->name('companies.show');
+    Route::put('/{company}/update', [CompanyController::class, 'update'])->name('companies.update');
 });
 
 Route::prefix('positions')->middleware('auth')->group(function () {
