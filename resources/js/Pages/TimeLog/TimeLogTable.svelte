@@ -1,6 +1,9 @@
 <script lang="ts">
-    import { Duration } from "$lib/Duration";
+    import MiniButton from "$components/MiniButton.svelte";
+import { Duration } from "$lib/Duration";
     import { elapsedSeconds } from "$lib/stores";
+    import route from "$vendor/tightenco/ziggy/src/js";
+    import dayjs from "dayjs";
 
     export let entries: any[];
 
@@ -15,7 +18,7 @@
 
 </script>
 
-<div class="w-1/3 overflow-x-auto mx-auto">
+<div class="sm:w-2/3 w-full overflow-x-auto mx-auto">
     <table class="mt-16 table table-pin-cols">
         <thead>
             <tr>
@@ -28,11 +31,18 @@
         <tbody>
         {#each entries ?? [] as entry}
             <tr>
-                <td>{new Date(entry.in_time).toLocaleTimeString()}</td>
-                <td>{entry.out_time ? new Date(entry.out_time).toLocaleTimeString() : "-"}</td>
-                <td>{entry.project?.name ?? ""}</td>
+                <td class="sm:text-sm text-xs">{dayjs(entry.in_time).format("HH:mm")}</td>
+                <td>{entry.out_time ? dayjs(entry.out_time).format("HH:mm") : "-"}</td>
+                <td>
+                    <a href={route("projects.show",{project: entry.project.id})}>
+                        {entry.project?.name ?? ""}
+                    </a>
+                </td>
                 <td>
                     {Duration.toHHMM(entry.total_duration ?? $elapsedSeconds)}
+                </td>
+                <td>
+                    <MiniButton href={route("activities.show", {date: dayjs(entry.date).format("YYYY-MM-DD")})} class="bg-blue-500 hover:bg-blue-700">See</MiniButton>
                 </td>
             </tr>     
         {/each}

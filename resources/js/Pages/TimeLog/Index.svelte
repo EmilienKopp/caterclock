@@ -3,7 +3,7 @@
     import Clock from '$components/Clock.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import Select from '$components/Select.svelte';
-    import ClockEntriesTable from './TimeLogTable.svelte';
+    import TimeLogTable from './TimeLogTable.svelte';
     import { router, useForm, page } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import { latestClockInTime, elapsedHours, elapsedMinutes, elapsedSeconds } from '$lib/stores';
@@ -76,7 +76,7 @@
             {/each}
         </div>
         
-        <ClockEntriesTable {entries} />
+        <TimeLogTable {entries} />
 
     </div>
 </AuthenticatedLayout>
