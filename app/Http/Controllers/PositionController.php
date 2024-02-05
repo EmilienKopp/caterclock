@@ -32,7 +32,7 @@ class PositionController extends Controller
         $user = User::find($request->user_id);
 
 
-        if($validated["position"] == 'employee' && $validated["code"] ) {
+        if($validated["position"] == 'employee') {
             $validatedForConnectionRequest = $request->validate([
                 'sender_id' => 'required|integer|exists:users,id',
                 'receiver_id' => 'required_without:company_id|integer|exists:users,id',

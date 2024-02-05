@@ -26,7 +26,7 @@ class StoreConnectionRequestRequest extends FormRequest
             'receiver_id' => 'required_without:company_id|integer|exists:users,id',
             'company_id' => 'required_without:receiver_id|integer|exists:companies,id',
             'position' => 'required|string|in:owner,employee,hired_freelance,admin',
-            'code' => 'nullable|string|exists:companies,code',
+            'code' => 'nullable|string',
         ];
     }
 }

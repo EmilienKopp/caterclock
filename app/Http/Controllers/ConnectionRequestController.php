@@ -40,7 +40,7 @@ class ConnectionRequestController extends Controller
      */
     public function store(StoreConnectionRequestRequest $request)
     {
-        $validated = $request->validated();
+
     }
 
     /**

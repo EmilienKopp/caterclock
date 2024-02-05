@@ -26,7 +26,7 @@ class StorePositionRequest extends FormRequest
             'position' => 'required|string|in:owner,employee,hired_freelance,admin',
             'company_id' => 'required|integer|exists:companies,id',
             'user_id' => 'required|integer|exists:users,id',
-            'code' => 'required|string|exists:companies,code',
+            'code' => 'required_if:company.is_public,true|nullable|string|exists:companies,code',
             'sender_id' => 'nullable|integer|exists:users,id',
             'receiver_id' => 'nullable|integer|exists:users,id',
             
