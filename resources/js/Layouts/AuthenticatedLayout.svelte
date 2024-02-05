@@ -14,9 +14,9 @@
     let showingNavigationDropdown = false;
 
     const menu: RouteItem[] = [
+        {label: 'Clock', route: 'timelog.index'},
         {label: 'Dashboard', route: 'dashboard'},
         {label: 'Employees', route: 'employees.index'},
-        {label: 'Clock', route: 'timelog.index'},
         {label: 'Activity', route: 'activities.index'},
         {label: 'Projects', route: 'projects.index'},
         {label: 'Companies', route: 'companies.index'},
@@ -163,10 +163,11 @@
             {/if}
             
             <!-- Page Content -->
-            <main class="p-6">
+            <main class="sm:p-6 p-0">
                 <MiniToast show={false}/>
                 <slot />
             </main>
+            
         </div>
     </div>
 
