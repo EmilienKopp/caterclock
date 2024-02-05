@@ -3,18 +3,17 @@
     import { leftPad } from "$lib/Text";
     import ActivityInlineReport from "$components/ActivityInlineReport.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
-    import { groupBy } from "$lib/Array";
     import { _ } from 'lodash';
     import MiniButton from "./MiniButton.svelte";
-    import { thisYear, thisMonth } from "$lib/stores";
     import { onMount } from "svelte";
+    import { useForm, page } from "@inertiajs/svelte";
+    import { user } from "$lib/stores";
 
     export let headers: string[] = [];
     export let data: any[] = [];
     export let date: Date;
-    export let activities: any[] = [];
 
-    const latestDateWithLogs = Object.keys(data).sort().reverse()[0];
+    const latestDateWithLogs = Object.keys(data).sort().reverse()[0]
     let detailsOpen: boolean[] = Array.from({ length: 31 }, () => false);
     let container: HTMLDivElement;
     let latestNonEmptyRow: HTMLTableRowElement;
@@ -27,7 +26,7 @@
 
     function scrollToLatest() {
         latestNonEmptyRow = document.getElementById(latestDateWithLogs) as HTMLTableRowElement;
-        latestNonEmptyRow?.scrollIntoView({ behavior: 'smooth'});
+        latestNonEmptyRow?.scrollIntoView({ behavior: 'smooth', block: 'center'});
     }
 
     function scrollToTop() {
@@ -41,6 +40,7 @@
     function toggleAllDetails() {
         detailsOpen = Array.from({ length: 31 }, () => !allOpen);
     }
+
 
 
     $: year = dayjs(date).format('YYYY');
@@ -58,7 +58,6 @@
     );
     $: datesArray = Object.entries(dateMap);
 
-    $: console.log(datesArray);
 </script>
 <svelte:window bind:scrollY={scrollY} />
 
@@ -94,7 +93,7 @@
             {#each datesArray as [key, logs], index}
                 <tr id="{key}" class="hover">
                     <td>
-                        <div class="text-gray-400">{ key }</div>
+                        <div class="text-gray-400">{ dayjs(key).date() }</div>
                     </td>
                     <td>
                         <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full">
@@ -117,6 +116,12 @@
                                         <MiniButton color="ghost" on:click={() => toggleDetails(index)} >Details</MiniButton>
                                     {/if}
                                 </div>
+                            {:else}
+                                <MiniButton color="ghost" 
+                                    href={route('activities.show',{date: key})}
+                                    class="lg:col-start-3 md:col-start-2 place-self-end">
+                                    Add
+                                </MiniButton>
                             {/if}
                             
                             
