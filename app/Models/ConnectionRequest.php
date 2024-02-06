@@ -11,6 +11,10 @@ class ConnectionRequest extends Model
 
     protected $guarded = [];
 
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
+
     public function sender() {
         return $this->belongsTo(User::class, 'sender_id');
     }

@@ -23,7 +23,7 @@ class StorePositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'position' => 'required|string|in:owner,employee,hired_freelance,admin',
+            'role_id' => 'required|integer|exists:roles,id',
             'company_id' => 'required|integer|exists:companies,id',
             'user_id' => 'required|integer|exists:users,id',
             'code' => 'required_if:company.is_public,true|nullable|string|exists:companies,code',

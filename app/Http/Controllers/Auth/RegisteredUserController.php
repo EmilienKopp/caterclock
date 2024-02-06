@@ -57,7 +57,9 @@ class RegisteredUserController extends Controller
                 'representative_id' => $user->id,
             ]);
 
-            $company->users()->attach($user->id, ['position' => 'owner']);
+            $ownerRole = \App\Models\Role::where('name', 'owner')->first();
+
+            $company->users()->attach($user->id, ['role_id' => $ownerRole->id]);
         }
 
         

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateConnectionRequestRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use App\Models\Role;
 
 class ConnectionRequestController extends Controller
 {
@@ -28,10 +29,11 @@ class ConnectionRequestController extends Controller
     }
 
     public function accept(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest){
+        $employeeRole = Role::where('name', 'employee')->first();
         $validated = $request->validated();
         $connectionRequest->update($validated);
-        $connectionRequest->sender->companies()->attach($connectionRequest->company, ['position' => 'employee']);
-        $connectionRequest->company->users()->attach($connectionRequest->sender, ['position' => 'employee']);
+        $connectionRequest->sender->companies()->attach($connectionRequest->company, ['role_id' => $employeeRole->id]);
+        $connectionRequest->company->users()->attach($connectionRequest->sender, ['role_id' => $employeeRole->id]);
         $connectionRequest->delete();
     }
 
@@ -64,13 +66,12 @@ class ConnectionRequestController extends Controller
      */
     public function update(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest)
     {
-        Log::debug($request);
         $validated = $request->validated();
         $user = User::find(Auth::id());
-        Log::debug($validated);
+        $employeeRole = Role::where('name', 'employee')->first();
         if($validated['status'] === 'accepted'){
             $company = $user->companies()->where('id', $validated['company_id'])->first();
-            $connectionRequest->sender->companies()->attach($company, ['position' => 'employee']);
+            $connectionRequest->sender->companies()->attach($company, ['role_id' => $employeeRole->id]);
             $connectionRequest->delete();
         }
         else {
@@ -78,8 +79,8 @@ class ConnectionRequestController extends Controller
         }
 
         $companies = $user->ownedCompanies()
-            ->withPivot('position')
-            ->with('connectionRequests')
+            ->withPivot('role_id')
+            ->with(['connectionRequests','users.role'])
             ->get();
 
         return redirect()->route('employees.index', compact('companies'));

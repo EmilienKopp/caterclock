@@ -2,27 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\TimeLog;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class TimeLogPolicy
+class RolePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('index', TimeLog::class);
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, TimeLog $timeLog): bool
+    public function view(User $user, Role $role): bool
     {
-        return $user->can('show', TimeLog::class)
-            && $user->can('show', $timeLog->project);
+        //
     }
 
     /**
@@ -30,22 +29,21 @@ class TimeLogPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create', TimeLog::class);
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, TimeLog $timeLog): bool
+    public function update(User $user, Role $role): bool
     {
-        return $user->can('update', TimeLog::class) 
-            && $user->owns($timeLog);
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, TimeLog $timeLog): bool
+    public function delete(User $user, Role $role): bool
     {
         //
     }
@@ -53,7 +51,7 @@ class TimeLogPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, TimeLog $timeLog): bool
+    public function restore(User $user, Role $role): bool
     {
         //
     }
@@ -61,7 +59,7 @@ class TimeLogPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, TimeLog $timeLog): bool
+    public function forceDelete(User $user, Role $role): bool
     {
         //
     }

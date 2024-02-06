@@ -21,17 +21,31 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
+        $freelanceRole = \App\Models\Role::where('name', 'freelancer')->first();
+
         $feliseed = Company::where('name', 'Feliseed')->first();
-        $emilien->companies()->attach($feliseed, ['position' => 'hired_freelance']);
+        $emilien->companies()->attach($feliseed, ['role_id' => $freelanceRole->id]);
 
         $SINC = Company::where('name', 'SINC')->first();
-        $emilien->companies()->attach($SINC, ['position' => 'hired_freelance']);
+        $emilien->companies()->attach($SINC, ['role_id' => $freelanceRole->id]);
+
+        $emilien->roles()->attach($freelanceRole->id);
 
         User::factory()->create([
             'name' => 'Kanzaki Rena',
             'email' => 'kanzaki@example.com',
             'password' => bcrypt('password'),
         ]);
+
+        $ownerRole = \App\Models\Role::where('name', 'owner')->first();
+        $metaPlanning = Company::where('name', 'Meta Planning')->first();
+        $nishimura = User::factory()->create([
+            'name' => 'Nishimura San',
+            'email' => 'nishimura@example.com',
+            'password' => bcrypt('password'),
+        ]);
+        $nishimura->companies()->attach($metaPlanning, ['role_id' => $ownerRole->id]);
+        $nishimura->roles()->attach($ownerRole->id);
 
         User::factory()
             ->count(10)

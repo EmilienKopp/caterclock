@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class StoreActivityRequest extends FormRequest
 {
@@ -29,5 +30,10 @@ class StoreActivityRequest extends FormRequest
             'activities.*.date' => 'required|date_format:Y-m-d',
             'activities.*.duration' => 'required|integer|min:60',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        Log::debug($this->all());
     }
 }

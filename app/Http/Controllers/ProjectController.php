@@ -26,6 +26,7 @@ class ProjectController extends Controller
 
     public function create()
     {
+        $user = User::authenticated();
         return inertia('Project/Create');
     }
 

@@ -7,6 +7,7 @@ use App\Models\Company;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Role;
 
 class CompanyController extends Controller
 {
@@ -16,10 +17,22 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::all();
-        $clients = Auth::user()->contractedCompanies;
-        $employers = Auth::user()->employingCompanies;
-        $ownedCompanies = Auth::user()->ownedCompanies;
-        $managedCompanies = Auth::user()->managedCompanies;
+        $clients = Auth::user()->contractedCompanies->transform(function($company) {
+            $company->position["role"] = Role::find($company->position->role_id);
+            return $company;
+        });
+        $employers = Auth::user()->employingCompanies->transform(function($company) {
+            $company->position["role"] = Role::find($company->position->role_id);
+            return $company;
+        });
+        $ownedCompanies = Auth::user()->ownedCompanies->transform(function($company) {
+            $company->position["role"] = Role::find($company->position->role_id);
+            return $company;
+        });
+        $managedCompanies = Auth::user()->managedCompanies->transform(function($company) {
+            $company->position["role"] = Role::find($company->position->role_id);
+            return $company;
+        });
         $sentConnectionRequests = Auth::user()->sentConnectionRequests;
 
         Log::debug($sentConnectionRequests);

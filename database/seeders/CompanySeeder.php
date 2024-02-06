@@ -26,6 +26,10 @@ class CompanySeeder extends Seeder
             'name' => 'SINC',
         ]);
 
+        $metaPlanning = Company::factory()->create([
+            'name' => 'Meta Planning',
+        ]);
+
         Project::factory()->create([
             'name' => 'Seishinsha',
             'company_id' => $feliseed->id,

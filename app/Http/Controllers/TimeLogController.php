@@ -88,7 +88,6 @@ class TimeLogController extends Controller
     public function update(UpdateTimeLogRequest $request, TimeLog $timelog)
     {
         try {
-            $timelog = TimeLog::find($request->id);
             $timelog->out();
             return response(status: 200);
         } catch (\Exception $e) {
@@ -105,8 +104,10 @@ class TimeLogController extends Controller
             DB::transaction(function () use ($validated) {
                 foreach ($validated['entries'] as $entry) {
                     $timelog = TimeLog::find($entry['id']);
-                    $timelog->in_time = $entry['in_time'];
-                    $timelog->out_time = $entry['out_time'];
+                    $inTime = Carbon::parse($entry['in_time']);
+                    $timelog->in_time = $inTime;
+                    $outTime = Carbon::parse($entry['out_time']);
+                    $timelog->out_time = $outTime;
                     $timelog->save();
                 }
             });

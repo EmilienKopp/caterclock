@@ -11,29 +11,34 @@ class Company extends Model
 
     protected $guarded = [];
 
+    public function positions()
+    {
+        return $this->hasMany(Position::class);
+    }
+
     public function users()
     {
-        return $this->belongsToMany(User::class)->withPivot('position')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('role_id')->withTimestamps();
     }
 
     public function owner()
     {
-        return $this->users()->wherePivot('position', 'owner');
+        return $this->users()->wherePivot('role_id', Role::where('name', 'owner')->first()->id);
     }
 
     public function employees()
     {
-        return $this->users()->wherePivot('position', 'employee');
+        return $this->users()->wherePivot('role_id',Role::where('name', 'employee')->first()->id);
     }
 
     public function hiredFreelancers()
     {
-        return $this->users()->wherePivot('position', 'hired_freelance');
+        return $this->users()->wherePivot('role_id', Role::where('name', 'freelancer')->first()->id);
     }
 
     public function admins()
     {
-        return $this->users()->wherePivot('position', 'admin');
+        return $this->users()->wherePivot('role_id', Role::where('name', 'admin')->first()->id);
     }
 
     public function projects()

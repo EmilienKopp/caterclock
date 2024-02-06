@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use App\Models\User;
+use App\Models\Role;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,12 +36,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => auth()->user(),
+                'user' => User::authenticated(),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            // Returns the roles name => id as key:value pairs
+            'roles' => Role::all()->pluck('id', 'name'),
         ];
     }
 }
