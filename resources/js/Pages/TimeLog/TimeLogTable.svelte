@@ -1,9 +1,12 @@
 <script lang="ts">
     import MiniButton from "$components/MiniButton.svelte";
-import { Duration } from "$lib/Duration";
+    import { Duration } from "$lib/Duration";
     import { elapsedSeconds } from "$lib/stores";
     import route from "$vendor/tightenco/ziggy/src/js";
     import dayjs from "dayjs";
+    import utc from "dayjs/plugin/utc";
+    import timezone from "dayjs/plugin/timezone";
+    
 
     export let entries: any[];
 
@@ -26,6 +29,7 @@ import { Duration } from "$lib/Duration";
                 <th>End</th>
                 <th>Project</th>
                 <th>Duration</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>

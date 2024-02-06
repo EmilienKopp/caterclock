@@ -12,6 +12,7 @@
     import { useForm } from '@inertiajs/svelte';
     import { toast, user } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy/src/js';
+    import { onDestroy } from 'svelte';
 
     export let log: any;
     export let detailsOpen: boolean = false;
@@ -19,6 +20,10 @@
 
     let open: boolean = false;
     let projectName: string = log?.project_name;
+    let elapsedSeconds: number = 0;
+    const interval = setInterval(() => {
+        elapsedSeconds++;
+    }, 1000);
 
 
     const form = useForm({
@@ -43,6 +48,10 @@
         open = !open;
         openPopoverId = open ? id : '';
     }
+
+    onDestroy(() => {
+        clearInterval(interval);
+    });
 </script>
 
 <div class="mx-3 p-3 rounded bg-transparent">
@@ -56,7 +65,8 @@
                 {#if log.is_running}
                 <span class="loading loading-infinity loading-xs mr-2"></span>
                 {/if}
-                {Duration.toHrMinString(log.total_seconds)}
+                {Duration.toHrMinString(Number(log.total_seconds) + elapsedSeconds)}
+                
             </button>
             <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 {#if log.is_running}

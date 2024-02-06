@@ -14,7 +14,7 @@
     let showingNavigationDropdown = false;
 
     const menu: RouteItem[] = [
-        {label: 'Clock', route: 'timelog.index'},
+        {label: 'Clock', route: 'timelog.index', },
         {label: 'Dashboard', route: 'dashboard'},
         {label: 'Employees', route: 'employees.index'},
         {label: 'Activity', route: 'activities.index'},

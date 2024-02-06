@@ -3,7 +3,7 @@
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { Input } from "flowbite-svelte";
     import { toast } from "$lib/stores";
-    import { router, useForm } from '@inertiajs/svelte';
+    import { router, useForm, page} from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import WarningButton from '$components/Buttons/WarningButton.svelte';
@@ -13,9 +13,11 @@
     export let activities: any[];
     export let dailyLogs: any[];
     export let taskCategories: any[];
+    const urlParams = new URLSearchParams($page.url.split('?')[1]);
+    let selectedDate = urlParams.get('date');
 
-    $: selectedDate = new Date().toISOString().split('T')[0];
-    $: form = useForm({
+
+    let form = useForm({
         date: selectedDate,
         activities: activities
     })
@@ -33,6 +35,7 @@
             },
             onError: () => {
                 toast.error('Error saving activities.');
+                console.log($form);
             }
         });
     }
@@ -49,7 +52,10 @@
         });
     }
 
-$: console.log(dailyLogs);
+    $: $form.activities = dailyLogs.flatMap((log) => {
+        return log.activities;
+    });
+
 </script>
 
 <AuthenticatedLayout>
@@ -65,8 +71,8 @@ $: console.log(dailyLogs);
         {/if}
         
         {#each dailyLogs as log}
-            {#if activities}
-            <DailyLogInputForm {log} {taskCategories} bind:activities={$form.activities}/>
+            {#if log.activities}
+                <DailyLogInputForm bind:log {taskCategories} />
             {/if}
         {/each}
     </div>

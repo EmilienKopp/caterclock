@@ -38,6 +38,7 @@
     }
     $: switchingProjects = (action == "out" && entries[0]?.project_id != $form.project_id)
 
+    $: console.log(projects);
 </script>
 
 <AuthenticatedLayout>

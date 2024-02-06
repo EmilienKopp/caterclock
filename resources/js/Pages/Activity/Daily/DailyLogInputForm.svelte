@@ -14,7 +14,7 @@
     import Dialog from "$components/Dialog.svelte";
     import dayjs from "dayjs";
 
-    export let activities: any[];
+
     export let taskCategories: any[];
     export let log: any;
 
@@ -33,10 +33,10 @@
         })
     });
 
-    $: form = useForm({
+    const form = useForm({
         date: log.date,
         project_id: log.project_id,
-        activities: activities.filter((a: any) => a.project_id == log.project_id)
+        activities: log.activities.filter((a: any) => a.project_id == log.project_id)
     });
     
     $: activitiesTotal = $form.activities
@@ -50,7 +50,7 @@
         aboveMax = false;
     }
 
-    function handleKeyup(e: CustomEvent, activity: any, index: number) {
+    function handleKeydown(e: CustomEvent, activity: any, index: number) {
         if(e.detail.key == 'Enter') {
             addRow(activity.project_id);
             if(document)
@@ -69,6 +69,8 @@
                 duration: 0
             }
         ]
+        log.activities = $form.activities;
+        console.log(log.activities);
     }
 
     async function save() {
@@ -110,6 +112,7 @@
         });
     }
 
+    $: log.activities = $form.activities;
 </script>
 
 <form class="rounded border p-5" on:submit|preventDefault={save}
@@ -146,13 +149,13 @@
                             items={taskCategories} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
                     </td>
                     <td>
-                        {#key $form.activities[index].duration}
-                            <DurationInput bind:value={$form.activities[index].duration} max={log.total_seconds}
+
+                            <DurationInput bind:activity max={log.total_seconds}
                                 parentTotal={activitiesTotal} {safetyOn}
-                                on:minutekeyup={(e) => handleKeyup(e, activity, index)} 
-                                on:hourkeyup={(e) => handleKeyup(e, activity, index)}
+                                on:minutekeydown={(e) => handleKeydown(e, activity, index)} 
+                                on:hourkeydown={(e) => handleKeydown(e, activity, index)}
                             />
-                        {/key}
+                        
                     </td>
                     <td class="grid grid-flow-row gap-1 md:grid-cols-2 grid-cols-1">
                         <MiniButton color="yellow" on:click={() => clear(index)} title="Clear duration">
@@ -178,7 +181,7 @@
                         <PrimaryButton type="submit"
                             title={aboveMax ? 'Total duration cannot be greater than ' + Duration.toHHMM(log.total_seconds) : 'Save activities'}
                             loading={$form.processing}
-                            disabled={aboveMax || activitiesTotal == 0 || activities.some(a => !a.task_category_id)} >
+                            disabled={aboveMax || activitiesTotal == 0 || log.activities.some(a => !a.task_category_id)} >
                                 Save
                         </PrimaryButton>
                     {/if}

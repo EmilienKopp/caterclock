@@ -13,8 +13,9 @@
     import TabItem from "$components/TabItem.svelte";
     import SimpleTable from "$components/SimpleTable.svelte";
     import CompanyCard from "$components/CompanyCard.svelte";
+    import { swapObjectKeyValues } from "$lib/Objects";
 
-    export let auth, companies: any[], ownedCompanies: any[], managedCompanies: any[], 
+    export let auth: any, roles: any, companies: any[], ownedCompanies: any[], managedCompanies: any[], 
     employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;
 
     let activeTab: string = "Employers";
@@ -25,19 +26,19 @@
         addEmployer: false,
     }
 
-    $: console.log(sentConnectionRequests);
-
     const clientForm = useForm({
         company_id: '',
         user_id: auth.user.id,
-        position: 'hired_freelance'
+        role_id: roles.freelancer,
+        sender_id: auth.user.id,
+        code: ''
     })
 
     const employerForm = useForm({
         company_id: '',
         user_id: auth.user.id,
         sender_id: auth.user.id,
-        position: 'employee',
+        role_id: roles.employee,
         code: ''
     })
 
@@ -71,7 +72,7 @@
         modals.addClient = false;
     }
 
-    console.log(clients);
+    $: console.log(clients,sentConnectionRequests);
 </script>
 
 <AuthenticatedLayout>
@@ -89,11 +90,13 @@
                     No employers registered yet
                 </div>
             {:else}
-                <SimpleTable data={employers} title="Employers"  headers={[
-                    { label: "Company", key: "name", route: "companies.show" },
-                    { label: "Position", key: "position.position" },
-                    { label: "Status", key: "status" },
-                ]} />
+                <SimpleTable data={employers} title="Employers"  
+                    headers={[
+                        { label: "Company", key: "name", route: "companies.show" },
+                        { label: "Position", key: "position.position" },
+                        { label: "Status", key: "status" },
+                    ]} 
+                />
             {/if}
         </TabItem>
         <TabItem title="Clients" >
@@ -107,10 +110,15 @@
                     No clients registered yet
                 </div>
             {:else}
-                <SimpleTable data={clients} title="Clients"  headers={[
-                    { label: "Company", key: "name" },
-                    { label: "Position", key: "position.position" },
-                ]} />
+                <SimpleTable data={clients} title="Clients"  
+                    headers={[
+                        { label: "Company", key: "name"},
+                        { label: "Position", key: "position.role.name" },
+                    ]}
+                    popovers={{
+                        "name": { component: CompanyCard, prop: "self"},
+                    }}
+                />
             {/if}
         </TabItem>
         <TabItem title="Connection Requests">
@@ -119,11 +127,18 @@
                     No projects registered yet
                 </div>
             {:else}
-                <SimpleTable data={sentConnectionRequests} title="Projects"  headers={[
-                    { label: "To: User", key: "receiver.name" },
-                    { label: "To: Company", key: "company.name", popoverComponent: CompanyCard, popoverProp: "company" },
-                    { label: "Status", key: "status", asBadge: true},
-                ]} />
+                <SimpleTable data={sentConnectionRequests} title="Projects"  
+                    popovers={{
+                        "receiver.name": { component: CompanyCard, prop: "receiver" },
+                        "company.name": { component: CompanyCard, prop: "company" },
+                    }}
+                    headers={[
+                        { label: "To: User", key: "receiver.name" },
+                        { label: "To: Company", key: "company.name", },
+                        { label: "Status", key: "status", asBadge: true},
+                        { label: "Position Requested", key: "role.name"}
+                    ]} 
+                />
             {/if}
         </TabItem>
     </TabLayout>
@@ -160,6 +175,7 @@
         </div>
     </Dialog>
     <Dialog title="Add Client" bind:open={modals.addClient} >
+        <input type="hidden" name="role_id" value={roles.freelancer} />
         <div class="h-full flex flex-col">
             <div class="flex flex-col">
                 <label for="name">Search</label>
