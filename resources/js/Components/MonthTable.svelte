@@ -1,13 +1,13 @@
 <script lang="ts">
     import dayjs from "dayjs";
+    import localeData from "dayjs/plugin/localeData";
     import { leftPad } from "$lib/Text";
     import ActivityInlineReport from "$components/ActivityInlineReport.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { _ } from 'lodash';
     import MiniButton from "./MiniButton.svelte";
     import { onMount } from "svelte";
-    import { useForm, page } from "@inertiajs/svelte";
-    import { user } from "$lib/stores";
+    dayjs.extend(localeData);
 
     export let headers: string[] = [];
     export let data: any[] = [];
@@ -93,7 +93,7 @@
             {#each datesArray as [key, logs], index}
                 <tr id="{key}" class="hover">
                     <td>
-                        <div class="text-gray-400">{ dayjs(key).date() }</div>
+                        <div class="text-gray-400">{ dayjs(key).date() } ({dayjs.weekdaysShort()[dayjs(key).day()]})</div>
                     </td>
                     <td>
                         <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full">
