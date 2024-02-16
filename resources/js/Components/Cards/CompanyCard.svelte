@@ -1,7 +1,7 @@
 <script lang="ts">
     import route from "$vendor/tightenco/ziggy";
-    import OutlineButton from "./Buttons/OutlineButton.svelte";
-    import MiniButton from "./MiniButton.svelte";
+    import OutlineButton from "../Buttons/OutlineButton.svelte";
+    import MiniButton from "../MiniButton.svelte";
 
     export let data: any;
 

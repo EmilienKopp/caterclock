@@ -1,12 +1,13 @@
 <script lang="ts">
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-    import Clock from '$components/Clock.svelte';
+    import Clock from '$components/App/TimeLog/Clock.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-    import Select from '$components/Select.svelte';
-    import TimeLogTable from './TimeLogTable.svelte';
+    import Select from '$components/Inputs/Select.svelte';
+    import TimeLogTable from '$components/App/TimeLog/TimeLogTable.svelte';
     import { router, useForm, page } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import { latestClockInTime, elapsedHours, elapsedMinutes, elapsedSeconds } from '$lib/stores';
+    import { Duration } from '$lib/Duration';
 
     export let entries: any[];
     export let projects: any[];
@@ -38,7 +39,7 @@
     }
     $: switchingProjects = (action == "out" && entries[0]?.project_id != $form.project_id)
 
-    $: console.log(projects);
+    $: console.log(projectDurations);
 </script>
 
 <AuthenticatedLayout>
@@ -53,27 +54,18 @@
                     <PrimaryButton disabled={!$form.project_id}  type="submit">Clock {action}</PrimaryButton>
                 {/if}
 
-                <Select name="project_id" placeholder="プロジェクト選択" bind:value={$form.project_id} 
+                <Select size="xs" name="project_id" placeholder="プロジェクト選択" bind:value={$form.project_id} 
                         items={projects} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
 
             </form>
         </div>
 
         <div>
-            {#each projects as project}
-                {#if running && project.id == running?.project_id}
-                    <p>【{project.name}】
-                        {$elapsedHours ? `${$elapsedHours} hours` : ''}
-                        {$elapsedMinutes ? `${$elapsedMinutes} minutes` : ''}
-                    </p>
-                {:else if projectDurations[project.id]}
-                    <p>
-                        【{project.name}】 
-                        {projectDurations[project.id].hours ? `${projectDurations[project.id].hours} hours` : ''}
-                        {projectDurations[project.id].minutes ? `${projectDurations[project.id].minutes} minutes` : ''}
-                    </p>
-                {/if}
-                
+            {#each Object.entries(projectDurations) as [id, data]}
+                <p>
+                    【{projects.find(p => p.id == id)?.name}】 
+                    {Duration.toHrMinString(data.total_seconds)}
+                </p>
             {/each}
         </div>
         

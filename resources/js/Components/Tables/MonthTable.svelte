@@ -2,10 +2,10 @@
     import dayjs from "dayjs";
     import localeData from "dayjs/plugin/localeData";
     import { leftPad } from "$lib/Text";
-    import ActivityInlineReport from "$components/ActivityInlineReport.svelte";
+    import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { _ } from 'lodash';
-    import MiniButton from "./MiniButton.svelte";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { onMount } from "svelte";
     dayjs.extend(localeData);
 
@@ -72,7 +72,7 @@
 </head>
 <div class="w-11/12 pb-10 mx-auto border rounded-md shadow-sm flex gap-2" bind:this={container}>
     <table class="table table-hover w-full table-md table-pin-rows table-pin-cols">
-        <thead>
+        <thead class="z-50">
             <tr>
                 <th>Date</th>
                 <th class="flex items-center justify-between">
@@ -93,7 +93,10 @@
             {#each datesArray as [key, logs], index}
                 <tr id="{key}" class="hover">
                     <td>
-                        <div class="text-gray-400">{ dayjs(key).date() } ({dayjs.weekdaysShort()[dayjs(key).day()]})</div>
+                        <div class="text-gray-400 text-center">
+                            { dayjs(key).date() } <br />
+                            ({dayjs.weekdaysShort()[dayjs(key).day()]})
+                        </div>
                     </td>
                     <td>
                         <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full">

@@ -31,6 +31,14 @@ class StoreProjectRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'company_id.required_without' => 'The company field is required when the user field is empty.',
+            'user_id.required_without' => 'The user field is required when the company field is empty.',
+        ];
+    }
+
     public function prepareForValidation(): void
     {
         if(!$this->has('company_id') && !$this->has('user_id')) {

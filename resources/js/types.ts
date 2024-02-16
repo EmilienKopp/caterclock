@@ -50,8 +50,10 @@ export interface InertiaForm extends Partial<HTMLFormElement> {
 export type RouteItem = {
     label: string,
     route: string,
+    params?: any,
     url?: string,
     icon?: string,
+    children?: RouteItem[],
 }
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "outline" | "link" | "glass"

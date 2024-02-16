@@ -63,7 +63,7 @@ class TimeLogController extends Controller
             }
         }
 
-        return redirect()->back();
+        return to_route('timelog.index');
     }
 
     /**

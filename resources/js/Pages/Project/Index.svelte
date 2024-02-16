@@ -1,12 +1,15 @@
 <script lang="ts">
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-    import PageTitle from '$components/PageTitle.svelte';
+    import PageTitle from '$components/UI/PageTitle.svelte';
     import route from '$vendor/tightenco/ziggy';
+    import { page } from '@inertiajs/svelte';
 
     export let errors: any, auth: any, ziggy: any;
     export let projects: any[];
 
+    console.log($page);
+    console.log("PROJECTS");
 </script>
 
 

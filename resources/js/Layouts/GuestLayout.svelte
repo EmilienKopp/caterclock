@@ -1,5 +1,5 @@
 <script setup>
-import ApplicationLogo from '../Components/ApplicationLogo.svelte';
+import ApplicationLogo from '../Components/UI/ApplicationLogo.svelte';
 import { Link } from '@inertiajs/svelte';
 </script>
     

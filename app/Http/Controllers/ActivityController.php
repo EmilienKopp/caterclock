@@ -58,9 +58,9 @@ class ActivityController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show(Request $request, $date = null)
     {
-        $date = $request->query('date') ?? Carbon::today()->format('Y-m-d');
+        $date ??= $request->query('date') ?? Carbon::today()->format('Y-m-d');
 
         $projects = Project::all();
         $taskCategories = TaskCategory::all()->transform(function ($taskCategory) {

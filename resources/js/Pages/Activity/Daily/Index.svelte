@@ -8,13 +8,15 @@
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import WarningButton from '$components/Buttons/WarningButton.svelte';
     import OutlineButton from '$components/Buttons/OutlineButton.svelte';
+    import dayjs from 'dayjs';
 
 
     export let activities: any[];
     export let dailyLogs: any[];
     export let taskCategories: any[];
-    const urlParams = new URLSearchParams($page.url.split('?')[1]);
-    let selectedDate = urlParams.get('date');
+    export let date: string;
+
+    let selectedDate = dayjs(date).format('YYYY-MM-DD');
 
 
     let form = useForm({

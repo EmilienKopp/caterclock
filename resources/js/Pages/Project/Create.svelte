@@ -2,13 +2,13 @@
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
-    import PageTitle from '$components/PageTitle.svelte';
-    import InputLabel from '$components/InputLabel.svelte';
-    import TextInput from '$components/TextInput.svelte';
+    import PageTitle from '$components/UI/PageTitle.svelte';
+    import InputLabel from '$components/Inputs/InputLabel.svelte';
+    import TextInput from '$components/Inputs/TextInput.svelte';
     import { useForm, page } from '@inertiajs/svelte';
     import { toast } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy';
-    import Fieldset from '$components/Fieldset.svelte';
+    import Fieldset from '$components/Inputs/Fieldset.svelte';
 
     const {user} = $page.props.auth;
 

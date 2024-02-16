@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MiniButton from "$components/MiniButton.svelte";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { Duration } from "$lib/Duration";
     import { elapsedSeconds } from "$lib/stores";
     import route from "$vendor/tightenco/ziggy/src/js";
@@ -11,7 +11,7 @@
     export let entries: any[];
 
 
-    entries = entries.map( (entry: any) => {
+    $: entries = entries.map( (entry: any) => {
         if(entry.out_time && new Date(entry.out_time) < new Date(entry.in_time)) {
             // Display the out time as if on the next day but with hours+24
             entry.out_time = new Date(entry.out_time).setHours(new Date(entry.out_time).getHours() + 24);
@@ -19,6 +19,7 @@
         return entry
     })
 
+    $: console.log(entries);
 </script>
 
 <div class="sm:w-2/3 w-full overflow-x-auto mx-auto">
@@ -43,7 +44,7 @@
                     </a>
                 </td>
                 <td>
-                    {Duration.toHHMM(entry.total_duration ?? $elapsedSeconds)}
+                    {Duration.toHrMinString(entry.total_duration ?? $elapsedSeconds)}
                 </td>
                 <td>
                     <MiniButton href={route("activities.show", {date: dayjs(entry.date).format("YYYY-MM-DD")})} class="bg-blue-500 hover:bg-blue-700">See</MiniButton>

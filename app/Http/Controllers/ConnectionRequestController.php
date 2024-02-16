@@ -31,6 +31,7 @@ class ConnectionRequestController extends Controller
     public function accept(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest){
         $employeeRole = Role::where('name', 'employee')->first();
         $validated = $request->validated();
+        Log::debug($validated);
         $connectionRequest->update($validated);
         $connectionRequest->sender->companies()->attach($connectionRequest->company, ['role_id' => $employeeRole->id]);
         $connectionRequest->company->users()->attach($connectionRequest->sender, ['role_id' => $employeeRole->id]);

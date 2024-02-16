@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MiniButton from "$components/MiniButton.svelte";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { fly } from "svelte/transition";
     

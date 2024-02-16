@@ -11,6 +11,8 @@ dayjs().localeData();
 
 export const toast: Toastable<Toast> = toastable();
 
+export const today = readable(dayjs().format("YYYY-MM-DD"));
+
 export const thisMonth = readable( dayjs.months()[dayjs().month()]);
 
 export const thisYear = readable(dayjs().year());

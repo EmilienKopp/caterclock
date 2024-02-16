@@ -1,10 +1,8 @@
 <script lang="ts">
-    import { Chart  } from 'chart.js/auto';
+    import { Chart } from 'chart.js/auto';
     import { Duration } from "$lib/Duration";
     import type { Activity } from "$types";
     import { categoryColors } from '$lib/config';
-
-
 
     export let activities: Activity[] = [];
     export let title: string;
@@ -12,6 +10,8 @@
     export let height: number | string = 400;
 
     let canvas: HTMLCanvasElement;
+
+    $: console.log(activities)
 
     const data = {
         labels: activities.map(activity => activity.task_category.name),

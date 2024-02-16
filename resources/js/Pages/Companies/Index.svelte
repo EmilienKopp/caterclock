@@ -1,19 +1,17 @@
 <script lang="ts">
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
-    import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { useForm } from "@inertiajs/svelte";
-    import Dialog from "$components/Dialog.svelte";
+    import Dialog from "$components/Modals/Dialog.svelte";
     import { FilterService } from "$lib/Filter";
-    import MiniButton from "$components/MiniButton.svelte";
-    import InputLabel from "$components/InputLabel.svelte";
-    import TextInput from "$components/TextInput.svelte";
-    import TabLayout from "$components/TabLayout.svelte";
-    import TabItem from "$components/TabItem.svelte";
-    import SimpleTable from "$components/SimpleTable.svelte";
-    import CompanyCard from "$components/CompanyCard.svelte";
-    import { swapObjectKeyValues } from "$lib/Objects";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import InputLabel from "$components/Inputs/InputLabel.svelte";
+    import TextInput from "$components/Inputs/TextInput.svelte";
+    import TabLayout from "$components/UI/TabLayout.svelte";
+    import TabItem from "$components/UI/TabItem.svelte";
+    import SimpleTable from "$components/Tables/SimpleTable.svelte";
+    import CompanyCard from "$components/Cards/CompanyCard.svelte";
 
     export let auth: any, roles: any, companies: any[], ownedCompanies: any[], managedCompanies: any[], 
     employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;

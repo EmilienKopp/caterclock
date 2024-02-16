@@ -1,10 +1,10 @@
 <script lang="ts">
     import { writable } from "svelte/store";
     import { router, Link } from '@inertiajs/svelte';
-    import GuestLayout from "../../Layouts/GuestLayout.svelte";
+    import GuestLayout from "$layouts/GuestLayout.svelte";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
-    import InputLabel from "$components/InputLabel.svelte";
-    import TextInput from "$components/TextInput.svelte";
+    import InputLabel from "$components/Inputs/InputLabel.svelte";
+    import TextInput from "$components/Inputs/TextInput.svelte";
     import { useForm } from "@inertiajs/svelte";
 
     let loading = false;

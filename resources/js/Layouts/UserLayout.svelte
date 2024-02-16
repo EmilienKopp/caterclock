@@ -5,7 +5,6 @@
     import type { RouteItem } from "$types";
     import Navbar from "$components/Navigation/Navbar.svelte";
     import dayjs from "dayjs";
-    import route from "$vendor/tightenco/ziggy";
 
     const { auth } = $page.props;
 
@@ -16,11 +15,12 @@
         { label: "Dashboard", route: "dashboard" },
         { label: "Employees", route: "employees.index" },
         { label: "Activity", route: "activities.index", children: [
-            { label: "Monthly", route: "activities.index" },
-            { label: "Today", route: "activities.show", params: {date: dayjs().format("YYYY-MM-DD")} },
+            { label: "Montlhy", route: "activities.index" },
+            // { label: "Today", route: route("activities.show",{date: dayjs().format("YYYY-MM-DD")}) },
         ] },
         { label: "Projects", route: "projects.index" },
         { label: "Companies", route: "companies.index" },
+        { label: "Profile", route: "profile.edit" },
     ];
 </script>
 
@@ -44,7 +44,4 @@
             <slot />
         </main>
     </div>
-    <footer class="fixed bottom-1 w-screen flex items-center justify-center">
-        Contact - <a href="/privacy">Privacy</a> - Terms
-    </footer>
 </div>

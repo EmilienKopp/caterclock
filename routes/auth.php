@@ -10,8 +10,63 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use App\Services\LineAuthService;
 
 Route::middleware('guest')->group(function () {
+
+    Route::get('/auth/redirect', function() {
+        return Socialite::driver('google')->redirect();
+    })->name('google.redirect');
+
+    Route::get('/auth/line', function() {
+        return LineAuthService::initiate()->redirect();
+    })->name('line.redirect');
+
+    Route::get('/auth/google/callback', function() {
+        $googleUser = Socialite::driver('google')->user();
+        $user = User::where('email', $googleUser->getEmail())->first();
+        if (!$user) {
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'email_verified_at' => now(),
+                'avatar' => $googleUser->getAvatar(),
+            ]);
+        }
+
+        Auth::login($user);
+        if(!$user->avatar) {
+            $user->update(['avatar' => $googleUser->getAvatar()]);
+        }
+
+        return redirect()->to('/dashboard');
+    })->name('google.callback');
+
+    Route::get('/auth/line/callback', function() {
+        $lineUser = LineAuthService::initiate()->user();
+
+        $user = User::where('email', $lineUser["email"])->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => $lineUser["name"],
+                'email' => $lineUser["email"],
+                'email_verified_at' => now(),
+                'avatar' => $lineUser["picture"],
+            ]);
+        }
+        Auth::login($user);
+        if(!$user->avatar) {
+            $user->update(['avatar' => $lineUser->picture]);
+        }
+
+        return redirect()->to('/dashboard');
+        
+    })->name('line.callback');
+
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
 
@@ -36,6 +91,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    
+
     Route::get('verify-email', EmailVerificationPromptController::class)
                 ->name('verification.notice');
 

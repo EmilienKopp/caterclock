@@ -1,14 +1,10 @@
 <script lang="ts">
-    import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { useForm, router } from "@inertiajs/svelte";
-    import Dialog from "$components/Dialog.svelte";
-    import { FilterService } from "$lib/Filter";
-    import MiniButton from "$components/MiniButton.svelte";
-    import InputLabel from "$components/InputLabel.svelte";
-    import TextInput from "$components/TextInput.svelte";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import TextInput from "$components/Inputs/TextInput.svelte";
     import dayjs from "dayjs";
     import { Label, P } from "flowbite-svelte";
 
@@ -31,15 +27,16 @@
     }
 
     async function acceptRequest(request: any) {
-        request.status = "accepted"; 
-        await router.put(route("connection-requests.update", request), {
-            preserveScroll: true,
-            preserveState: true,
-            onError: (errors: any) => {
-                request.status = "pending";
-                console.log(errors);
+        const destination = route("connection-requests.update", {connectionRequest: request.id})
+        await router.put(destination, {status: "accepted"},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onError: (errors: any) => {
+                    console.log(errors);
+                }
             }
-        });
+        );
     }
 </script>
 

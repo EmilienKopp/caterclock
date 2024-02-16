@@ -26,7 +26,6 @@ use App\Http\Controllers\ConnectionRequestController;
 */
 
 Route::get('/', function () {
-
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -34,6 +33,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/privacy', function () {
+    return Inertia::render('Privacy');
+})->name('privacy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

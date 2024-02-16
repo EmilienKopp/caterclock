@@ -1,10 +1,10 @@
 <script lang="ts">
 import DangerButton from '$components/Buttons/DangerButton.svelte';
-import InputError from '$components/InputError.svelte';
-import InputLabel from '$components/InputLabel.svelte';
-import Modal from '$components/Modal.svelte';
+import InputError from '$components/Inputs/InputError.svelte';
+import InputLabel from '$components/Inputs/InputLabel.svelte';
+import Modal from '$components/Modals/Modal.svelte';
 import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
-import TextInput from '$components/TextInput.svelte';
+import TextInput from '$components/Inputs/TextInput.svelte';
 import { router, useForm } from '@inertiajs/svelte';
 import { tick } from 'svelte';
 import route from '$vendor/tightenco/ziggy';

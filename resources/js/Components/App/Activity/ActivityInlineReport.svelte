@@ -2,14 +2,15 @@
     export let openPopoverId: string;
 </script>
 <script lang="ts">
-    import ActivityPieChart from './ActivityPieChart.svelte';
-    import ActivityLogItem from './ActivityLogItem.svelte';
+    import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
+    import ActivityLogItem from '$components/App/Activity/ActivityLogItem.svelte';
+    import Select from '$components/Inputs/Select.svelte';
     import { Duration } from "$lib/Duration";
-    import Dialog from './Dialog.svelte';
-    import MiniPie from './MiniPie.svelte';
+    import Dialog from '$components/Modals/Dialog.svelte';
+    import MiniPie from '$components/Buttons/MiniPie.svelte';
     import { slide } from 'svelte/transition';
     import { InfoCircleFill, PencilSquare } from 'svelte-bootstrap-icons';
-    import { useForm } from '@inertiajs/svelte';
+    import { useForm, page } from '@inertiajs/svelte';
     import { toast, user } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy/src/js';
     import { onDestroy } from 'svelte';
@@ -49,6 +50,18 @@
         openPopoverId = open ? id : '';
     }
 
+    let selectedLog: any = null;
+    let fillModalOpen: boolean = false;
+    let fillSteps = {
+
+    }
+    let selectedCategoryId: number = 0;
+
+    function handleFill(log: any) {
+        selectedLog = log;
+
+    }
+
     onDestroy(() => {
         clearInterval(interval);
     });
@@ -72,6 +85,16 @@
                 {#if log.is_running}
                     <li><button on:click={clock}>Clock Out</button></li>
                 {/if}
+                <li>
+
+                    <button type="button" on:click={() => handleFill(log)}>Fill</button>
+                    {#if fillModalOpen}
+                        <Select name="activity" 
+                            label="Task Category"
+                            bind:value={selectedCategoryId}
+                            items={$page.props.taskCategories} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
+                    {/if}
+                </li>
                 <li><a href={route('activities.show',{date: log.date})}>Edit</a></li>
             </ul>
         </form>
@@ -97,6 +120,7 @@
         </div>
     {/if}
 </div>
+
 
 <Dialog bind:open title={projectName}>
     <ActivityPieChart title={log.project_name} activities={log.activities} />

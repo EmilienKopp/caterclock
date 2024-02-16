@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -44,7 +45,7 @@ class User extends Authenticatable
     ];
 
 
-    public function can($abilities, $arguments = []) {
+    public function ableTo($abilities, $arguments = []) {
         if(!is_array($abilities)) {
             $abilities = [$abilities];
         }

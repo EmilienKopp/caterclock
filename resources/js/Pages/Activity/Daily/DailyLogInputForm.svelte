@@ -1,17 +1,14 @@
 <script lang="ts">
-    import Select from "$components/Select.svelte";
+    import Select from "$components/Inputs/Select.svelte";
     import { Duration } from "$lib/Duration";
-    import DurationInput from "$components/DurationInput.svelte";
+    import DurationInput from "$components/Inputs/DurationInput.svelte";
     import { toast, user } from "$lib/stores";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
-    import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import { router, useForm } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
-    import MiniButton from "$components/MiniButton.svelte";
-    import { Lock, LockFill, PenFill, UnlockFill } from "svelte-bootstrap-icons";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
     import OutlineButton from "$components/Buttons/OutlineButton.svelte";
-    import WarningButton from "$components/Buttons/WarningButton.svelte";
-    import Dialog from "$components/Dialog.svelte";
+    import Dialog from "$components/Modals/Dialog.svelte";
     import dayjs from "dayjs";
 
 

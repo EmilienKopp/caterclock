@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import MiniButton from './MiniButton.svelte';
+    import MiniButton from '$components/Buttons/MiniButton.svelte';
     import { twMerge } from 'tailwind-merge';
 
     export let title: string = '';

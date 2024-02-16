@@ -13,7 +13,7 @@ class ProjectPolicy
      */
     public function viewAny(User $user): Response
     {
-        return $user->can('index', Project::class)
+        return $user->ableTo('index', Project::class)
             ? Response::allow()
             : Response::deny('You are not authorized to browse projects.');
     }
@@ -23,7 +23,7 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): Response
     {
-        return $user->can('show', Project::class) && $user->can('show', $project->company)
+        return $user->ableTo('show', Project::class) && $user->ableTo('show', $project->company)
             ? Response::allow()
             : Response::deny('You are not authorized to view this project.');
     }
@@ -33,7 +33,7 @@ class ProjectPolicy
      */
     public function create(User $user): Response
     {
-        return $user->can('create', Project::class) 
+        return $user->ableTo('create', Project::class) 
             ? Response::allow()
             : Response::deny('You are not authorized to create projects.');
     }
@@ -43,7 +43,7 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): Response
     {
-        return $user->can('update', Project::class) && $user->isRelatedTo($project) 
+        return $user->ableTo('update', Project::class) && $user->isRelatedTo($project) 
             ? Response::allow()
             : Response::deny('You are not authorized to update this project.');
     }
@@ -53,7 +53,7 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): Response
     {
-        return $user->can('delete', Project::class) && $user->owns($project)
+        return $user->ableTo('delete', Project::class) && $user->owns($project)
             ? Response::allow()
             : Response::deny('You are not authorized to delete this project.');
     }
@@ -63,7 +63,7 @@ class ProjectPolicy
      */
     public function restore(User $user, Project $project): Response
     {
-        return $user->can('create', Project::class) && $user->owns($project)
+        return $user->ableTo('create', Project::class) && $user->owns($project)
             ? Response::allow()
             : Response::deny('You are not authorized to restore this project.');
     }
@@ -73,7 +73,7 @@ class ProjectPolicy
      */
     public function forceDelete(User $user, Project $project): Response
     {
-        return $user->can('delete', Project::class) && $user->owns($project)
+        return $user->ableTo('delete', Project::class) && $user->owns($project)
             ? Response::allow()
             : Response::deny('You are not authorized to permanently delete this project.');
     }

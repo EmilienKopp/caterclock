@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MonthTable from "$components/MonthTable.svelte";
+    import MonthTable from "$components/Tables/MonthTable.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { groupBy } from "$lib/Array";
 
@@ -9,7 +9,7 @@
 </script>
 
 <AuthenticatedLayout>
-    <div class="w3/4 mx-auto">
+    <div class="w3/4 mx-auto pt-16">
         <MonthTable headers={["Date", "Project", "Activity", "Duration"]} data={dailyLogs} {date} />
     </div>
 </AuthenticatedLayout>

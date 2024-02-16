@@ -23,9 +23,8 @@ class UpdateConnectionRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sender_id' => 'required|exists:users,id',
-            'receiver_id' => 'required_without:company_id',
-            'company_id' => 'required_without:receiver_id|exists:companies,id',
+            'sender_id' => 'exists:users,id',
+            'company_id' => 'exists:companies,id',
             'status' => 'required|in:pending,accepted,declined',
         ];
     }
