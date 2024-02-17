@@ -9,63 +9,30 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Services\LineAuthService;
+use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
 
-    Route::get('/auth/redirect', function() {
-        return Socialite::driver('google')->redirect();
-    })->name('google.redirect');
+    Route::get('/auth/redirect', [OAuthController::class, 'redirectToGoogle'])
+        ->name('google.redirect');
 
-    Route::get('/auth/line', function() {
-        return LineAuthService::initiate()->redirect();
-    })->name('line.redirect');
+    Route::get('/auth/line', [OAuthController::class, 'redirectToLine'])
+        ->name('line.redirect');
 
-    Route::get('/auth/google/callback', function() {
-        $googleUser = Socialite::driver('google')->user();
-        $user = User::where('email', $googleUser->getEmail())->first();
-        if (!$user) {
-            $user = User::create([
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'email_verified_at' => now(),
-                'avatar' => $googleUser->getAvatar(),
-            ]);
-        }
+    Route::get('/auth/google/callback', [OAuthController::class, 'loginThroughGoogle'])
+        ->name('google.callback');
 
-        Auth::login($user);
-        if(!$user->avatar) {
-            $user->update(['avatar' => $googleUser->getAvatar()]);
-        }
+    Route::get('/auth/line/callback',[OAuthController::class, 'loginThroughLine'])
+        ->name('line.callback');
 
-        return redirect()->to('/dashboard');
-    })->name('google.callback');
+    Route::get('/oauth/register', function () {
+        return Inertia::render('Auth/Register',['oauth'=> true]);
+    })->name('oauth.register');
 
-    Route::get('/auth/line/callback', function() {
-        $lineUser = LineAuthService::initiate()->user();
-
-        $user = User::where('email', $lineUser["email"])->first();
-
-        if (!$user) {
-            $user = User::create([
-                'name' => $lineUser["name"],
-                'email' => $lineUser["email"],
-                'email_verified_at' => now(),
-                'avatar' => $lineUser["picture"],
-            ]);
-        }
-        Auth::login($user);
-        if(!$user->avatar) {
-            $user->update(['avatar' => $lineUser->picture]);
-        }
-
-        return redirect()->to('/dashboard');
-        
-    })->name('line.callback');
+    Route::post('/oauth/register', [OAuthController::class, 'register'])
+        ->name('oauth.register.post');
 
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');

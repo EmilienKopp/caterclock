@@ -6,7 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Contracts\OAuthUserInterface;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Identity;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
@@ -22,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'last_login'
     ];
 
     /**
@@ -44,6 +49,28 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public static function fromOAuthUser(OAuthUserInterface $oauthUser) {
+        $user = User::where('email', $oauthUser->getEmail())->first();
+
+        if(!$user) return null;
+
+        if(!$user->avatar) {
+            $user->update(['avatar' => $oauthUser->getAvatar()]);
+        }
+
+        // Check and update identities
+
+        $identity = Identity::findOrCreate($oauthUser, $user->id);
+        if($identity) {
+            $identity->update([
+                'access_token' => $oauthUser->getAccessToken(),
+                'refresh_token' => $oauthUser->getRefreshToken(),
+                'expires_in' => $oauthUser->getExpiresIn(),
+            ]);
+        }
+
+        return $user;
+    }
 
     public function ableTo($abilities, $arguments = []) {
         if(!is_array($abilities)) {
@@ -94,6 +121,12 @@ class User extends Authenticatable
         return false;
     }
 
+    public function identities() {
+        Cache::remember('user-identities-'.$this->id, now()->addMinutes(5), function() {
+            return $this->hasMany(Identity::class);
+        });
+    }
+
     public function roles() {
         return $this->belongsToMany(Role::class);
     }
@@ -117,7 +150,7 @@ class User extends Authenticatable
 
     public function employingCompanies() {
         return $this->companies()
-            ->wherePivot('role_id', Role::where('name', 'owner')->first()->id)
+            ->wherePivot('role_id', Role::where('name', 'employee')->first()->id)
             ->orderByPivot('created_at', 'desc');
     }
 

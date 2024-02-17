@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class LineAuthService
 {
@@ -47,7 +48,7 @@ class LineAuthService
     {
         $state = session('line_oauth_state') ?? bin2hex(random_bytes(12));
         $config = self::getConfig();
-        
+        Log::debug("initiating line auth with state: $state");
         // Store state in session or cookie for later CSRF verification
         session(['line_oauth_state' => $state]);
 
@@ -63,6 +64,7 @@ class LineAuthService
 
         $authUrl = $config['auth_url'] . "?" . $params;
         
+        Log::debug("auth url: $authUrl");
         return new LineAuthService($authUrl,$state);
     }
 
@@ -93,8 +95,6 @@ class LineAuthService
         }
 
         $line_user = $response->json();
-        // Store user in session or cookie
-        session(['line_user' => $line_user]);
 
         // Fetch user profile
         $profile = Http::withHeaders(['Content-Type' => 'x-www-form-urlencoded'])
@@ -109,9 +109,6 @@ class LineAuthService
         }
 
         $user = $profile->json();
-
-        // Store user in session or cookie
-        session(['line_profile' => $user]);
 
         return $user;
     }

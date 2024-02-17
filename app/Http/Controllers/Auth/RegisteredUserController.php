@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
 use App\Providers\RouteServiceProvider;
+use App\Services\RoleAssignmentService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,23 +47,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        if($request->register_type === 'hire') {
-            $request->validate([
-                'company_name' => 'required|string|max:255',
-            ]);
-
-            $company = Company::create([
-                'name' => $request->company_name,
-                'contact_email' => $request->email,
-                'representative_id' => $user->id,
-            ]);
-
-            $ownerRole = \App\Models\Role::where('name', 'owner')->first();
-
-            $company->users()->attach($user->id, ['role_id' => $ownerRole->id]);
-        }
-
-        
+        RoleAssignmentService::assignRole($user, $request);
 
         event(new Registered($user));
 

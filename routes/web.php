@@ -84,8 +84,8 @@ Route::prefix('connection-requests')->middleware('auth')->group(function () {
     Route::post('/', [ConnectionRequestController::class, 'store'])->name('connection-requests.store');
     Route::delete('/{connectionRequest}', [ConnectionRequestController::class, 'destroy'])->name('connection-requests.destroy');
     Route::put('/{connectionRequest}', [ConnectionRequestController::class, 'update'])->name('connection-requests.update');
-    Route::post('/{connectionRequest}/accept', [ConnectionRequestController::class, 'accept'])->name('connection-requests.accept');
-    Route::post('/{connectionRequest}/decline', [ConnectionRequestController::class, 'decline'])->name('connection-requests.decline');
+    Route::put('/{connectionRequest}/accept', [ConnectionRequestController::class, 'accept'])->name('connection-requests.accept');
+    Route::put('/{connectionRequest}/decline', [ConnectionRequestController::class, 'decline'])->name('connection-requests.decline');
 });
 
 Route::prefix('employees')->middleware('auth')->group(function () {
