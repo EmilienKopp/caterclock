@@ -43,7 +43,7 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): Response
     {
-        return $user->ableTo('update', Project::class) && $user->isRelatedTo($project) 
+        return $user->ableTo('update', Project::class) && $user->owns($project)
             ? Response::allow()
             : Response::deny('You are not authorized to update this project.');
     }

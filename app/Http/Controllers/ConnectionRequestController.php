@@ -29,13 +29,18 @@ class ConnectionRequestController extends Controller
     }
 
     public function accept(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest){
+
         $employeeRole = Role::where('name', 'employee')->first();
         $validated = $request->validated();
-        Log::debug($validated);
+        $validated['status'] = 'accepted';
         $connectionRequest->update($validated);
         $connectionRequest->sender->companies()->attach($connectionRequest->company, ['role_id' => $employeeRole->id]);
-        $connectionRequest->company->users()->attach($connectionRequest->sender, ['role_id' => $employeeRole->id]);
-        $connectionRequest->delete();
+    }
+
+    public function decline(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest){
+        $validated = $request->validated();
+        $validated['status'] = 'declined';
+        $connectionRequest->update($validated);
     }
 
     /**
@@ -67,22 +72,7 @@ class ConnectionRequestController extends Controller
      */
     public function update(UpdateConnectionRequestRequest $request, ConnectionRequest $connectionRequest)
     {
-        $validated = $request->validated();
-        $user = User::find(Auth::id());
-        $employeeRole = Role::where('name', 'employee')->first();
-        if($validated['status'] === 'accepted'){
-            $company = $user->companies()->where('id', $validated['company_id'])->first();
-            $connectionRequest->sender->companies()->attach($company, ['role_id' => $employeeRole->id]);
-            $connectionRequest->delete();
-        }
-        else {
-            $connectionRequest->update($validated);
-        }
-
-        $companies = $user->ownedCompanies()
-            ->withPivot('role_id')
-            ->with(['connectionRequests','users.role'])
-            ->get();
+        // ...
 
         return redirect()->route('employees.index', compact('companies'));
     }

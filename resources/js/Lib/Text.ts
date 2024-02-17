@@ -8,3 +8,8 @@ export function leftPad(str: string | number, char: string | Number, length: num
     }
     return str;
 }
+
+export function aAn(str: string): string {
+    const article = (['a', 'e', 'i', 'o', 'u'].includes(str[0].toLowerCase())) ? 'an' : 'a';
+    return `${article} ${str}`;
+}

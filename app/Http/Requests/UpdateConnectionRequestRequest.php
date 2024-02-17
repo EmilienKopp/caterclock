@@ -25,16 +25,7 @@ class UpdateConnectionRequestRequest extends FormRequest
         return [
             'sender_id' => 'exists:users,id',
             'company_id' => 'exists:companies,id',
-            'status' => 'required|in:pending,accepted,declined',
+            'status' => 'in:pending,accepted,declined',
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        Log::debug("PREPARE FOR VALIDATION");
-        Log::debug($this->all());
-        $this->merge([
-            'sender_id' => $this->user()->id,
-        ]);
     }
 }

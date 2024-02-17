@@ -27,8 +27,9 @@
     }
 
     async function acceptRequest(request: any) {
-        const destination = route("connection-requests.update", {connectionRequest: request.id})
-        await router.put(destination, {status: "accepted"},
+        const destination = route("connection-requests.accept", {connectionRequest: request.id})
+        console.log(request);
+        await router.put(destination,
             {
                 preserveScroll: true,
                 preserveState: true,

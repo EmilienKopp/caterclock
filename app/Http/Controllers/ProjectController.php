@@ -41,11 +41,13 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        $this->authorize('update', $project);
         return inertia('Project/Edit', compact('project'));
     }
 
     public function update(StoreProjectRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
         $project->update($request->validated());
         return to_route('projects.index');
     }

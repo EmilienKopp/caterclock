@@ -7,7 +7,8 @@
 
     export let menu: RouteItem[] = [];
     const { auth } = $page.props;
-    
+    const roles: number[] | string[] = auth.user.roles;
+    console.log(roles, menu);
 </script>
 <nav
     class="navbar bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700"
@@ -34,6 +35,8 @@
                 class="menu menu-sm dropdown-content mt-3 z-[9999] p-2 shadow bg-base-100 rounded-box w-52"
             >
                 {#each menu as item}
+
+                        
                     <li>
                         
                         {#if item.children?.length}
@@ -49,6 +52,7 @@
                             <Link href={route(item.route, item.params)}>{item.label}</Link>
                         {/if}
                     </li>
+
                 {/each}
             </ul>
         </div>

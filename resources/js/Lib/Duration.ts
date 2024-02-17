@@ -79,4 +79,15 @@ export class Duration {
 
         return `${leftPad(hours,0,2)}:${leftPad(minutes,0,2)}:${leftPad(seconds,0,2)}`;
     }
+
+    public fromNow(): string {
+        const now = new Date();
+        const then = new Date(now.getTime() + this.totalSeconds * 1000);
+        return then.toLocaleTimeString();
+    }
+
+    public static fromNow(seconds: number): string {
+        const duration = new Duration(seconds);
+        return duration.fromNow();
+    }
 }

@@ -125,7 +125,7 @@
                     No projects registered yet
                 </div>
             {:else}
-                <SimpleTable data={sentConnectionRequests} title="Projects"  
+                <SimpleTable data={sentConnectionRequests} title="Connection Requests"  
                     popovers={{
                         "receiver.name": { component: CompanyCard, prop: "receiver" },
                         "company.name": { component: CompanyCard, prop: "company" },

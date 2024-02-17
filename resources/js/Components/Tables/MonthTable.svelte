@@ -71,7 +71,7 @@
     </MiniButton>
 </head>
 <div class="w-11/12 pb-10 mx-auto border rounded-md shadow-sm flex gap-2" bind:this={container}>
-    <table class="table table-hover w-full table-md table-pin-rows table-pin-cols">
+    <table class="table table-hover w-full table-xs table-pin-rows table-pin-cols">
         <thead class="z-50">
             <tr>
                 <th>Date</th>

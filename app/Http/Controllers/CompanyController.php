@@ -35,7 +35,6 @@ class CompanyController extends Controller
         });
         $sentConnectionRequests = Auth::user()->sentConnectionRequests;
 
-        Log::debug($sentConnectionRequests);
         
 
         return Inertia::render('Companies/Index', [

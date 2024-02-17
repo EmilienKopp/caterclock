@@ -59,15 +59,6 @@
 
             </form>
         </div>
-
-        <div>
-            {#each Object.entries(projectDurations) as [id, data]}
-                <p>
-                    【{projects.find(p => p.id == id)?.name}】 
-                    {Duration.toHrMinString(data.total_seconds)}
-                </p>
-            {/each}
-        </div>
         
         <TimeLogTable {entries} />
 

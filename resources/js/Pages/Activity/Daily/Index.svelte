@@ -80,5 +80,11 @@
     </div>
     <PrimaryButton on:click={saveAll} loading={$form.processing}>Save All</PrimaryButton>
     <OutlineButton on:click={saveAllAndReturn} loading={$form.processing}>Save All and Go Back</OutlineButton>
-    <WarningButton href={route("activities.index")} class="mx-12">Cancel</WarningButton>
+    <WarningButton href={route("activities.index")} class="mx-12">
+        {#if $form.isDirty}
+            Discard Changes
+        {:else}
+            Go Back
+        {/if}
+    </WarningButton>
 </AuthenticatedLayout>

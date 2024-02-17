@@ -72,12 +72,17 @@
 
     async function save() {
         loading = true;
+        console.log($form);
         $form.post(route('activities.store'),{
             onSuccess: () => {
                 toast.success('Activities saved successfully');
                 $form.isDirty = false;
                 loading = false;
             },
+            onError: (error: any) => {
+                toast.error('Error saving activities');
+                console.log(error);
+            }
         });
     }
 
@@ -87,9 +92,7 @@
 
     function fill(index: any) {
         const remaining = log.total_seconds - activitiesTotal;
-        console.log(remaining, log.total_seconds, activitiesTotal);
-        $form.activities[index].duration = $form.activities[index].duration + remaining;
-        console.log($form.activities[index].duration);
+        $form.activities[index].duration = Math.round($form.activities[index].duration + remaining);
     }
 
     function clear(index: any) {

@@ -54,7 +54,16 @@ export type RouteItem = {
     url?: string,
     icon?: string,
     children?: RouteItem[],
+    availableTo?: string[] | number[],
 }
+
+export type DataListDefinition = {
+    [key:string]: {
+        label: string;
+        formatter?: (value: any) => string;
+    }
+}
+
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "outline" | "link" | "glass"
 | "success" | "warning" | "info" | "accent" | "warning" | "error";
