@@ -16,12 +16,23 @@
             component: any;
             prop: string;
         };
-    }
+    };
+
+    export type DropdownAction = {
+		label: string;
+		action?: (item: any) => void;
+		href?: string;
+		disabled?: boolean;
+		classes?: string;
+	};
 </script>
 <script lang="ts">
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
+
     import { resolveNestedValue } from "$lib/Objects";
 
     import route from "$vendor/tightenco/ziggy";
+    import { each } from "chart.js/dist/helpers/helpers.core";
     import { Popover } from "flowbite-svelte";
     import { twMerge } from "tailwind-merge";
 
@@ -32,6 +43,7 @@
     ];
     export let popovers: PopoverList = {};
     export let classes: { [key: string]: string } = {};
+    export let actions: DropdownAction[] = [];
 </script>
 
 <table class="table table-hover w-full table-md">
@@ -69,6 +81,13 @@
                     {/if}
                 </td>
             {/each}
+            {#if actions.length}
+                <td>
+                    {#each actions as action}
+                        <MiniButton href={action.href} on:click={() => action.action?.(item)}>{action.label}</MiniButton>
+                    {/each}
+                </td>
+            {/if}
         </tr>
         {/each}
     </tbody>
