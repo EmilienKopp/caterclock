@@ -17,6 +17,7 @@
         "$components/*": ["./resources/js/Components/*"],
         "$vendor/*": ["./vendor/*"],
         "$types": ["./resources/js/types.ts"],
+        "$models": ["./resources/js/models.d.ts"],
         "$layouts": ["./resources/js/Layouts/*"],
         "$pages": ["./resources/js/Pages/*"]
       }

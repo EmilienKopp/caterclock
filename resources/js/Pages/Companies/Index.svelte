@@ -12,9 +12,10 @@
     import TabItem from "$components/UI/TabItem.svelte";
     import SimpleTable from "$components/Tables/SimpleTable.svelte";
     import CompanyCard from "$components/Cards/CompanyCard.svelte";
+    import type { Company, ConnectionRequest, Project } from "$models";
 
-    export let auth: any, roles: any, companies: any[], ownedCompanies: any[], managedCompanies: any[], 
-    employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;
+    export let auth: any, roles: any, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], 
+    employers: Company[], clients: Company[], projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;
 
     let activeTab: string = "Employers";
     let searchString = '';

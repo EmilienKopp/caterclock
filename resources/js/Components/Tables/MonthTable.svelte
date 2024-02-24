@@ -41,6 +41,13 @@
         detailsOpen = Array.from({ length: 31 }, () => !allOpen);
     }
 
+    function handleContextMenu(event: MouseEvent) {
+        console.log(event);
+        const X = event.clientX;
+        const Y = event.clientY;
+        console.log(X, Y);
+    }
+
 
 
     $: year = dayjs(date).format('YYYY');
@@ -71,7 +78,7 @@
     </MiniButton>
 </head>
 <div class="w-11/12 pb-10 mx-auto border rounded-md shadow-sm flex gap-2" bind:this={container}>
-    <table class="table table-hover w-full table-xs table-pin-rows table-pin-cols">
+    <table class="table table-hover w-full table-xs table-pin-rows table-pin-cols" >
         <thead class="z-50">
             <tr>
                 <th>Date</th>
@@ -91,7 +98,7 @@
         <tbody>
         {#if datesArray.some(([key, logs]) => logs?.length)}
             {#each datesArray as [key, logs], index}
-                <tr id="{key}" class="hover">
+                <tr id="{key}" class="hover" on:contextmenu|preventDefault={handleContextMenu} >
                     <td>
                         <div class="text-gray-400 text-center">
                             { dayjs(key).date() } <br />

@@ -7,8 +7,10 @@
     import TextInput from "$components/Inputs/TextInput.svelte";
     import dayjs from "dayjs";
     import { Label, P } from "flowbite-svelte";
+    import { Company, ConnectionRequest, Project } from "$models";
 
-    export let auth, companies: any[], ownedCompanies: any[], managedCompanies: any[], employers: any[], clients: any[], projects: any[], sentConnectionRequests: any[], ziggy, errors;
+    export let auth, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], employers: Company[], clients: Company[], 
+    projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;
 
     const form = useForm({
         code: ""

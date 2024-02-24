@@ -2,8 +2,9 @@
     import MonthTable from "$components/Tables/MonthTable.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { groupBy } from "$lib/Array";
+    import type { DailyLog } from "$models";
 
-    export let dailyLogs: any[] = [];
+    export let dailyLogs: DailyLog[] = [];
     export let date: Date = new Date();
 
 </script>

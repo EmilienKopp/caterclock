@@ -9,11 +9,12 @@
     import WarningButton from '$components/Buttons/WarningButton.svelte';
     import OutlineButton from '$components/Buttons/OutlineButton.svelte';
     import dayjs from 'dayjs';
+    import type { Activity, DailyLog, TaskCategory } from '$models';
 
 
-    export let activities: any[];
-    export let dailyLogs: any[];
-    export let taskCategories: any[];
+    export let activities: Activity[];
+    export let dailyLogs: DailyLog[];
+    export let taskCategories: TaskCategory[];
     export let date: string;
 
     let selectedDate = dayjs(date).format('YYYY-MM-DD');

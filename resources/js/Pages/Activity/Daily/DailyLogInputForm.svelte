@@ -10,9 +10,10 @@
     import OutlineButton from "$components/Buttons/OutlineButton.svelte";
     import Dialog from "$components/Modals/Dialog.svelte";
     import dayjs from "dayjs";
+    import type { TaskCategory } from "$models";
 
 
-    export let taskCategories: any[];
+    export let taskCategories: TaskCategory[];
     export let log: any;
 
     let aboveMax: boolean = true;
