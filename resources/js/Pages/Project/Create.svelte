@@ -48,7 +48,7 @@
                     <span>Project Name</span>
                     <TextInput type="text" name="name" id="name" bind:value={$form.name} class="w-1/2" required />
                 </InputLabel>
-                <InputLabel for="description">
+                <InputLabel for="description" class="flex flex-col">
                     <span>Project Description</span>
                     <TextInput type="textarea" name="description" id="description" bind:value={$form.description} class="w-1/2"/>
                 </InputLabel>

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { twMerge } from 'tailwind-merge';
-    export let value: string;
+    export let value: string = "";
 </script>
 
 
