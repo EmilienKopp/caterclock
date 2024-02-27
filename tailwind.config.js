@@ -1,3 +1,4 @@
+import daisyui from 'daisyui';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
@@ -11,7 +12,7 @@ export default {
     ],
 
     daisyui: {
-        themes: ["forest","light", "dark"],
+        themes: ["lofi","businees","light", "dark", "dim"],
     },
 
     theme: {
@@ -22,7 +23,7 @@ export default {
         },
     },
     
-    plugins: [forms,require("daisyui")],
+    plugins: [forms,daisyui],
 
     safelist: [
         "bg-blue-200",

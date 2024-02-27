@@ -12,5 +12,7 @@
 <BaseButton {size} {shape} {variant} {loading} {href}
     on:click {...$$restProps}
 >
+
     <slot />
+
 </BaseButton>

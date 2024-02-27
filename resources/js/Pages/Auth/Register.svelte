@@ -50,7 +50,7 @@
     $: console.log($form);
 </script>
 <svelte:head>
-    <title>Register</title>
+    <title>Caterclock | Register</title>
 </svelte:head>
 
 <GuestLayout>

@@ -47,7 +47,8 @@ class TimeLogPolicy
      */
     public function delete(User $user, TimeLog $timeLog): bool
     {
-        //
+        return $user->can('delete', TimeLog::class) 
+            && $user->owns($timeLog);
     }
 
     /**

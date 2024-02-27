@@ -36,6 +36,8 @@ class TimeLog extends Model
     public static function todays($userId) {
         return static::where('user_id', $userId)
             ->where('date', Carbon::today())
+            ->with('project')
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 

@@ -3,6 +3,8 @@
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\API\TimeLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +19,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/users', function (Request $request) {
     return User::all();
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+  
 });

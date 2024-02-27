@@ -1,4 +1,6 @@
 <script lang="ts">
+  import PageWideLoadScreen from './PageWideLoadScreen.svelte';
+
     import Select from "$components/Inputs/Select.svelte";
     import { Duration } from "$lib/Duration";
     import DurationInput from "$components/Inputs/DurationInput.svelte";
@@ -11,11 +13,14 @@
     import Dialog from "$components/Modals/Dialog.svelte";
     import dayjs from "dayjs";
     import type { TaskCategory } from "$models";
+    import { Question, QuestionCircleFill, ShieldCheck, ShieldFillCheck, ShieldFillX, ThreeDots } from "svelte-bootstrap-icons";
+    import { fade } from 'svelte/transition';
 
 
     export let taskCategories: TaskCategory[];
     export let log: any;
 
+    const logEntry = log.timeLogs[0];
     let aboveMax: boolean = true;
     let loading: boolean = false;
     let safetyOn: boolean = true;
@@ -87,6 +92,23 @@
         });
     }
 
+    async function handleDelete() {
+        console.log($form);
+        if(confirm('Are you sure you want to delete this log?')) {
+            $form.delete(route('timelog.destroy', {timelog:logEntry.id}), {
+                onStart: () => {
+                    toast.info('Deleting log...');
+                },
+                onSuccess: () => {
+                    toast.success('Log deleted successfully');
+                },
+                onError: () => {
+                    toast.error('Error deleting log');
+                }
+            });
+        }
+    }
+
     function removeItem(index: number) {
         $form.activities = $form.activities.filter((a, i) => i != index);
     }
@@ -116,22 +138,37 @@
     $: log.activities = $form.activities;
 </script>
 
-<form class="rounded border p-5" on:submit|preventDefault={save}
+<form class="rounded border p-5" on:submit|preventDefault={save} transition:fade
     class:border-yellow-100={$form.isDirty && !aboveMax}
     class:border-red-600={aboveMax}
     class:border-green-600={!aboveMax && !$form.isDirty}
 >
-    <h2 class="flex justify-between text-lg">
-        <div>
-            {log.date}・{log.project_name}・({Duration.toHrMinString(log.total_seconds)})
-            <MiniButton class="text-xs mx-4" on:click={() => clockEntryModalOpen = true}>Edit clock entries</MiniButton>
+    {#if $form.processing}
+        <div class="w-full h-full opacity-70 flex items-center justify-center">
+            <span class="loading loading-dots loading-lg"></span>
         </div>
-        {#key safetyOn}
-        <MiniButton class="text-xs" color="{safetyOn ? 'green' : 'yellow'}" on:click={() => safetyOn = !safetyOn}>
-            Input safety: {safetyOn ? 'On' : 'Off'}
-        </MiniButton>
-        {/key}
-    </h2>
+    {:else}
+    <div class="flex justify-between text-lg">
+        <h2>
+            {log.date}・{log.project_name}・({Duration.toHrMinString(log.total_seconds)})
+            <span class="tooltip" data-tip="Safety mode prevents you from saving activities that exceed the total duration of the log.">
+                <button type="button" class="text-xs" class:text-red-500={!safetyOn} class:text-green-400={safetyOn} on:click={() => safetyOn = !safetyOn} >
+                    {#if safetyOn}
+                        <ShieldFillCheck />
+                    {:else}
+                        <ShieldFillX />
+                    {/if}
+                </button>
+            </span>
+        </h2>
+
+
+        <div>
+            <MiniButton class="text-xs mx-4" on:click={() => clockEntryModalOpen = true}>Edit clock entries</MiniButton>
+            <MiniButton class="text-xs" on:click={handleDelete} color="warning">Delete</MiniButton>
+        </div>
+
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -158,18 +195,17 @@
                             />
                         
                     </td>
-                    <td class="grid grid-flow-row gap-1 md:grid-cols-2 grid-cols-1">
-                        <MiniButton color="yellow" on:click={() => clear(index)} title="Clear duration">
-                            Clear
-                        </MiniButton>
-                        <MiniButton color="red" on:click={() => removeItem(index)}>
-                            Remove
-                        </MiniButton>
-                        {#if Duration.flooredToMinute(activitiesTotal) < Duration.flooredToMinute(log.total_seconds)}
-                            <MiniButton on:click={() => fill(index)} title="Use all remaining time">
-                                Fill
-                            </MiniButton>
-                        {/if}
+                    <td>
+                        <div class="dropdown ">
+                            <div tabindex="0" role="button" class="btn m-1 btn-ghost btn-outline"><ThreeDots/>Options</div>
+                            <ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+                                {#if Duration.flooredToMinute(activitiesTotal) < Duration.flooredToMinute(log.total_seconds)}
+                                    <li><button type="button" on:click={() => fill(index)}>Fill</button></li>
+                                {/if}
+                                <li><button type="button" on:click={() => clear(index)}>Clear</button></li>
+                                <li><button type="button" class="text-red-300" on:click={() => removeItem(index)}>Remove</button></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             {/each}
@@ -190,6 +226,7 @@
             </tr>
         </tbody>
     </table>
+    {/if}
 </form>
 
 <Dialog title="Clock entries" bind:open={clockEntryModalOpen} >

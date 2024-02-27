@@ -74,7 +74,7 @@
         
         <form class="dropdown" on:submit|preventDefault={clock} >
             <input type="hidden" name="project_id" value={$form.project_id} />
-            <button type="button" class="badge md:text-md text-xs whitespace-nowrap" class:text-red-500={log.is_running} >
+            <button type="button" class="badge md:text-md text-xs whitespace-nowrap flex items-center" class:text-red-500={log.is_running} >
                 {#if log.is_running}
                 <span class="loading loading-infinity loading-xs mr-2"></span>
                 {/if}

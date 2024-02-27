@@ -8,12 +8,10 @@ use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\DailyLog;
 use Carbon\Carbon;
-use App\Models\Project;
 use App\Models\TaskCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
+use App\Models\User;
 
 class ActivityController extends Controller
 {
@@ -62,7 +60,9 @@ class ActivityController extends Controller
     {
         $date ??= $request->query('date') ?? Carbon::today()->format('Y-m-d');
 
-        $projects = Project::all();
+        $user = User::find(auth()->user()->id);
+        $projects = $user->getInvolvedProjects();
+
         $taskCategories = TaskCategory::all()->transform(function ($taskCategory) {
             $taskCategory->name = __($taskCategory->name);
             return $taskCategory;
@@ -87,7 +87,7 @@ class ActivityController extends Controller
         $dailyLogs = DailyLog::getDaily($date);
         
 
-        return inertia('Activity/Daily/Index', compact('activities', 'projects', 'dailyLogs', 'taskCategories'));
+        return inertia('Activity/Daily/Show', compact('activities', 'projects', 'dailyLogs', 'taskCategories', 'date'));
     }
 
     /**

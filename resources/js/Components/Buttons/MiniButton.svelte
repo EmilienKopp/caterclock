@@ -1,7 +1,8 @@
 <script lang="ts">
     import { twMerge } from "tailwind-merge";
 
-    export let color: "blue" | "red" | "green" | "yellow" | "gray" | "indigo" | "purple" | "pink" | "orange" | "teal" | "cyan" | "white" | "black" | "ghost" = "blue";
+    export let color: "blue" | "red" | "green" | "yellow" | "gray" | "indigo" | "purple" | "pink" | "orange" | "teal" | "cyan" | "white" | "black" | "ghost"
+        | "primary" | "secondary" | "accent" | "neutral" | "info" | "success" | "warning" | "error" | "base-100" | "base-200" = "primary";
     export let type: "button" | "submit" | "reset" = "button";
     export let href: string = "";
 
@@ -20,6 +21,16 @@
         white: "bg-white hover:bg-gray-200",
         black: "bg-black hover:bg-gray-800 text-white",
         ghost: "bg-transparent border-gray-300 hover:bg-gray-200 text-gray-400 hover:text-gray-700",
+        primary: "bg-primary text-primary-content",
+        secondary: "bg-secondary text-secondary-content",
+        accent: "bg-accent text-accent-content",
+        neutral: "bg-neutral text-neutral-content",
+        "base-100": "bg-base-100 text-base-100-content",
+        "base-200": "bg-base-200 text-base-200-content",
+        info: "bg-info text-info-content",
+        success: "bg-success text-success-content",
+        warning: "bg-warning text-warning-content",
+        error: "bg-error text-error-content",
     }
 
     const css = twMerge("border rounded px-2 max-h-6 bg-slate-300 text-black capitalize",colors[color], $$restProps.class);

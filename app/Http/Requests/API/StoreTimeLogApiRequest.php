@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTimeLogRequest extends FormRequest
+class StoreTimeLogApiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,10 @@ class StoreTimeLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'project_id' => 'required|exists:projects,id',
-            'in_time' => 'nullable|date|before:out_time',
-            'out_time' => 'nullable|date|after:in_time',
-            'date' => 'nullable|date',
+            'user_id' => 'nullable|exists:users,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'in_time' => 'required|date_format:Y-m-d H:i:s+00',
+            'out_time' => 'required|date_format:Y-m-d H:i:s+00',
         ];
     }
 }

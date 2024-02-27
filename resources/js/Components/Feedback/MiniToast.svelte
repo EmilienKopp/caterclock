@@ -53,7 +53,7 @@
 </script>
 
 {#if show}
-<div class="toast toast-top toast-center z-[999]">
+<div class="toast toast-top toast-end z-[999] mt-16">
     <div role="alert" class="alert {alertClasses[$toast.type]}">
         {#if $toast.type == "success"}
             <CheckCircleFill　class="bg-inherit" />

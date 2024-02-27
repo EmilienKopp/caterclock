@@ -10,6 +10,8 @@
     import OutlineButton from '$components/Buttons/OutlineButton.svelte';
     import dayjs from 'dayjs';
     import type { Activity, DailyLog, TaskCategory } from '$models';
+    import MiniButton from '$components/Buttons/MiniButton.svelte';
+    import NewLogModal from '$components/Modals/NewLogModal.svelte';
 
 
     export let activities: Activity[];
@@ -17,14 +19,15 @@
     export let taskCategories: TaskCategory[];
     export let date: string;
 
-    let selectedDate = dayjs(date).format('YYYY-MM-DD');
+    console.log(date);
 
+    let selectedDate = dayjs(date).format('YYYY-MM-DD');
+    let logModalOpen = false;
 
     let form = useForm({
         date: selectedDate,
         activities: activities
     })
-
 
     function handleDateSelection() {
         if(!selectedDate) return;
@@ -55,6 +58,10 @@
         });
     }
 
+    function showLogModal() {
+        logModalOpen = true;
+    }
+
     $: $form.activities = dailyLogs.flatMap((log) => {
         return log.activities;
     });
@@ -63,29 +70,39 @@
 
 <AuthenticatedLayout>
     <h1 class="text-2xl font-semibold">Daily Logs</h1>
-    <Input type="date" class="w-44" on:change={handleDateSelection} bind:value={selectedDate}/>
+    <Input type="date" class="w-44 dark:text-white" on:change={handleDateSelection} bind:value={selectedDate}/>
     
     <div class="grid 2xl:grid-cols-2 grid-cols-1 gap-4 my-3">
         {#if dailyLogs.length == 0}
-            <p class="col-span-2">
-                No daily logs found for this date.
+            <div class="col-span-2">
                 
-            </p>
-        {/if}
-        
-        {#each dailyLogs as log}
-            {#if log.activities}
-                <DailyLogInputForm bind:log {taskCategories} />
-            {/if}
-        {/each}
-    </div>
-    <PrimaryButton on:click={saveAll} loading={$form.processing}>Save All</PrimaryButton>
-    <OutlineButton on:click={saveAllAndReturn} loading={$form.processing}>Save All and Go Back</OutlineButton>
-    <WarningButton href={route("activities.index")} class="mx-12">
-        {#if $form.isDirty}
-            Discard Changes
+                <p>No logs found for this date.</p>
+                <MiniButton type="button" color="info" on:click={showLogModal}>
+                    Create a new log
+                </MiniButton>
+            </div>
+            
+
         {:else}
-            Go Back
+
+            {#each dailyLogs as log}
+                {#if log.activities}
+                    <DailyLogInputForm bind:log {taskCategories} />
+                {/if}
+            {/each}
+            <div class="2xl:col-span-2 col-span-1">
+                <PrimaryButton on:click={saveAll} loading={$form.processing}>Save All</PrimaryButton>
+                <PrimaryButton on:click={saveAllAndReturn} loading={$form.processing}>Save All and Go Back</PrimaryButton>
+                <OutlineButton href={route("activities.index")}>
+                    {#if $form.isDirty}
+                        Discard Changes
+                    {:else}
+                        Go Back
+                    {/if}
+                </OutlineButton>
+            </div>
         {/if}
-    </WarningButton>
+    </div>
+    
 </AuthenticatedLayout>
+<NewLogModal bind:open={logModalOpen} />

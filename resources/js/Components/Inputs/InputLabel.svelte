@@ -5,7 +5,7 @@
 
 
 <!-- svelte-ignore a11y-label-has-associated-control -->
-<label {...$$restProps} class={twMerge("block font-medium text-sm text-gray-700 dark:text-gray-300",$$restProps.class)} >
+<label {...$$restProps} class={twMerge("form-control",$$restProps.class)} >
 
     <span>{ value }</span>
 
@@ -15,7 +15,9 @@
 
 
 <style>
-    label:has(input[required]) span::after {
+    label:has(input[required]) span::after,
+    label:has(select[required]) span::after,
+    label:has(textarea[required]) span::after {
         color: red;
         content: " *";
     }

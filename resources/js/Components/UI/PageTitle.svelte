@@ -3,7 +3,7 @@
 </script>
 <svelte:head>
     <title>
-        {headTitle || 'FleaClock'}
+        {headTitle || 'caterclock'}
     </title>
 </svelte:head>
 <h1 class="text-3xl flex w-full items-center justify-between">

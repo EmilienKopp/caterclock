@@ -23,7 +23,7 @@
     console.log(auth);
 </script>
 <svelte:head>
-    <title>Welcome</title>
+    <title>Caterclock | Home</title>
 </svelte:head>
 
     <div

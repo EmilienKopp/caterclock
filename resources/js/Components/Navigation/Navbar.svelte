@@ -3,15 +3,16 @@
     import { page, Link, inertia } from '@inertiajs/svelte';
     import dayjs from 'dayjs';
     import type { RouteItem } from '$types';
-    import { today } from '$lib/stores';
+    import { now } from '$lib/stores';
+    import ThemeSwitch from '$components/Buttons/ThemeSwitch.svelte';
 
     export let menu: RouteItem[] = [];
     const { auth } = $page.props;
     const roles: number[] | string[] = auth.user.roles;
-    console.log(roles, menu);
+    $: time = dayjs($now).format('HH:mm');
 </script>
 <nav
-    class="navbar bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700"
+    class="navbar bg-base-100 border-b border-base-200 shadow-lg sticky top-0 z-50"
 >
     <div class="navbar-start">
         <div class="dropdown">
@@ -35,10 +36,7 @@
                 class="menu menu-sm dropdown-content mt-3 z-[9999] p-2 shadow bg-base-100 rounded-box w-52"
             >
                 {#each menu as item}
-
-                        
                     <li>
-                        
                         {#if item.children?.length}
                             <details>
                                 <summary>{item.label}</summary>
@@ -56,7 +54,10 @@
                 {/each}
             </ul>
         </div>
-        <a class="btn btn-ghost text-xl" href="/">caterclock</a>
+        <div class="flex items-center">
+            <a class="btn btn-ghost text-xl" href="/">caterclock</a>
+            <span class="hidden sm:inline-block">{time}</span>
+        </div>
     </div>
     <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1 items-center">
@@ -80,7 +81,8 @@
         </ul>
     </div>
     <div class="navbar-end  flex items-center gap-2">
-        <span class="text-sm">{auth?.user?.name ?? ""}</span>
+        <ThemeSwitch />
+        <span class="text-sm hidden sm:inline-block">{auth?.user?.name ?? ""}</span>
         <div class="dropdown dropdown-end">
             <div
                 tabindex="0"

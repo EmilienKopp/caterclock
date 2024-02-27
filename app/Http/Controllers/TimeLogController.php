@@ -22,15 +22,13 @@ class TimeLogController extends Controller
     public function index()
     {
         $user = User::authenticated();
-        $entries = TimeLog::where('user_id', $user->id)
-                    ->where('date', Carbon::today())
-                    ->with('project')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+
+        $entries = TimeLog::todays($user->id);
 
         $projects = $user->getInvolvedProjects();
 
         $calculator = new TimeCalculation($entries);
+        
         $projectDurations = $calculator->perProject();
 
         return inertia('TimeLog/Index', compact('entries', 'projects', 'projectDurations'));
@@ -49,8 +47,23 @@ class TimeLogController extends Controller
      */
     public function store(StoreTimeLogRequest $request)
     {
-        $validated = $request->validated();
         
+
+        $validated = $request->validated();
+        logger("TimeLogController@store", ['validated' => $validated]);
+        if($validated["in_time"] && $validated["out_time"]) {
+            $inTime = Carbon::parse($validated["in_time"]);
+            $outTime = Carbon::parse($validated["out_time"]);
+            $validated["duration"] = $inTime->diffInMinutes($outTime);
+            if(!$validated["date"]) {
+                $validated["date"] = $inTime->format('Y-m-d');
+            }
+            TimeLog::create($validated);
+            return to_route('activities.show', [
+                'date' => $validated["date"]
+            ]);
+        }
+
         $clockEntry = TimeLog::latestRunning(auth()->user()->id);
 
         if(!$clockEntry) { // if there is no "running" clock entry, create one
@@ -121,9 +134,25 @@ class TimeLogController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * 
+     * Since more than one time log exists for a user in a day for a project,
+     * all time logs for the day and project are deleted when a single time log is deleted.
      */
-    public function destroy(TimeLog $timeLog)
+    public function destroy(TimeLog $timelog)
     {
-        //
+        $timeLogs = TimeLog::where('project_id', $timelog->project_id)
+            ->where('user_id', $timelog->user_id)
+            ->whereDate('in_time', $timelog->in_time->format('Y-m-d'))
+            ->get();
+        
+        $success = $timeLogs->each(function($timeLog) {
+            $timeLog->delete();
+        });
+
+        if($success) {
+            return response(status: 200);
+        } else {
+            return response(status: 500);
+        }
     }
 }

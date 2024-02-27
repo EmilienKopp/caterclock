@@ -1,15 +1,11 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { Duration } from "$lib/Duration";
-    import { elapsedSeconds } from "$lib/stores";
     import route from "$vendor/tightenco/ziggy/src/js";
     import dayjs from "dayjs";
-    import utc from "dayjs/plugin/utc";
-    import timezone from "dayjs/plugin/timezone";
-    
 
     export let entries: any[];
-
+    let secondsSinceLastClockIn: number
 
     $: entries = entries.map( (entry: any) => {
         if(entry.out_time && new Date(entry.out_time) < new Date(entry.in_time)) {
@@ -19,7 +15,13 @@
         return entry
     })
 
-    $: console.log(entries);
+    $: latestEntry = entries[0] ?? null;
+    $: if(latestEntry) {
+        secondsSinceLastClockIn = (dayjs().diff(dayjs(latestEntry.in_time), "second"));
+        setInterval(() => {
+            secondsSinceLastClockIn = (dayjs().diff(dayjs(latestEntry.in_time), "second"));
+        }, 1000)
+    }
 </script>
 
 <div class="sm:w-2/3 w-full overflow-x-auto mx-auto">
@@ -44,7 +46,7 @@
                     </a>
                 </td>
                 <td>
-                    {Duration.toHrMinString(entry.total_duration ?? $elapsedSeconds)}
+                    {Duration.toHrMinString(entry.total_duration ?? secondsSinceLastClockIn)}
                 </td>
                 <td>
                     <MiniButton href={route("activities.show", {date: dayjs(entry.date).format("YYYY-MM-DD")})} class="bg-blue-500 hover:bg-blue-700">See</MiniButton>

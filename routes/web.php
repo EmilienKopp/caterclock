@@ -12,7 +12,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ConnectionRequestController;
-
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,9 +38,7 @@ Route::get('/privacy', function () {
     return Inertia::render('Privacy');
 })->name('privacy');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::prefix('time-logs')->middleware('auth')->group(function () {

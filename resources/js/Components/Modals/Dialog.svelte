@@ -34,12 +34,12 @@
 </script>
 
 <dialog class="modal" bind:this={dialog} >
-    <form on:submit class={twMerge("modal-box border border-gray-400 flex flex-col w-full",$$restProps.class)} >
+    <form on:submit|preventDefault class={twMerge("modal-box border border-gray-400 flex flex-col w-full",$$restProps.class)} >
         <h3 class="font-bold text-lg flex items-center justify-between">
             {title}
         </h3>
         <div class="py-2 text-xs flex items-center justify-between">
-            Press ESC key or click the button below to close
+            Press ESC key or click the button to the right to close
             <MiniButton color="gray" class="text-xs" on:click={close}>close</MiniButton>
         </div>
         <div class="my-4">

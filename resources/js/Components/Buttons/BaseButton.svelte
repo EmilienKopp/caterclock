@@ -50,11 +50,19 @@
         {...$$restProps}
         class={twMerge(classes,"min-h-fit h-8", $$restProps.class)}
     >
-        <slot />
+        {#if !loading}
+            <slot />
+        {:else}
+            <span class="loading loading-dots loading-sm"></span>
+        {/if}
     </button>
 {:else}
     <Link href={href} {...$$restProps} class={twMerge(classes,"min-h-fit h-8",$$restProps.class)}  on:click >
-        <slot />
+        {#if !loading}
+            <slot />
+        {:else}
+            <span class="loading loading-dots loading-lg"></span>
+        {/if}
     </Link>
 {/if}
 

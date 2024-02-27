@@ -6,10 +6,7 @@
     export let value: string | number | null = null;
     export let items: any[]  = [];
     export let name: string;
-    export let mapping: { labelColumn: string, valueColumn: string };
-    export let placeholder: string = "選択してください";
-    export let label: string | undefined = undefined;
-    export let size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" = "md";
+    export let mapping: { labelColumn: string, valueColumn: string } = { labelColumn: "label", valueColumn: "value" };
 
     let selectedItem: any = null;
     let open: boolean = false;
@@ -66,42 +63,13 @@
 </script>
 
 
-<!-- <input type="hidden" name={name} bind:value={value}/>
-<Button color="light" class={twMerge("w-full flex justify-between whitespace-nowrap mb-0",sizes[size],$$restProps.class)} on:keyup={handleKeyup}>
-    {#if value} 
-        {items?.find(item => item[mapping.valueColumn] == value)?.[mapping.labelColumn] ?? placeholder}
-    {:else}
-        {selectedItem?.label ?? placeholder}
-    {/if}
-    <CaretDownFill class="inline-block ml-2 justify-self-end"/>
-</Button>
-<Dropdown bind:open  containerClass={twMerge("-mt-2",$$restProps.class)}>
-    {#if $$slots.first}
-        <DropdownItem>
-            <slot name="first"></slot>
-        </DropdownItem>
-    {/if}
-    
-    {#if options !== undefined}
+
+<select bind:value {name} {...$$restProps} class="select select-bordered">
+    {#if options?.length > 0}
         {#each options ?? [] as item, index}
-            <DropdownItem class={twMerge("hover:text-black rounded-md",sizes[size],$$restProps.class)}
-                    id="item{name}{index}"
-                    on:click={() => handleDropdownSelect(item)}
-                    value={item.value}
-                >
-
-                {item.label}
-
-            </DropdownItem>
+            <option value={item.value}>{item.label}</option>
         {/each}
     {:else}
         <slot />
     {/if}
-</Dropdown> -->
-<label class="form-control">
-    <select class="select select-bordered" bind:value>
-        {#each options ?? [] as item, index}
-            <option value={item.value}>{item.label}</option>
-        {/each}
-    </select>
-</label>
+</select>

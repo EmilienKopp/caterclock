@@ -6,7 +6,9 @@
     import route from "$vendor/tightenco/ziggy/src/js";
     import { _ } from 'lodash';
     import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import { router } from '@inertiajs/svelte';
     import { onMount } from "svelte";
+    import MiniPie from "$components/Buttons/MiniPie.svelte";
     dayjs.extend(localeData);
 
     export let headers: string[] = [];
@@ -88,9 +90,9 @@
                         <div class="text-gray-400">{readableMonth} {year}</div>
                     {/if}
                     <div>
-                        <MiniButton color="ghost" on:click={() => scrollToTop()}>To Top</MiniButton>
-                        <MiniButton color="ghost" on:click={scrollToLatest}>See Latest</MiniButton>
-                        <MiniButton color="ghost" on:click={toggleAllDetails}>{allOpen ? 'Close' : 'Open'} All</MiniButton>
+                        <MiniButton color="info" on:click={() => scrollToTop()}>To Top</MiniButton>
+                        <MiniButton color="info" on:click={scrollToLatest}>See Latest</MiniButton>
+                        <MiniButton color="info" on:click={toggleAllDetails}>{allOpen ? 'Close' : 'Open'} All</MiniButton>
                     </div>
                 </th>
             </tr>
@@ -105,9 +107,10 @@
                             ({dayjs.weekdaysShort()[dayjs(key).day()]})
                         </div>
                     </td>
+                    {#if logs?.length}
                     <td>
-                        <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full">
-                            {#if logs?.length}
+                        <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full h-full">
+
                                 {#each logs as log, logIndex}
                                     
                                     <ActivityInlineReport 
@@ -119,24 +122,22 @@
                                 {/each}
 
                                 <div class="flex items-center gap-1 self-center justify-self-end" style="grid-column: -1 / auto">
-                                    <MiniButton color="teal" href={route('activities.show',{date: key})}>Edit</MiniButton>
+                                    <MiniButton color="primary" href={route('activities.show',{date: key})}>Edit</MiniButton>
                                     {#if detailsOpen[index]}
-                                        <MiniButton color="white" on:click={() => toggleDetails(index)} >Hide</MiniButton>
+                                        <MiniButton color="info" on:click={() => toggleDetails(index)} >Hide</MiniButton>
                                     {:else}
-                                        <MiniButton color="ghost" on:click={() => toggleDetails(index)} >Details</MiniButton>
+                                        <MiniButton color="info" on:click={() => toggleDetails(index)} >Details</MiniButton>
                                     {/if}
                                 </div>
-                            {:else}
-                                <MiniButton color="ghost" 
-                                    href={route('activities.show',{date: key})}
-                                    class="lg:col-start-3 md:col-start-2 place-self-end">
-                                    Add
-                                </MiniButton>
-                            {/if}
-                            
-                            
                         </div>
                     </td>
+                    {:else}
+                    <td on:click={() => router.visit(route('activities.show',{date: key}))} class="cursor-pointer">
+                        <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full h-full">
+                            <MiniButton color="ghost" class="col-start-3 place-self-end"> Add </MiniButton>
+                        </div>
+                    </td>
+                    {/if}
                 </tr>
             {/each}
         {:else}

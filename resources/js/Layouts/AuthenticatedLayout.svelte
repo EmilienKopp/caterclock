@@ -1,11 +1,13 @@
 <script lang="ts">
 
     import MiniToast from "$components/Feedback/MiniToast.svelte";
-    import { Link, page } from "@inertiajs/svelte";
+    import { Link, page, router} from "@inertiajs/svelte";
     import type { RouteItem } from "$types";
     import Navbar from "$components/Navigation/Navbar.svelte";
     import dayjs from "dayjs";
     import route from "$vendor/tightenco/ziggy";
+    import { fade, fly, slide } from "svelte/transition";
+    import { sineInOut } from "svelte/easing";
 
     const { auth, roles } = $page.props;
 
@@ -31,11 +33,15 @@
         return true;
     });
 
-    console.log(auth);
+    let key = "";
+
+    router.on('navigate',(event: any) => {
+        key = event.detail.route;
+    });
 </script>
 
 <div>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen">
 
         <Navbar {menu}/>
 
@@ -49,7 +55,7 @@
         {/if}
 
         <!-- Page Content -->
-        <main class="sm:p-6 p-0">
+        <main class="sm:p-6 py-2"  transition:fade={{duration: 400, easing: sineInOut}}>
             <MiniToast show={false} />
             <slot />
         </main>
