@@ -12,6 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement("DROP TYPE IF EXISTS oauth_providers");
         DB::statement("CREATE TYPE oauth_providers AS ENUM ('google', 'line', 'discord', 'github', 'gitlab','facebook', 'slack')");
     
         DB::statement("ALTER TABLE identities ADD COLUMN oauth_provider oauth_providers");

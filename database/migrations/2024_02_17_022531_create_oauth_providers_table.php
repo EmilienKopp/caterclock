@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('oauth_providers');
         Schema::create('oauth_providers', function (Blueprint $table) {
             $table->id();
             $table->text('name');
