@@ -19,8 +19,6 @@
     export let taskCategories: TaskCategory[];
     export let date: string;
 
-    console.log(date);
-
     let selectedDate = dayjs(date).format('YYYY-MM-DD');
     let logModalOpen = false;
 
