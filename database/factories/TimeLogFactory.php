@@ -3,6 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\TimeLog;
+use App\Models\User;
+use Illuminate\Support\Carbon;
+use App\Models\Project;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TimeLog>
@@ -16,10 +20,19 @@ class TimeLogFactory extends Factory
      */
     public function definition(): array
     {
-        $in = $this->faker->dateTimeThisMonth;
+        $in = $this->faker->dateTimeThisMonth();
+        $out = Carbon::parse($in)->addHours($this->faker->numberBetween(1, 8));
+        $user = User::factory()->create();
+        $project = Project::factory()->create(
+            ['user_id' => $user->id]
+        );
         return [
             'in_time' => $in,
-            'out_time' => $this->faker->dateTimeAfter($in),
+            'out_time' => $out,
+            'date' => $in->format('Y-m-d'),
+            'user_id' => $user->id,
+            'project_id' => $project->id,
         ];
     }
+
 }

@@ -21,12 +21,12 @@ class RateFactory extends Factory
      */
     public function definition(): array
     {
-        $usersToExclude = [
-            User::whereLike('name', 'Emilien%')->firstOrFail(),
-        ];
+
         return [
             'project_id' => Project::all()->random()->id,
-            'user_id' => User::whereNotIn('id', $usersToExclude)->get()->random()->id,
+            'user_id' => User::whereHas('roles', function ($query) {
+                $query->where('name', 'freelancer');
+            })->get()->random()->id,
             'task_category_id' => TaskCategory::all()->random()->id,
             'rate' => $this->faker->randomFloat(2, 0, 1000),
             'currency' => 'JPY',
