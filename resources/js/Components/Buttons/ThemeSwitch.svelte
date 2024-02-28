@@ -2,25 +2,32 @@
     import { onMount } from "svelte";
 
     
-    const themes = {
+    const themes: any = {
         "dark": "dim",
         "light": "lofi"
     }
-    let currentTheme: string | undefined;
+    let currentTheme: string;
     let isDark: boolean = false;
 
     onMount( () => {
-        if(!document.querySelector('html')?.dataset.theme) return;
-        currentTheme = document.querySelector('html')?.dataset.theme;
-        isDark = currentTheme === themes.dark;
+        if(!document.documentElement) return;
+        let storedTheme = localStorage.getItem('theme');
+
+        if(storedTheme) {
+            currentTheme = storedTheme;
+        } else {
+            currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
+        }
+        document.documentElement.setAttribute('data-theme', themes[currentTheme]);
+        isDark = currentTheme === "dark";
     })
 
     function handleToggle() {
         if(isDark) {
-            document.querySelector('html')?.setAttribute('data-theme', themes.dark);
+            document.documentElement.setAttribute('data-theme', themes.dark);
             localStorage.setItem('theme', 'dark');
         } else {
-            document.querySelector('html')?.setAttribute('data-theme', themes.light);
+            document.documentElement.setAttribute('data-theme', themes.light);
             localStorage.setItem('theme', 'light');
         }
     }
