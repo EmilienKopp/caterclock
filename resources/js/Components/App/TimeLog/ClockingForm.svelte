@@ -3,8 +3,9 @@
     import Select from '$components/Inputs/Select.svelte';
     import { useForm, page } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
-    import { latestClockInTime } from '$lib/stores';
+    import { latestClockInTime, queryParams } from '$lib/stores';
     import { setContext } from 'svelte';
+    import dayjs from 'dayjs';
 
     
     const {entries,projects,projectDurations} = $page.props;
@@ -14,6 +15,7 @@
     setContext('running', running);
 
     $: $latestClockInTime = Date.parse(running?.in_time);
+    $: console.log($queryParams);
 
     let action: "in" | "out" = "in";
 
@@ -34,9 +36,9 @@
         }
     }
 
-    $: if(!entries.length || entries[0]?.out_time != null) {
+    $: if(!entries.length || !entries.some((entry: any) => entry.out_time == null) ) {
         action = "in";
-    } else if (entries[0]?.out_time == null) {
+    } else if (entries.some((entry: any) => entry.out_time == null)) {
         action = "out";
     }
     $: switchingProjects = (action == "out" && entries[0]?.project_id != $form.project_id)
@@ -53,6 +55,8 @@
     <Select size="xs" name="project_id" placeholder="プロジェクト選択" bind:value={$form.project_id} 
             items={projects} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
 
-    <slot name="indicator" {running} />
+    <div class="col-span-2">
+        <slot name="indicator" {running} />
+    </div>
 </form>
 
