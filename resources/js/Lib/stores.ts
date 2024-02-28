@@ -3,6 +3,7 @@ import { Toastable, toastable } from "./Toast";
 
 import { Toast } from "flowbite-svelte";
 import dayjs from "dayjs";
+import { isEmpty } from "lodash";
 import localeData from "dayjs/plugin/localeData";
 import { page } from "@inertiajs/svelte";
 
@@ -26,7 +27,7 @@ export const datetime = readable(new Date(), (set) => {
 });
 
 export const time = derived(datetime, ($datetime) => {
-    return $datetime.toLocaleTimeString();
+    return dayjs($datetime).format("HH:mm:ss");
 });
 
 export const now = readable(Date.now(), (set) => {
@@ -52,4 +53,11 @@ export const elapsedHours = derived(elapsedSeconds, ($elapsedSeconds) => {
 
 export const user = derived(page, ($page) => {
     return $page.props.auth.user;
+});
+
+export const queryParams = derived(page, ($page: any) => {
+    const search = $page.url.split("?")[1];
+    const searchParams = new URLSearchParams(search);
+    const params = Object.fromEntries(searchParams);
+    return isEmpty(params) ? null : params;
 });

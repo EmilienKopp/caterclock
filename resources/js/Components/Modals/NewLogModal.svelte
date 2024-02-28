@@ -4,7 +4,7 @@
     import Dialog from "./Dialog.svelte";
     import { page, useForm } from "@inertiajs/svelte";
     import route from '$vendor/tightenco/ziggy';
-    import { toast } from "$lib/stores";
+    import { toast, queryParams } from "$lib/stores";
     import dayjs from "dayjs";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
@@ -16,7 +16,7 @@
         project_id: null,
         in_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T10:00:00',
         out_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T18:00:00',
-        date: dayjs($page.props.date).format('YYYY-MM-DD')
+        date: dayjs($page.props.query.date).format('YYYY-MM-DD')
     });
 
     function handleSubmit() {
@@ -61,7 +61,7 @@
         <div class="flex flex-col space-y-2">
             <InputLabel value="Project" for="project_id">
                 <Select required id="project_id" name="project_id" bind:value={$form.project_id} >
-                    {#each $page.props.projects as project}
+                    {#each $page.props?.projects ?? [] as project}
                         <option value={project.id}>{project.name}</option>
                     {/each}
                 </Select>
