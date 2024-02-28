@@ -139,9 +139,9 @@
 </script>
 
 <form class="rounded border p-5" on:submit|preventDefault={save} transition:fade
+    class:border-green-600={!$form.isDirty}
     class:border-yellow-100={$form.isDirty && !aboveMax}
     class:border-red-600={aboveMax}
-    class:border-green-600={!aboveMax && !$form.isDirty}
 >
     {#if $form.processing}
         <div class="w-full h-full opacity-70 flex items-center justify-center">
@@ -152,7 +152,10 @@
         <h2>
             {log.date}・{log.project_name}・({Duration.toHrMinString(log.total_seconds)})
             <span class="tooltip" data-tip="Safety mode prevents you from saving activities that exceed the total duration of the log.">
-                <button type="button" class="text-xs" class:text-red-500={!safetyOn} class:text-green-400={safetyOn} on:click={() => safetyOn = !safetyOn} >
+                <button type="button" class="text-xs" 
+                        class:text-red-500={!safetyOn} class:text-green-400={safetyOn} 
+                        on:click={() => safetyOn = !safetyOn} 
+                >
                     {#if safetyOn}
                         <ShieldFillCheck />
                     {:else}
@@ -204,6 +207,7 @@
                                 {/if}
                                 <li><button type="button" on:click={() => clear(index)}>Clear</button></li>
                                 <li><button type="button" class="text-red-300" on:click={() => removeItem(index)}>Remove</button></li>
+                                <li><button type="button" on:click={$form.reset()}>Reset</button></li>
                             </ul>
                         </div>
                     </td>
