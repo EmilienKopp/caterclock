@@ -51,7 +51,7 @@ class TimeLogController extends Controller
 
         $validated = $request->validated();
         logger("TimeLogController@store", ['validated' => $validated]);
-        if($validated["in_time"] && $validated["out_time"]) {
+        if($request->has('in_time') && $request->has('out_time') ){
             $inTime = Carbon::parse($validated["in_time"]);
             $outTime = Carbon::parse($validated["out_time"]);
             $validated["duration"] = $inTime->diffInMinutes($outTime);
