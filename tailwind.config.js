@@ -12,7 +12,7 @@ export default {
     ],
 
     daisyui: {
-        themes: ["lofi","businees","light", "dark", "dim"],
+        themes: ["lofi","business","light", "dark", "dim"],
     },
 
     theme: {
