@@ -45,6 +45,8 @@ class HandleInertiaRequests extends Middleware
             ],
             // Returns the roles name => id as key:value pairs
             'roles' => Role::all()->pluck('id', 'name'),
+            // return the URL query params as a prop
+            'query' => $request->query(),
         ];
     }
 }
