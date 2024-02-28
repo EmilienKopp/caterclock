@@ -40,7 +40,7 @@
         </h3>
         <div class="py-2 text-xs flex items-center justify-between">
             Press ESC key or click the button to the right to close
-            <MiniButton color="gray" class="text-xs" on:click={close}>close</MiniButton>
+            <MiniButton color="warning" on:click={close}>close</MiniButton>
         </div>
         <div class="my-4">
             <slot />

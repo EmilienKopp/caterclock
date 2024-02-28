@@ -44,12 +44,10 @@
             <input type="hidden" name="user_id" value={user.id} />
             <Fieldset>
                 <legend>Basic Information</legend>
-                <InputLabel for="name">
-                    <span>Project Name</span>
+                <InputLabel for="name" value="Project Name">
                     <TextInput type="text" name="name" id="name" bind:value={$form.name} class="w-1/2" required />
                 </InputLabel>
-                <InputLabel for="description" class="flex flex-col">
-                    <span>Project Description</span>
+                <InputLabel for="description" class="flex flex-col" value="Description">
                     <TextInput type="textarea" name="description" id="description" bind:value={$form.description} class="w-1/2"/>
                 </InputLabel>
             </Fieldset>

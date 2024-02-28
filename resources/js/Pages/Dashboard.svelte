@@ -23,7 +23,7 @@
             </DashboardItem>
             <DashboardItem>
                 <ClockingForm>
-                    <ElapsedMarker slot="indicator" />
+                    <ElapsedMarker slot="indicator"/>
                 </ClockingForm>
             </DashboardItem>
         </div>
