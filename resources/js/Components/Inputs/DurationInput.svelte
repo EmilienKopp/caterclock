@@ -21,7 +21,6 @@
         const target = e.target as HTMLInputElement;
         hours = parseInt((target as HTMLInputElement).value);
         if(target.value.toString().length > 2) {
-            console.log("target length", target.value.toString().length);
             hours = target.value.toString().slice(0,2) == '00' ? 0 : parseInt(target.value.toString().slice(0,2));
             minutesInput.focus();
             minutesInput.value = (e as InputEvent).data ?? '0';
