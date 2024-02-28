@@ -98,7 +98,7 @@
             </tr>
         </thead>
         <tbody>
-        {#if datesArray.some(([key, logs]) => logs?.length)}
+
             {#each datesArray as [key, logs], index}
                 <tr id="{key}" class="hover" on:contextmenu|preventDefault={handleContextMenu} >
                     <td>
@@ -140,13 +140,7 @@
                     {/if}
                 </tr>
             {/each}
-        {:else}
-            <tr>
-                <td colspan="2">
-                    <div class="text-center text-gray-400">No activities found for this month.</div>
-                </td>
-            </tr>
-        {/if}
+
         </tbody>
     </table>
 </div>
