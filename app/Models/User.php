@@ -108,7 +108,7 @@ class User extends Authenticatable
     }
 
     public function owns($model) {
-        match(true) {
+        return match(true) {
             $model instanceof Company => $this->ownedCompanies->contains($model),
             $model instanceof TimeLog => $this->id == $model->user_id || $this->owns($model->project),
             $model instanceof Project => $model->user_id == $this->id || $this->ownedCompanies->contains($model->company),

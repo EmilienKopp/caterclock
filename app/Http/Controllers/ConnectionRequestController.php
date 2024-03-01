@@ -90,7 +90,7 @@ class ConnectionRequestController extends Controller
         }
         
         if($success){
-            return redirect()->route('employees.index');
+            return redirect()->back();
         } else {
             return redirect()->back()->with('error', 'Connection request could not be deleted.');
         }
