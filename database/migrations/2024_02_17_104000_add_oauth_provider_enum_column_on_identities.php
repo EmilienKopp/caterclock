@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("DROP TYPE IF EXISTS oauth_providers");
-        DB::statement("CREATE TYPE oauth_providers AS ENUM ('google', 'line', 'discord', 'github', 'gitlab','facebook', 'slack')");
+        // DB::statement("DROP TYPE IF EXISTS oauth_providers");
+        // DB::statement("CREATE TYPE oauth_providers AS ENUM ('google', 'line', 'discord', 'github', 'gitlab','facebook', 'slack')");
     
-        DB::statement("ALTER TABLE identities ADD COLUMN oauth_provider oauth_providers");
+        // DB::statement("ALTER TABLE identities ADD COLUMN oauth_provider oauth_providers");
     }
 
     /**
@@ -23,10 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('identities', function (Blueprint $table) {
-            $table->dropColumn('oauth_provider');
-        });
+        // Schema::table('identities', function (Blueprint $table) {
+        //     $table->dropColumn('oauth_provider');
+        // });
 
-        DB::statement("DROP TYPE oauth_providers");
+        // DB::statement("DROP TYPE oauth_providers");
     }
 };
