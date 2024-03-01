@@ -13,7 +13,7 @@ class CreateTimeLogsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
-            $table->date('date')->default(DB::raw('DATE(CURRENT_TIMESTAMP)'));
+            $table->timestampTz('date')->useCurrent();
             $table->timestampTz('in_time');
             $table->timestampTz('out_time')->nullable();
             $table->timestampTz('break_start')->nullable();

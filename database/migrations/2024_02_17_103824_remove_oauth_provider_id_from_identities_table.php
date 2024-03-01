@@ -17,6 +17,10 @@ return new class extends Migration
         });
 
         Schema::dropIfExists('oauth_providers');
+
+        Schema::table('identities', function (Blueprint $table) {
+            $table->enum('oauth_provider', ['google', 'line', 'discord', 'github', 'gitlab','facebook', 'slack']);
+        });
         
     }
 

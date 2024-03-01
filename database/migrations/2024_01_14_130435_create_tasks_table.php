@@ -16,7 +16,7 @@ class CreateTasksTable extends Migration
         Schema::dropIfExists('task_categories'); // Add this line
         Schema::create('task_categories', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();
+            $table->text('name');
             $table->text('description')->nullable();
             $table->timestamps();
         });
