@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('role_id')->constrained();
             $table->enum('ability', ['create', 'index', 'update', 'delete', 'show']);
-            $table->text('model');
+            $table->string('model',100);
             $table->unique(['role_id', 'ability', 'model']);
             $table->timestamps();
         });
@@ -30,7 +30,7 @@ return new class extends Migration
         Schema::dropIfExists('permissions');
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('model');
+            $table->string('model',100);
             $table->string('table')->nullable();
             $table->integer('create')->default(1000);
             $table->integer('read')->default(1000);

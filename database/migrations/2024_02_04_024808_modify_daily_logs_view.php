@@ -44,6 +44,7 @@ return new class extends Migration
         //         u.name,
         //         p.name,
         //         tl.date;');
+        DB::statement('DROP VIEW IF EXISTS daily_logs;');
         DB::statement('CREATE VIEW daily_logs AS
         SELECT
             tl.user_id,

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('model');
-            $table->string('table')->nullable();
+            $table->string('model',100);
+            $table->string('table',100)->nullable();
             $table->integer('create')->default(1000);
             $table->integer('read')->default(1000);
             $table->integer('update')->default(1000);

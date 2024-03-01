@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('company_user', function (Blueprint $table) {
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->enum('position', ['owner', 'employee', 'hired_freelance', 'admin'])->default('user');
+            $table->enum('position', ['owner', 'employee', 'hired_freelance', 'admin','user'])->default('user');
             $table->timestamps();
             $table->primary(['company_id', 'user_id']);
         });

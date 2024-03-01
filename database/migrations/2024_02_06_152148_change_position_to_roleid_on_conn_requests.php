@@ -25,7 +25,7 @@ return new class extends Migration
         Schema::table('connection_requests', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
             $table->dropColumn('role_id');
-            $table->string('position');
+            $table->string('position',100);
         });
     }
 };
