@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Models\Role;
+use Illuminate\Http\Request;
 
 class ConnectionRequestController extends Controller
 {
@@ -77,11 +78,21 @@ class ConnectionRequestController extends Controller
         return redirect()->route('employees.index', compact('companies'));
     }
 
-    /**W
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(ConnectionRequest $connectionRequest)
     {
-        //
+        $this->authorize('delete', $connectionRequest);
+        $success = false;
+        if($connectionRequest->status == 'pending'){
+            $success = $connectionRequest->delete();
+        }
+        
+        if($success){
+            return redirect()->route('employees.index');
+        } else {
+            return redirect()->back()->with('error', 'Connection request could not be deleted.');
+        }
     }
 }

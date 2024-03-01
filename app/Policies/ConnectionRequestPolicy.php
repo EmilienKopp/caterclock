@@ -43,9 +43,11 @@ class ConnectionRequestPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ConnectionRequest $connectionRequest): bool
+    public function delete(User $user, ConnectionRequest $connectionRequest): Response
     {
-        //
+        return $user->ableTo('delete', ConnectionRequest::class) && $user->owns($connectionRequest)
+            ? Response::allow()
+            : Response::deny('You are not authorized to delete this request.');
     }
 
     /**

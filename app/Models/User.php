@@ -108,17 +108,13 @@ class User extends Authenticatable
     }
 
     public function owns($model) {
-        switch(true) {
-            case $model instanceof Company:
-                return $this->ownedCompanies->contains($model);
-            case $model instanceof TimeLog:
-                return $this->id == $model->user_id 
-                    || $this->owns($model->project);
-            case $model instanceof Project:
-                return $model->user_id == $this->id
-                    || $this->ownedCompanies->contains($model->company);
-        }
-        return false;
+        match(true) {
+            $model instanceof Company => $this->ownedCompanies->contains($model),
+            $model instanceof TimeLog => $this->id == $model->user_id || $this->owns($model->project),
+            $model instanceof Project => $model->user_id == $this->id || $this->ownedCompanies->contains($model->company),
+            $model instanceof ConnectionRequest => $model->sender_id == $this->id,
+            default => false,
+        };
     }
 
     public function identities() {

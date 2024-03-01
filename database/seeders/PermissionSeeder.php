@@ -11,11 +11,11 @@ function populate($role, $permissions)
         $model = key($permission);
         $abilities = $permission[$model];
         foreach ($abilities as $ability) {
-            $permission = \App\Models\Permission::create([
+            $permission = \App\Models\Permission::upsert([
                 'model' => $model,
                 'role_id' => $role->id,
                 'ability' => $ability,
-            ]);
+            ], ['model', 'role_id', 'ability']);
         }
     }
 }
@@ -41,6 +41,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['create', 'index', 'show', 'update', 'delete']],
             ['App\\Models\\TimeLog' => ['create', 'index', 'show', 'update', 'delete']],
             ['App\\Models\\Company' => ['create', 'index', 'show', 'update', 'delete']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($superadmin, $superadminPermissions);
 
@@ -51,6 +52,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['create', 'index', 'show', 'update', 'delete']],
             ['App\\Models\\TimeLog' => ['create', 'index', 'show', 'update', 'delete']],
             ['App\\Models\\Company' => ['create', 'index', 'show', 'update', 'delete']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($admin, $adminPermissions);
 
@@ -59,6 +61,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['index', 'show']],
             ['App\\Models\\TimeLog' => ['create','index', 'show']],
             ['App\\Models\\Company' => ['index', 'show']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($employee, $employeePermissions);
 
@@ -68,6 +71,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\TimeLog' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\Company' => ['index', 'show', 'update']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($manager, $managerPermissions);
 
@@ -76,6 +80,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\TimeLog' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\Company' => ['index', 'show', 'create', 'update', 'delete']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($owner, $ownerPermissions);
 
@@ -84,6 +89,7 @@ class PermissionSeeder extends Seeder
             ['App\\Models\\Project' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\TimeLog' => ['index', 'show', 'create', 'update', 'delete']],
             ['App\\Models\\Company' => ['index', 'show']],
+            ['App\\Models\\ConnectionRequest' => ['index', 'show','create', 'update', 'delete']],
         ];
         populate($freelancer, $freelancerPermissions);
     }
