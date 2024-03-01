@@ -25,7 +25,7 @@
 </script>
 
 
-<button type="button" role="tab" class="tab" on:click={() => open = true} class:tab-active={open}>
+<button id="tab__{title.toLowerCase()}" type="button" role="tab" class="tab capitalize" on:click={() => open = true} class:tab-active={open}>
     <slot name="title">
         {title}
     </slot>

@@ -1,8 +1,11 @@
 <script context="module" lang="ts">
     import { writable, type Writable } from "svelte/store";
+
     export interface TabInfo {
         active: Writable<HTMLElement>;
     }
+
+    
 </script>
 
 <script lang="ts">
@@ -10,6 +13,7 @@
     import { twMerge } from "tailwind-merge";
 
     export let contentClass: string = "";
+    export let open: string | undefined = undefined;
 
     const tablistClasses = "tabs tabs-bordered w-full";
 

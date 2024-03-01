@@ -2,7 +2,7 @@
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
-    import { useForm } from "@inertiajs/svelte";
+    import { useForm, router, page } from "@inertiajs/svelte";
     import Dialog from "$components/Modals/Dialog.svelte";
     import { FilterService } from "$lib/Filter";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
@@ -13,6 +13,7 @@
     import SimpleTable from "$components/Tables/SimpleTable.svelte";
     import CompanyCard from "$components/Cards/CompanyCard.svelte";
     import type { Company, ConnectionRequest, Project } from "$models";
+    import { queryParams, toast } from "$lib/stores";
 
     export let auth: any, roles: any, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], 
     employers: Company[], clients: Company[], projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;
@@ -60,9 +61,9 @@
         $clientForm.company_id = id;
         $clientForm.post(route('positions.store'), {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: async () => {
                 modals.addClient = false;
-                console.log($clientForm);
+                await router.visit(route('companies.index', { tab: 'connections' }))
             },
             onError: () => {
                 console.log($clientForm);
@@ -71,14 +72,27 @@
         modals.addClient = false;
     }
 
-    $: console.log(clients,sentConnectionRequests);
+    async function handleWithdraw(requestItem: any) {
+        await router.delete(route('connection-requests.destroy', requestItem.id), {
+            preserveScroll: true,
+            onSuccess: async () => {
+                toast.success('Request withdrawn');
+            },
+            onError: () => {
+                console.log('error');
+            }
+        });
+    }
+
+    $: tab = $queryParams?.tab ?? 'employers';
+    
 </script>
 
 <AuthenticatedLayout>
     <h1 class="p-3 font-bold my-2 text-white text-xl">Companies</h1>
 
-    <TabLayout class="px-32" >
-        <TabItem title="Employers" open>
+    <TabLayout class="px-32">
+        <TabItem title="employers" open={tab == 'employers'}>
             <div slot="head" class="w-full flex justify-end">
                 <MiniButton on:click={() => modals.addEmployer = true } >
                     Add Employer
@@ -98,7 +112,7 @@
                 />
             {/if}
         </TabItem>
-        <TabItem title="Clients" >
+        <TabItem title="clients" open={tab == 'clients'}>
             <div slot="head" class="w-full flex justify-end">
                 <MiniButton on:click={() => modals.addClient = true } >
                     New Client
@@ -120,7 +134,7 @@
                 />
             {/if}
         </TabItem>
-        <TabItem title="Connection Requests">
+        <TabItem title="connection requests" open={tab == 'connections'}>
             {#if !sentConnectionRequests.length}
                 <div class="p-3 my-2 text-white text-lg">
                     No projects registered yet
@@ -137,6 +151,9 @@
                         { label: "Status", key: "status", asBadge: true},
                         { label: "Position Requested", key: "role.name"}
                     ]} 
+                    actions={[
+                        { label: "Withdraw", action: (item) => handleWithdraw(item) }
+                    ]}
                 />
             {/if}
         </TabItem>

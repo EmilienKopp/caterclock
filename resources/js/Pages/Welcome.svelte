@@ -3,6 +3,7 @@
     import route from '../../../vendor/tightenco/ziggy';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
+    import Clock from '$components/App/TimeLog/Clock.svelte';
 
     export let ziggy: any;
     export let auth: {
@@ -55,8 +56,12 @@
         {/if}
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="flex justify-center">
-                <img src="/CATERCLOCK_WHITE.png" alt="Caterclock Logo"/>
+            <div class="flex flex-col items-center justify-center my-24">
+                <!-- <img src="/CATERCLOCK_WHITE.png" alt="Caterclock Logo"/> -->
+                <h1 class="title text-4xl">caterclock</h1>
+                <Clock />
+                <h2 class="subtitle text-2xl">the minimalistic clock</h2>
+                <h3>catering to your every need</h3>
             </div>
             <div class="flex justify-center items-center gap-8">
                 <PrimaryButton href={route("register")} shape="wide">Register</PrimaryButton>

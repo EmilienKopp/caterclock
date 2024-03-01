@@ -56,7 +56,7 @@
     </thead>
     <tbody>
         {#each data ?? [] as item}
-        <tr class="p-3 my-2 text-white text-lg">
+        <tr>
             {#each headers as header}
                 {@const unformatted = resolveNestedValue(item, header.key) ?? ""}
                 {@const transformed = header.transform ? header.transform(unformatted) : unformatted}

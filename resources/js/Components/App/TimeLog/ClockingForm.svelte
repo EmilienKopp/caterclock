@@ -52,7 +52,7 @@
         <PrimaryButton disabled={!$form.project_id}  type="submit">Clock {action}</PrimaryButton>
     {/if}
 
-    <Select size="xs" name="project_id" placeholder="プロジェクト選択" bind:value={$form.project_id} 
+    <Select name="project_id" bind:value={$form.project_id} 
             items={projects} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
 
     <div class="col-span-2">
