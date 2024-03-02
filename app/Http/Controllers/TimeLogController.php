@@ -47,34 +47,53 @@ class TimeLogController extends Controller
      */
     public function store(StoreTimeLogRequest $request)
     {
-        
+        DB::transaction(function () use ($request) {
 
-        $validated = $request->validated();
-        logger("TimeLogController@store", ['validated' => $validated]);
-        if($request->has('in_time') && $request->has('out_time') ){
-            $inTime = Carbon::parse($validated["in_time"]);
-            $outTime = Carbon::parse($validated["out_time"]);
-            $validated["duration"] = $inTime->diffInMinutes($outTime);
-            if(!$validated["date"]) {
-                $validated["date"] = $inTime->format('Y-m-d');
+            $validated = $request->validated();
+            $timezone = $validated['timezone'];
+            // Both time fields are present: it's a manual entry
+            if($request->has("in_time") && $request->has("out_time")
+                && $request["in_time"] != null && $request["out_time"] != null )
+            {
+                $inTime = Carbon::parse($validated["in_time"], $timezone);
+                $outTime = Carbon::parse($validated["out_time"], $timezone);
+                $validated["duration"] = $inTime->diffInMinutes($outTime);
+                if(!$validated["date"]) {
+                    $validated["date"] = $inTime->format('Y-m-d');
+                }
+                TimeLog::create([
+                    'project_id' => $validated['project_id'],
+                    'user_id' => $validated['user_id'],
+                    'in_time' => $inTime->utc(),
+                    'out_time' => $outTime->utc(),
+                    'is_running' => false,
+                    'date' => $validated["date"],
+                    'timezone' => $timezone,
+                    'total_duration' => $validated["duration"]
+                ]);
+                return to_route('activities.show', [
+                    'date' => $validated["date"]
+                ]);
             }
-            TimeLog::create($validated);
-            return to_route('activities.show', [
-                'date' => $validated["date"]
-            ]);
-        }
+            
+            $latest = TimeLog::latest($validated['user_id']);
 
-        $clockEntry = TimeLog::latestRunning(auth()->user()->id);
-
-        if(!$clockEntry) { // if there is no "running" clock entry, create one
-            $clockEntry = TimeLog::clockIn($validated);
-        } else { // if there is a clock entry, stop it
-            $clockEntry->out();
-
-            if($validated["project_id"] != $clockEntry->project_id) { // if the selected project is different, also create a new entry
-                $clockEntry = TimeLog::clockIn($validated);
+            if($latest && $latest->is_running) {
+                $latest->out();
             }
-        }
+            if($latest && $latest->project_id != $validated['project_id']) {
+                $latest = TimeLog::create([
+                    'project_id' => $validated['project_id'],
+                    'user_id' => $validated['user_id'],
+                    'in_time' => Carbon::now($timezone)->utc(),
+                    'is_running' => true,
+                    'date' => Carbon::now($timezone)->utc()->format('Y-m-d'),
+                    'timezone' => $timezone,
+                ]);
+            }
+            $latest->user->update(['timezone' => $timezone]);
+
+        });
 
         return to_route('timelog.index');
     }

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTimeLogRequest extends FormRequest
+class UpdateReportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,12 +22,7 @@ class StoreTimeLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'project_id' => 'required|exists:projects,id',
-            'in_time' => 'nullable|date',
-            'out_time' => 'nullable|date|after:in_time',
-            'date' => 'nullable|date',
-            'timezone' => 'required|string|timezone',
+            //
         ];
     }
 }
