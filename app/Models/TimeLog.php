@@ -18,6 +18,7 @@ class TimeLog extends Model
         'is_running',
         'total_duration',
         'date',
+        'timezone'
     ];
     protected $casts = [
         'in_time' => 'datetime',
@@ -61,9 +62,9 @@ class TimeLog extends Model
         $clockEntry = TimeLog::create([
             'project_id' => $validated['project_id'],
             'user_id' => $validated['user_id'],
-            'in_time' => Carbon::now(),
+            'in_time' => $validated['in_time'],
             'is_running' => true,
-            'date' => Carbon::today(),
+            'date' => Carbon::parse($validated['in_time'])->format('Y-m-d'),
         ]);
 
         return $clockEntry;
@@ -71,6 +72,7 @@ class TimeLog extends Model
 
     public static function clockOut($validated)
     {
+
         $clockEntry = TimeLog::where('user_id', $validated['user_id'])
             ->where('out_time', null)
             ->where('date', Carbon::today())
@@ -78,9 +80,9 @@ class TimeLog extends Model
             ->first();
 
         $clockEntry->update([
-            'out_time' => Carbon::now(),
+            'out_time' => $validated['out_time'],
             'is_running' => false,
-            'total_duration' => $clockEntry->in_time->diffInSeconds(Carbon::now()),
+            'total_duration' => $clockEntry->in_time->diffInSeconds($validated['out_time']),
         ]);
 
         return $clockEntry;

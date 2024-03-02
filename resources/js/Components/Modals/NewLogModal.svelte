@@ -8,6 +8,10 @@
     import dayjs from "dayjs";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
+    import utc from 'dayjs/plugin/utc';
+    import timezone from 'dayjs/plugin/timezone';
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
 
     export let open: boolean = false;
 
@@ -16,7 +20,8 @@
         project_id: null,
         in_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T10:00:00',
         out_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T18:00:00',
-        date: dayjs($page.props.query.date).format('YYYY-MM-DD')
+        date: dayjs($page.props.query.date).format('YYYY-MM-DD'),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     });
 
     function handleSubmit() {
@@ -38,7 +43,7 @@
     <div class="flex flex-col space-y-4">
         <div class="flex flex-col space-y-2">
             <InputLabel value="In Time" for="in_time">
-                <input type="datetime-local" id="in_time" name="in_time" bind:value={$form.in_time} />
+                <input  class="bg-base-100 form-control" type="datetime-local" id="in_time" name="in_time" bind:value={$form.in_time} />
             </InputLabel>
             {#if $form.errors.in_time}
                 <p class="text-red-500 text-sm">{$form.errors.in_time}</p>
@@ -46,7 +51,7 @@
         </div>
         <div class="flex flex-col space-y-2">
             <InputLabel value="Out Time" for="out_time">
-                <input type="datetime-local" id="out_time" name="out_time" bind:value={$form.out_time} />
+                <input class="bg-base-100 form-control" type="datetime-local" id="out_time" name="out_time" bind:value={$form.out_time} />
             </InputLabel>
             {#if $form.errors.out_time}
                 <p class="text-red-500 text-sm">

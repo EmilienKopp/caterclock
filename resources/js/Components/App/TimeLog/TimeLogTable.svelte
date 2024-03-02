@@ -7,6 +7,8 @@
     export let entries: any[];
     let secondsSinceLastClockIn: number
 
+    console.log(entries);
+
     $: entries = entries.map( (entry: any) => {
         if(entry.out_time && new Date(entry.out_time) < new Date(entry.in_time)) {
             // Display the out time as if on the next day but with hours+24
@@ -46,7 +48,11 @@
                     </a>
                 </td>
                 <td>
-                    {Duration.toHrMinString(entry.total_duration ?? secondsSinceLastClockIn)}
+                    {#if entry.out_time}
+                        {Duration.toHrMinString(entry.total_duration)}
+                    {:else}
+                        {Duration.toHrMinString(entry.total_duration ?? secondsSinceLastClockIn)}
+                    {/if}
                 </td>
                 <td>
                     <MiniButton href={route("activities.show", {date: dayjs(entry.date).format("YYYY-MM-DD")})} class="bg-blue-500 hover:bg-blue-700">See</MiniButton>

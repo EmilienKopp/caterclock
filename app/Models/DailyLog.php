@@ -11,6 +11,14 @@ class DailyLog extends Model
     use HasFactory;
     protected $table = 'daily_logs';
 
+    public function getDateAttribute($value) {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function setDateAttribute($value) {
+        $this->attributes['date'] = Carbon::parse($value)->format('Y-m-d');
+    }
+
     public static function getMonthly($date)
     {
         return static::where('user_id', auth()->user()->id)

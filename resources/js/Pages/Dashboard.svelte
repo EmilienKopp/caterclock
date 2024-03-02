@@ -5,10 +5,14 @@
     import AuthenticatedLayout from '../Layouts/AuthenticatedLayout.svelte';
     import ElapsedMarker from '$components/App/TimeLog/ElapsedMarker.svelte';
     import { writable } from 'svelte/store';
+    import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+    import NewLogModal from '$components/Modals/NewLogModal.svelte';
 
     export let auth: any = null;
 
     const dropzones = writable(Array(4).fill(null));
+
+    let newLogModalOpen = false;
 
 </script>
 
@@ -26,7 +30,12 @@
                     <ElapsedMarker slot="indicator"/>
                 </ClockingForm>
             </DashboardItem>
+            <DashboardItem>
+                <PrimaryButton on:click={() => newLogModalOpen = true}>Manually add a log entry</PrimaryButton>
+            </DashboardItem>
         </div>
     </div>
+
+    <NewLogModal bind:open={newLogModalOpen} />
 </AuthenticatedLayout>
 

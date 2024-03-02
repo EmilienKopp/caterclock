@@ -3,19 +3,19 @@
     import Select from '$components/Inputs/Select.svelte';
     import { useForm, page } from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
-    import { latestClockInTime, queryParams } from '$lib/stores';
+    import { latestClockInTime, queryParams, toast } from '$lib/stores';
     import { setContext } from 'svelte';
     import dayjs from 'dayjs';
+    import { isEmpty } from 'lodash';
 
-    
-    const {entries,projects,projectDurations} = $page.props;
+    let entries: any[] = [], projects: any[] = [], projectDurations: any[] = [];
+    $: ({entries,projects,projectDurations} = $page.props);
 
     let running = entries.find((entry: any) => entry?.out_time == null);
 
     setContext('running', running);
 
     $: $latestClockInTime = Date.parse(running?.in_time);
-    $: console.log($queryParams);
 
     let action: "in" | "out" = "in";
 
@@ -24,24 +24,37 @@
     const form = useForm({
         user_id: user.id,
         project_id: entries[0]?.project_id,
-        date: null,
+        timestamp: null,
         in_project_id: null,
         out_project_id: null,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     })
 
+    $: projectName = projects?.find((project: any) => project.id == $form.project_id)?.name;
+
     function clock() {
-        $form.post(route('timelog.store'));
-        if(action == "in") {
+        if(action == "in" || switchingProjects) {
             $latestClockInTime = Date.now();
         }
-    }
 
-    $: if(!entries.length || !entries.some((entry: any) => entry.out_time == null) ) {
+        $form.post(route('timelog.store'), {
+            onError: () => {
+                toast.error('An error occurred while trying to clock in/out');
+                console.log($form.errors);
+            },
+            onSuccess: () => {
+                $form.reset();
+            }
+        });
+    }
+    
+
+    $: if(entries && (!entries?.length || !entries?.some((entry: any) => entry.out_time == null)) ) {
         action = "in";
-    } else if (entries.some((entry: any) => entry.out_time == null)) {
+    } else if (entries?.some((entry: any) => entry?.out_time == null)) {
         action = "out";
     }
-    $: switchingProjects = (action == "out" && entries[0]?.project_id != $form.project_id)
+    $: switchingProjects = (action == "out" && entries?.[0]?.project_id != $form.project_id)
 
 </script>
 
@@ -55,6 +68,7 @@
     <Select name="project_id" bind:value={$form.project_id} 
             items={projects} mapping={{labelColumn: 'name', valueColumn: 'id'}} />
 
+    
     <div class="col-span-2">
         <slot name="indicator" {running} />
     </div>
