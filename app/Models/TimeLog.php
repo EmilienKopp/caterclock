@@ -27,6 +27,16 @@ class TimeLog extends Model
         'date' => 'date',
     ];
 
+    public function getInTimeAttribute($value)
+    {
+        return Carbon::parse($value, $this->timezone)->format('Y-m-d H:i:s');
+    }
+
+    public function getOutTimeAttribute($value)
+    {
+        return Carbon::parse($value, $this->timezone)->format('Y-m-d H:i:s');
+    }
+
     public static function getForProjectAndUser($projectId, $userId)
     {
         return static::where('project_id', $projectId)

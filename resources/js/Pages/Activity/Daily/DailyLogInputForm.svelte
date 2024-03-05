@@ -15,6 +15,12 @@
     import type { TaskCategory } from "$models";
     import { Question, QuestionCircleFill, ShieldCheck, ShieldFillCheck, ShieldFillX, ThreeDots } from "svelte-bootstrap-icons";
     import { fade } from 'svelte/transition';
+    import timezone from 'dayjs/plugin/timezone';
+    import utc from 'dayjs/plugin/utc';
+    import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
+
+    dayjs.extend(timezone);
+    dayjs.extend(utc);
 
 
     export let taskCategories: TaskCategory[];
@@ -247,13 +253,17 @@
 
 <Dialog title="Clock entries" bind:open={clockEntryModalOpen} >
 
+    
+
     {#each $clockEntriesForm.entries as entry,index}
-        <div>
-            <input bind:value={entry.in_time} class="rounded bg-transparent" 
+        <div class="flex items-center gap-1">
+            <input bind:value={entry.in_time} class="rounded bg-transparent w-44 text-sm" 
                 type="datetime-local" />
             ~
-            <input bind:value={entry.out_time}
-                class="rounded bg-transparent" type="datetime-local" />
+            <input bind:value={entry.out_time} class="rounded bg-transparent w-44 text-sm" 
+                type="datetime-local" />
+            
+            <TimeZoneInfo timezone={entry.timezone} titled/>
         </div>
     {/each}
 

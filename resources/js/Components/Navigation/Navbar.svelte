@@ -5,6 +5,7 @@
     import type { RouteItem } from '$types';
     import { now } from '$lib/stores';
     import ThemeSwitch from '$components/Buttons/ThemeSwitch.svelte';
+    import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
 
     export let menu: RouteItem[] = [];
     const { auth } = $page.props;
@@ -57,6 +58,7 @@
         <div class="flex items-center">
             <a class="btn btn-ghost text-xl" href="/">caterclock</a>
             <span class="hidden sm:inline-block">{time}</span>
+            <TimeZoneInfo />
         </div>
     </div>
     <div class="navbar-center hidden lg:flex">

@@ -37,6 +37,7 @@
     <form on:submit|preventDefault class={twMerge("modal-box border border-gray-400 flex flex-col w-full",$$restProps.class)} >
         <h3 class="font-bold text-lg flex items-center justify-between">
             {title}
+            <slot name="title-right"/>
         </h3>
         <div class="py-2 text-xs flex items-center justify-between">
             Press ESC key or click the button to the right to close

@@ -81,7 +81,7 @@ class TimeLogController extends Controller
             if($latest && $latest->is_running) {
                 $latest->out();
             }
-            else if(!$latest || $latest->project_id != $validated['project_id']) {
+            else if(!$latest || $latest->project_id != $validated['project_id'] || !$latest->is_running) {
                 $latest = TimeLog::create([
                     'project_id' => $validated['project_id'],
                     'user_id' => $validated['user_id'],

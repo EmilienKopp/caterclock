@@ -14,14 +14,6 @@ export default defineConfig({
                 typescript: true,
             }),
         }),
-        // vue({
-        //     template: {
-        //         transformAssetUrls: {
-        //             base: null,
-        //             includeAbsolute: false,
-        //         },
-        //     },
-        // }),
     ],
     resolve: {
         alias: {
