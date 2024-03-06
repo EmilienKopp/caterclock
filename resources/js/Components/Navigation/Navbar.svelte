@@ -56,7 +56,7 @@
             </ul>
         </div>
         <div class="flex items-center">
-            <a class="btn btn-ghost text-xl" href="/">caterclock</a>
+        <a class="btn btn-ghost text-xl" href={auth.user ? route('dashboard') : '/'}>caterclock</a>
             <span class="hidden sm:inline-block">{time}</span>
             <TimeZoneInfo />
         </div>

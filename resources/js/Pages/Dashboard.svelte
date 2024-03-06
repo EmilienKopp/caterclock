@@ -21,7 +21,7 @@
 
 
     <div class="py-12" on:dragover|preventDefault role="application" >
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-5 sm:grid-cols-3 grid-cols-1">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-5 sm:grid-cols-2 grid-cols-1">
             <DashboardItem>
                 <Clock />
             </DashboardItem>

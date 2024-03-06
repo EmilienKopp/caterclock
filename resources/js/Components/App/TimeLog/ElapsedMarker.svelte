@@ -18,7 +18,7 @@
 {#if running}
     <div class={classes} >
         <span class="loading loading-infinity loading-xs mr-2"></span>
-        <p class="text-xs text-gray-500 ml-2">Running for {Duration.toHrMinString(secondsSinceLastClockIn)}</p>
+        <p class="text-xs text-gray-500 ml-2">On {running.project.name} for {Duration.toHrMinString(secondsSinceLastClockIn)}</p>
     </div>
 {:else}
     <div class={classes} >

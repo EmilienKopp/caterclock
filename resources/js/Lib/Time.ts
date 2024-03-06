@@ -23,6 +23,12 @@ export class Time {
         return dayjs.tz.guess() as Timezone;
     }
 
+    static local(time: string, tz: Timezone, format?: string) {
+        return dayjs.utc(time)
+                    .tz(tz)
+                    .format(format || 'HH:mm');
+    }
+
     public time(format?: string) {
         return this.#time.format(format || 'YYYY-MM-DD HH:mm:ss');
     }

@@ -180,10 +180,10 @@ class User extends Authenticatable
                 $subQuery->where('user_id', $this->id)
                         ->whereIn('role_id', $roles->pluck('id'));
             });
-        })->get();
+        })->with('rates')->get();
 
         // Get projects owned by the user
-        $ownedProjects = $this->projects;
+        $ownedProjects = $this->projects()->with('rates')->get();
 
         return $companyProjects->merge($ownedProjects)->unique('id');
     }

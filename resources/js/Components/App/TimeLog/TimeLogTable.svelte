@@ -2,7 +2,13 @@
     import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { Duration } from "$lib/Duration";
     import route from "$vendor/tightenco/ziggy/src/js";
-    import dayjs from "dayjs";
+    import dayjs, { tz } from "dayjs";
+    import timezone from "dayjs/plugin/timezone";
+    import utc from "dayjs/plugin/utc";
+    import { Time } from "$lib/Time";
+
+    dayjs.extend(timezone);
+    dayjs.extend(utc);
 
     export let entries: any[];
     let secondsSinceLastClockIn: number
@@ -16,6 +22,8 @@
         }
         return entry
     })
+
+    $: console.log(entries);
 
     $: latestEntry = entries[0] ?? null;
     $: if(latestEntry) {
@@ -40,8 +48,8 @@
         <tbody>
         {#each entries ?? [] as entry}
             <tr>
-                <td class="sm:text-sm text-xs">{dayjs(entry.in_time).format("HH:mm")}</td>
-                <td>{entry.out_time ? dayjs(entry.out_time).format("HH:mm") : "-"}</td>
+                <td class="sm:text-sm text-xs">{Time.local(entry.in_time,entry.timezone)}</td>
+                <td>{entry.out_time ? Time.local(entry.out_time,entry.timezone) : "-"}</td>
                 <td>
                     <a href={route("projects.show",{project: entry.project.id})}>
                         {entry.project?.name ?? ""}

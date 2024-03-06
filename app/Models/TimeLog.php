@@ -27,15 +27,15 @@ class TimeLog extends Model
         'date' => 'date',
     ];
 
-    public function getInTimeAttribute($value)
-    {
-        return Carbon::parse($value, $this->timezone)->format('Y-m-d H:i:s');
-    }
+    // public function getInTimeAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value) : null;
+    // }
 
-    public function getOutTimeAttribute($value)
-    {
-        return Carbon::parse($value, $this->timezone)->format('Y-m-d H:i:s');
-    }
+    // public function getOutTimeAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value, $this->timezone) : null;
+    // }
 
     public static function getForProjectAndUser($projectId, $userId)
     {

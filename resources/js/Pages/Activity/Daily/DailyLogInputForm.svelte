@@ -18,6 +18,7 @@
     import timezone from 'dayjs/plugin/timezone';
     import utc from 'dayjs/plugin/utc';
     import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
+    import Calendar from '$components/UI/Calendar.svelte';
 
     dayjs.extend(timezone);
     dayjs.extend(utc);
@@ -249,6 +250,7 @@
         </tbody>
     </table>
     {/if}
+    
 </form>
 
 <Dialog title="Clock entries" bind:open={clockEntryModalOpen} >

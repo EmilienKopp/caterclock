@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\DiaryEntryController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\TimeLogController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PositionController;
@@ -76,6 +76,10 @@ Route::prefix('companies')->middleware('auth')->group(function () {
 
 Route::prefix('positions')->middleware('auth')->group(function () {
     Route::post('/', [PositionController::class, 'store'])->name('positions.store');
+});
+
+Route::prefix('rates')->middleware('auth')->group(function () {
+    Route::post('/{user}/{project}', [RateController::class, 'upsert'])->name('rates.upsert');
 });
 
 Route::prefix('connection-requests')->middleware('auth')->group(function () {

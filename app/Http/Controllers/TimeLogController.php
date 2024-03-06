@@ -55,8 +55,8 @@ class TimeLogController extends Controller
             if($request->has("in_time") && $request->has("out_time")
                 && $request["in_time"] != null && $request["out_time"] != null )
             {
-                $inTime = Carbon::parse($validated["in_time"], $timezone);
-                $outTime = Carbon::parse($validated["out_time"], $timezone);
+                $inTime = Carbon::parse($validated["in_time"]);
+                $outTime = Carbon::parse($validated["out_time"]);
                 $validated["duration"] = $inTime->diffInMinutes($outTime);
                 if(!$validated["date"]) {
                     $validated["date"] = $inTime->format('Y-m-d');
@@ -64,8 +64,8 @@ class TimeLogController extends Controller
                 TimeLog::create([
                     'project_id' => $validated['project_id'],
                     'user_id' => $validated['user_id'],
-                    'in_time' => $inTime->utc(),
-                    'out_time' => $outTime->utc(),
+                    'in_time' => $inTime,
+                    'out_time' => $outTime,
                     'is_running' => false,
                     'date' => $validated["date"],
                     'timezone' => $timezone,
@@ -77,19 +77,21 @@ class TimeLogController extends Controller
             }
             
             $latest = TimeLog::latest($validated['user_id']);
-
+           
             if($latest && $latest->is_running) {
                 $latest->out();
             }
-            else if(!$latest || $latest->project_id != $validated['project_id'] || !$latest->is_running) {
+            
+            if(!$latest ||( $latest->project_id != $validated['project_id'] && !$latest->is_running)) {
                 $latest = TimeLog::create([
                     'project_id' => $validated['project_id'],
                     'user_id' => $validated['user_id'],
-                    'in_time' => Carbon::now($timezone)->utc(),
+                    'in_time' => Carbon::now(),
                     'is_running' => true,
-                    'date' => Carbon::now($timezone)->utc()->format('Y-m-d'),
+                    'date' => Carbon::now()->format('Y-m-d'),
                     'timezone' => $timezone,
                 ]);
+
             }
             $latest->user->update(['timezone' => $timezone]);
 

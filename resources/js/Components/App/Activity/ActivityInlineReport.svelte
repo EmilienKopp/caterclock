@@ -9,7 +9,7 @@
     import Dialog from '$components/Modals/Dialog.svelte';
     import MiniPie from '$components/Buttons/MiniPie.svelte';
     import { slide } from 'svelte/transition';
-    import { useForm, page } from '@inertiajs/svelte';
+    import { useForm, page, router } from '@inertiajs/svelte';
     import { toast, user } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy/src/js';
     import { onDestroy } from 'svelte';
@@ -34,12 +34,17 @@
         out_project_id: null,
     })
 
-    async function clock() {
+    async function clock(e: MouseEvent) {
         const logId = log.timeLogs.find( (l: any) => l.is_running)?.id;
+        const target = e.target as HTMLAnchorElement;
+        
         await $form.put(route('timelog.update',{timelog: logId}),{
             onSuccess: () => {
                 toast.success('Clocked out successfully');
                 log.is_running = false;
+                if(target.tagName == 'A' && target.href) {
+                    router.get(target.href);
+                }
             }
         });
     }
@@ -83,6 +88,9 @@
             <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 {#if log.is_running}
                     <li><button on:click={clock}>Clock Out</button></li>
+                    <li><a on:click|preventDefault={clock} href={route('activities.show',{date: log.date})} >
+                        Clock Out and Edit
+                    </a></li>
                 {/if}
                 <li>
 
@@ -99,12 +107,8 @@
         </form>
         {#if log.activities.length}
             <button {id} class="ml-2" title="Click to enlarge" on:click={handleClick} on:mouseenter={() => openPopoverId = id}>
-                <!-- <PieChartFill /> -->
                 <MiniPie data={log.activities.map(a => a.duration)} />
             </button>
-            <!-- <Popover bind:open={popoverOpen} trigger="hover" triggeredBy="#{id}">
-                <ActivityPieChart title={log.project_name} activities={log.activities} width="200" height="200"/>
-            </Popover> -->
         {:else}
             <a href={route('activities.show',{date: log.date})}>
                 <!-- PencilSquare -->

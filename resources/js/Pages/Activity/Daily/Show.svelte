@@ -1,17 +1,17 @@
 <script lang="ts">
     import DailyLogInputForm from './DailyLogInputForm.svelte';
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { Input } from "flowbite-svelte";
     import { toast } from "$lib/stores";
     import { router, useForm, page} from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-    import WarningButton from '$components/Buttons/WarningButton.svelte';
+    import Calendar from '$components/UI/Calendar.svelte';
     import OutlineButton from '$components/Buttons/OutlineButton.svelte';
     import dayjs from 'dayjs';
     import type { Activity, DailyLog, TaskCategory } from '$models';
     import MiniButton from '$components/Buttons/MiniButton.svelte';
     import NewLogModal from '$components/Modals/NewLogModal.svelte';
+    import Combobox from '$components/Inputs/Combobox.svelte';
 
 
     export let activities: Activity[];
@@ -28,6 +28,7 @@
     })
 
     function handleDateSelection() {
+        console.log(selectedDate);
         if(!selectedDate) return;
         router.get(route('activities.show', { date: selectedDate }));
     }
@@ -68,7 +69,8 @@
 
 <AuthenticatedLayout>
     <h1 class="text-2xl font-semibold">Daily Logs</h1>
-    <Input type="date" class="w-44 dark:text-white" on:change={handleDateSelection} bind:value={selectedDate}/>
+    <input type="date" class="rounded bg-transparent w-44 text-sm" on:change={handleDateSelection} bind:value={selectedDate}/>
+
     
     <div class="grid 2xl:grid-cols-2 grid-cols-1 gap-4 my-3">
         {#if dailyLogs.length == 0}
@@ -79,7 +81,6 @@
                     Create a new log
                 </MiniButton>
             </div>
-            
 
         {:else}
 

@@ -9,13 +9,12 @@
     import { isEmpty } from 'lodash';
 
     let entries: any[] = [], projects: any[] = [], projectDurations: any[] = [];
+
     $: ({entries,projects,projectDurations} = $page.props);
-
-    let running = entries.find((entry: any) => entry?.out_time == null);
-
-    setContext('running', running);
-
+    $: running = entries?.find((entry: any) => entry?.out_time == null);
+    $: projectName = projects?.find((project: any) => project.id == $form.project_id)?.name;
     $: $latestClockInTime = Date.parse(running?.in_time);
+    $: setContext('running', running );
 
     let action: "in" | "out" = "in";
 
@@ -29,8 +28,6 @@
         out_project_id: null,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     })
-
-    $: projectName = projects?.find((project: any) => project.id == $form.project_id)?.name;
 
     function clock() {
         if(action == "in" || switchingProjects) {
