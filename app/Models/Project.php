@@ -44,6 +44,11 @@ class Project extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
+
     public function timeLogs()
     {
         return $this->hasMany(TimeLog::class);

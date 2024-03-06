@@ -17,6 +17,7 @@ class ProjectController extends Controller
             return inertia('Error', ['message' => 'You are not authorized to browse projects.']);
         }
         $projects = $user->getInvolvedProjects();
+        
         return inertia('Project/Index', compact('projects'));
     }
 
@@ -42,6 +43,7 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $this->authorize('update', $project);
+        $project = Project::where('id',$project->id)->with(['rates'])->first();
         return inertia('Project/Edit', compact('project'));
     }
 
