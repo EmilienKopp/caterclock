@@ -55,24 +55,25 @@ class TimeLogController extends Controller
             if($request->has("in_time") && $request->has("out_time")
                 && $request["in_time"] != null && $request["out_time"] != null )
             {
-                $inTime = Carbon::parse($validated["in_time"]);
-                $outTime = Carbon::parse($validated["out_time"]);
+                $inTime = Carbon::parse($validated["in_time"],$timezone);
+                $outTime = Carbon::parse($validated["out_time"],$timezone);
+                $date = $inTime->format('Y-m-d');
                 $validated["duration"] = $inTime->diffInMinutes($outTime);
-                if(!$validated["date"]) {
-                    $validated["date"] = $inTime->format('Y-m-d');
-                }
+
+                
+               
                 TimeLog::create([
                     'project_id' => $validated['project_id'],
                     'user_id' => $validated['user_id'],
-                    'in_time' => $inTime,
-                    'out_time' => $outTime,
+                    'in_time' => $inTime->utc(),
+                    'out_time' => $outTime->utc(),
                     'is_running' => false,
-                    'date' => $validated["date"],
+                    'date' => $date,
                     'timezone' => $timezone,
                     'total_duration' => $validated["duration"]
                 ]);
                 return to_route('activities.show', [
-                    'date' => $validated["date"]
+                    'date' => $date
                 ]);
             }
             
@@ -138,10 +139,10 @@ class TimeLogController extends Controller
             DB::transaction(function () use ($validated) {
                 foreach ($validated['entries'] as $entry) {
                     $timelog = TimeLog::find($entry['id']);
-                    $inTime = Carbon::parse($entry['in_time']);
-                    $timelog->in_time = $inTime;
-                    $outTime = Carbon::parse($entry['out_time']);
-                    $timelog->out_time = $outTime;
+                    $inTime = Carbon::parse($entry['in_time'],$timelog->timezone);
+                    $timelog->in_time = $inTime->utc();
+                    $outTime = Carbon::parse($entry['out_time'],$timelog->timezone);
+                    $timelog->out_time = $outTime->utc();
                     $timelog->save();
                 }
             });

@@ -76,8 +76,6 @@ class ActivityController extends Controller
             ->get()
             ->transform(function ($activity) {
                 $activity->dailyLog = $activity->dailyLog();
-
-                Log::debug($activity->taskCategory);
                 if($activity->taskCategory) {
                     $activity->taskCategory = __($activity->taskCategory["name"]);
                 }
