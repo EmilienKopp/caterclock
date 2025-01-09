@@ -2,13 +2,13 @@
     export let openPopoverId: string;
 </script>
 <script lang="ts">
+    import ActivityLogItem from '$components/App/Activity/ActivityLogItem.svelte';
     import MiniPie from '$components/Buttons/MiniPie.svelte';
     import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
     import Select from '$components/Inputs/Select.svelte';
     import Dialog from '$components/Modals/Dialog.svelte';
     import { toast, user } from '$lib/stores';
     import { Duration } from "$lib/utils/duration";
-    import ActivityLogItem from '$pages';
     import route from '$vendor/tightenco/ziggy/src/js';
     import { page, router, useForm } from '@inertiajs/svelte';
     import { onDestroy } from 'svelte';

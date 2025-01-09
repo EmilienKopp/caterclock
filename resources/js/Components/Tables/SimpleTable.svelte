@@ -29,7 +29,7 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
 
-    import { resolveNestedValue } from "$lib/Objects";
+    import { resolveNestedValue } from "$lib/utils/objects";
 
     import route from "$vendor/tightenco/ziggy";
     import { Popover } from "flowbite-svelte";

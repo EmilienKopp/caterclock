@@ -1,7 +1,7 @@
 <script lang="ts">
+    import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { leftPad } from "$lib/utils/text";
-    import ActivityInlineReport from "$pages";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router } from '@inertiajs/svelte';
     import dayjs from "dayjs";
