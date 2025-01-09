@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { twMerge } from "tailwind-merge";
     import { containerColors as colors } from "$lib/config";
+    import { twMerge } from "tailwind-merge";
 
     export let color: "blue" | "red" | "green" | "yellow" | "gray" | "indigo" | "purple" | "pink" | "orange" | "teal" | "cyan" | "white" | "black" | "ghost"
         | "primary" | "secondary" | "accent" | "neutral" | "info" | "success" | "warning" | "error" | "base-100" | "base-200" = "primary";

@@ -1,11 +1,11 @@
 <script lang="ts">
-    import route from '$vendor/tightenco/ziggy';
-    import { page, Link, inertia } from '@inertiajs/svelte';
-    import dayjs from 'dayjs';
-    import type { RouteItem } from '$types';
-    import { now } from '$lib/stores';
     import ThemeSwitch from '$components/Buttons/ThemeSwitch.svelte';
     import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
+    import { now } from '$lib/stores';
+    import type { RouteItem } from '$types';
+    import route from '$vendor/tightenco/ziggy';
+    import { Link, inertia, page } from '@inertiajs/svelte';
+    import dayjs from 'dayjs';
 
     export let menu: RouteItem[] = [];
     const { auth } = $page.props;

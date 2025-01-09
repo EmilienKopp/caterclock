@@ -1,19 +1,19 @@
 <script lang="ts">
-    import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
-    import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import route from "$vendor/tightenco/ziggy/src/js";
-    import { useForm, router, page } from "@inertiajs/svelte";
-    import Dialog from "$components/Modals/Dialog.svelte";
-    import { FilterService } from "$lib/Filter";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
+    import CompanyCard from "$components/Cards/CompanyCard.svelte";
     import InputLabel from "$components/Inputs/InputLabel.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
-    import TabLayout from "$components/UI/TabLayout.svelte";
-    import TabItem from "$components/UI/TabItem.svelte";
+    import Dialog from "$components/Modals/Dialog.svelte";
     import SimpleTable from "$components/Tables/SimpleTable.svelte";
-    import CompanyCard from "$components/Cards/CompanyCard.svelte";
-    import type { Company, ConnectionRequest, Project } from "$models";
+    import TabItem from "$components/UI/TabItem.svelte";
+    import TabLayout from "$components/UI/TabLayout.svelte";
+    import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import { queryParams, toast } from "$lib/stores";
+    import { FilterService } from "$lib/utils/filter";
+    import type { Company, ConnectionRequest, Project } from "$models";
+    import route from "$vendor/tightenco/ziggy/src/js";
+    import { router, useForm } from "@inertiajs/svelte";
 
     export let auth: any, roles: any, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], 
     employers: Company[], clients: Company[], projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;

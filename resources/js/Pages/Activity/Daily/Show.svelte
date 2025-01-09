@@ -1,15 +1,15 @@
 <script lang="ts">
-  import DailyLogInputForm from './DailyLogInputForm.svelte';
+  import MiniButton from '$components/Buttons/MiniButton.svelte';
+  import OutlineButton from '$components/Buttons/OutlineButton.svelte';
+  import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+  import NewLogModal from '$components/Modals/NewLogModal.svelte';
   import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
   import { toast } from '$lib/stores';
-  import { router, useForm, page } from '@inertiajs/svelte';
-  import route from '$vendor/tightenco/ziggy';
-  import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-  import OutlineButton from '$components/Buttons/OutlineButton.svelte';
-  import dayjs from 'dayjs';
   import type { Activity, DailyLog, TaskCategory } from '$models';
-  import MiniButton from '$components/Buttons/MiniButton.svelte';
-  import NewLogModal from '$components/Modals/NewLogModal.svelte';
+  import route from '$vendor/tightenco/ziggy';
+  import { router, useForm } from '@inertiajs/svelte';
+  import dayjs from 'dayjs';
+  import DailyLogInputForm from './DailyLogInputForm.svelte';
 
   export let activities: Activity[];
   export let dailyLogs: DailyLog[];

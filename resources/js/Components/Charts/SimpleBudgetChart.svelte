@@ -1,9 +1,6 @@
 <script lang="ts">
     import { Chart } from 'chart.js/auto';
-    import { Duration } from "$lib/Duration";
-    import type { Activity } from "$types";
-    import { categoryColors } from '$lib/config';
-
+    
     export let budget: number = 0;
     export let spent: number = 0;
     export let title: string;

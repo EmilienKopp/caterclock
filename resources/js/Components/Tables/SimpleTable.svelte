@@ -29,10 +29,9 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
 
-    import { resolveNestedValue } from "$lib/Objects";
+    import { resolveNestedValue } from "$lib/utils/objects";
 
     import route from "$vendor/tightenco/ziggy";
-    import { each } from "chart.js/dist/helpers/helpers.core";
     import { Popover } from "flowbite-svelte";
     import { twMerge } from "tailwind-merge";
 

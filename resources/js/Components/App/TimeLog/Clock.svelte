@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { time, datetime} from '$lib/stores';
     import { containerColors } from '$lib/config';
+    import { time } from '$lib/stores';
 
     export let color = 'neutral';
 

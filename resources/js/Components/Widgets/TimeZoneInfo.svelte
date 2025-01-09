@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Time } from "$lib/Time";
     import { Timezone } from "$lib/types/timezones";
+    import { Time } from "$lib/utils/time";
     
     // export let tz: Timezone = "UTC";
     export let titled: boolean = false;
