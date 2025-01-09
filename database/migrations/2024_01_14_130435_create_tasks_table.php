@@ -13,12 +13,13 @@ class CreateTasksTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('task_categories'); // Add this line
+        Schema::dropIfExists('task_categories');
         Schema::create('task_categories', function (Blueprint $table) {
             $table->id();
             $table->text('name');
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->unique(['name', 'description']);
         });
 
         Schema::create('tasks', function (Blueprint $table) {

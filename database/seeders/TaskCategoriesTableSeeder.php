@@ -30,6 +30,6 @@ class TaskCategoriesTableSeeder extends Seeder
             ['name' => 'Other', 'description' => 'Other tasks.'],
         ];
 
-        DB::table('task_categories')->upsert($categories, ['name']);
+        DB::table('task_categories')->insert($categories, ['name']);
     }
 }

@@ -79,6 +79,10 @@
     aboveMax = false;
   }
 
+  function opentTaskModal(activity: any, index: number) {
+    console.log(activity, index);
+  }
+
   function handleKeydown(e: CustomEvent, activity: any, index: number) {
     if (e.detail.key == 'Enter') {
       addRow(activity.project_id);
@@ -321,6 +325,13 @@
                       class="text-red-300"
                       on:click={() => removeItem(index)}>Remove</button
                     >
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      on:click={() => openTaskModal(activity, index)}>
+                      Link Task
+                    </button>
                   </li>
                   <li>
                     <button type="button" on:click={$form.reset()}>Reset</button
