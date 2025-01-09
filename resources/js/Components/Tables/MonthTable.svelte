@@ -2,7 +2,7 @@
     import dayjs from "dayjs";
     import localeData from "dayjs/plugin/localeData";
     import { leftPad } from "$lib/Text";
-    import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
+    import ActivityInlineReport from "$pages";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { _ } from 'lodash';
     import MiniButton from "$components/Buttons/MiniButton.svelte";

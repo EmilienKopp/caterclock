@@ -19,7 +19,7 @@
     </div>
     <ul>
         {#each items.filter( (item) => FilterService.Fuzzy(resolveNestedValue(item,key),searchString)) ?? [] as item}
-            <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
+            <li class="p-3 my-2 text-primary text-lg flex justify-between w-full">
                 <span>
                     {@html FilterService.fuzzyHighlight(resolveNestedValue(item,key), searchString)}
                 </span>

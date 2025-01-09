@@ -93,7 +93,7 @@
             >
                 <div class="w-10 rounded-full">
                     <img title={auth.user.name} alt={auth.user.name} 
-                        src="{auth.user.avatar}"
+                        src="{auth.user.avatar ?? 'avatar-default.jpg'}"
                     />
                 </div>
             </div>

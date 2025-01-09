@@ -3,7 +3,7 @@
 </script>
 <script lang="ts">
     import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
-    import ActivityLogItem from '$components/App/Activity/ActivityLogItem.svelte';
+    import ActivityLogItem from '$pages';
     import Select from '$components/Inputs/Select.svelte';
     import { Duration } from "$lib/Duration";
     import Dialog from '$components/Modals/Dialog.svelte';

@@ -31,7 +31,7 @@
             />
         {:else}
             <p class="text-gray-600">No projects yet.</p>
-            <PrimaryButton href={route('projects.create')} class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow">
+            <PrimaryButton href={route('projects.create')} class="mt-4 bg-green-500 hover:bg-green-600 text-primary px-4 py-2 rounded shadow">
                 Create your first project
             </PrimaryButton>
         {/if}
