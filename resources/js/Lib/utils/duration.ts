@@ -1,4 +1,4 @@
-import { leftPad } from "./Text";
+import { leftPad } from "./text";
 
 export class Duration {
     private totalSeconds = 0;

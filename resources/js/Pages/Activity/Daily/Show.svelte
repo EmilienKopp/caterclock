@@ -5,13 +5,11 @@
     import { router, useForm, page} from '@inertiajs/svelte';
     import route from '$vendor/tightenco/ziggy';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-    import Calendar from '$components/UI/Calendar.svelte';
     import OutlineButton from '$components/Buttons/OutlineButton.svelte';
     import dayjs from 'dayjs';
     import type { Activity, DailyLog, TaskCategory } from '$models';
     import MiniButton from '$components/Buttons/MiniButton.svelte';
     import NewLogModal from '$components/Modals/NewLogModal.svelte';
-    import Combobox from '$components/Inputs/Combobox.svelte';
 
 
     export let activities: Activity[];
