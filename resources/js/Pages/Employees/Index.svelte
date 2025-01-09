@@ -45,7 +45,7 @@
 
 <AuthenticatedLayout>
     <div>
-        <h2 class="p-3 font-bold my-2 text-white text-lg">Employees</h2>
+        <h2 class="p-3 font-bold my-2 text-primary text-lg">Employees</h2>
         <div class="grid grid-cols-2">
             {#each companies as company}
                 <div class="p-2 border rounded pb-12">

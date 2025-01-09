@@ -89,7 +89,7 @@
 </script>
 
 <AuthenticatedLayout>
-    <h1 class="p-3 font-bold my-2 text-white text-xl">Companies</h1>
+    <h1 class="p-3 font-bold my-2 text-primary text-xl">Companies</h1>
 
     <TabLayout class="px-32">
         <TabItem title="employers" open={tab == 'employers'}>
@@ -99,7 +99,7 @@
                 </MiniButton>
             </div>
             {#if !employers.length}
-                <div class="p-3 my-2 text-white text-lg">
+                <div class="p-3 my-2 text-primary text-lg">
                     No employers registered yet
                 </div>
             {:else}
@@ -119,7 +119,7 @@
                 </MiniButton>
             </div>
             {#if !clients.length}
-                <div class="p-3 my-2 text-white text-lg">
+                <div class="p-3 my-2 text-primary text-lg">
                     No clients registered yet
                 </div>
             {:else}
@@ -136,7 +136,7 @@
         </TabItem>
         <TabItem title="connection requests" open={tab == 'connections'}>
             {#if !sentConnectionRequests.length}
-                <div class="p-3 my-2 text-white text-lg">
+                <div class="p-3 my-2 text-primary text-lg">
                     No projects registered yet
                 </div>
             {:else}
@@ -167,7 +167,7 @@
             </div>
             <ul>
                 {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
-                    <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
+                    <li class="p-3 my-2 text-primary text-lg flex justify-between w-full">
                         <span>
                             {@html FilterService.fuzzyHighlight(company.name, searchString)}
                         </span>
@@ -199,7 +199,7 @@
             </div>
             <ul>
                 {#each companies.filter( (c) => FilterService.Fuzzy(c.name,searchString)) ?? [] as company}
-                    <li class="p-3 my-2 text-white text-lg flex justify-between w-full">
+                    <li class="p-3 my-2 text-primary text-lg flex justify-between w-full">
                         <span>
                             {@html FilterService.fuzzyHighlight(company.name, searchString)}
                         </span>

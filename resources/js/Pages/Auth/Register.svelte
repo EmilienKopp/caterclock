@@ -54,7 +54,7 @@
 </svelte:head>
 
 <GuestLayout>
-    <h1 class="p-3 font-bold my-2 text-white text-xl">Register</h1>
+    <h1 class="p-3 font-bold my-2 text-primary text-xl">Register</h1>
     {#if auth.oauth_user?.name}
         <div class="p-3 my-2 bg-red-100 text-red-900 rounded-md">
             Welcome {auth.oauth_user.name}!
