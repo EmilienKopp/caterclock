@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "start": "vite preview"
+        "start": "concurrently -p \"[{time}] [{name}]\" -t \"HH:mm:ss\" -n backend,frontend,docker -c #E0234E,#0000FF -s all \"php artisan serve\"  \"vite\" \"docker compose up\""
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
@@ -32,6 +32,7 @@
         "chart.js": "^4.4.1",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.0",
+        "concurrently": "^9.1.2",
         "dayjs": "^1.11.10",
         "flowbite": "^2.2.1",
         "flowbite-svelte": "^0.44.22",
