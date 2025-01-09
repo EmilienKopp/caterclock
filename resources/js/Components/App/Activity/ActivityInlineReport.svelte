@@ -6,8 +6,8 @@
     import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
     import Select from '$components/Inputs/Select.svelte';
     import Dialog from '$components/Modals/Dialog.svelte';
-    import { Duration } from "$lib/duration";
     import { toast, user } from '$lib/stores';
+    import { Duration } from "$lib/utils/duration";
     import ActivityLogItem from '$pages';
     import route from '$vendor/tightenco/ziggy/src/js';
     import { page, router, useForm } from '@inertiajs/svelte';

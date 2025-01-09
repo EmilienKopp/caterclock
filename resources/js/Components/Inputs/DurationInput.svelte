@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Duration } from "$lib/duration";
+    import { Duration } from "$lib/utils/duration";
     import { createEventDispatcher } from "svelte";
 
     export let activity: any;

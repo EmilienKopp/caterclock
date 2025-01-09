@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Duration } from "$lib/duration";
+    import { Duration } from "$lib/utils/duration";
     import dayjs from "dayjs";
     import { getContext } from "svelte";
     import { twMerge } from "tailwind-merge";

@@ -1,7 +1,7 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
-    import { Duration } from "$lib/duration";
-    import { Time } from "$lib/time";
+    import { Duration } from "$lib/utils/duration";
+    import { Time } from "$lib/utils/time";
     import route from "$vendor/tightenco/ziggy/src/js";
     import dayjs from "dayjs";
     import timezone from "dayjs/plugin/timezone";

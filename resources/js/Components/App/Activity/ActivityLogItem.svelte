@@ -1,6 +1,6 @@
 <script lang="ts">
     import { categoryColors } from "$lib/config";
-    import { Duration } from "$lib/duration";
+    import { Duration } from "$lib/utils/duration";
     import type { Activity } from "$types";
     import { twMerge } from "tailwind-merge";
 

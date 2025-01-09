@@ -1,7 +1,7 @@
 <script lang="ts">
     import MiniButton from '$components/Buttons/MiniButton.svelte';
-    import { FilterService } from '$lib/Filter';
-    import { resolveNestedValue } from '$lib/Objects';
+    import { FilterService } from '$lib/utils/filter';
+    import { resolveNestedValue } from '$lib/utils/objects';
     import { createEventDispatcher } from 'svelte';
     import InputLabel from './InputLabel.svelte';
 

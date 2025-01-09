@@ -9,8 +9,8 @@
     import TabItem from "$components/UI/TabItem.svelte";
     import TabLayout from "$components/UI/TabLayout.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { FilterService } from "$lib/Filter";
     import { queryParams, toast } from "$lib/stores";
+    import { FilterService } from "$lib/utils/filter";
     import type { Company, ConnectionRequest, Project } from "$models";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router, useForm } from "@inertiajs/svelte";
