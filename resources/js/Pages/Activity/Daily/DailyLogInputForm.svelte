@@ -7,8 +7,8 @@
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import { Duration } from '$Lib/duration';
   import { toast } from '$lib/stores';
+  import { Duration } from '$lib/utils/duration';
   import type { TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
   import { useForm } from '@inertiajs/svelte';

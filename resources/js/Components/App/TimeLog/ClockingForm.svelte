@@ -1,12 +1,10 @@
 <script lang="ts">
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import Select from '$components/Inputs/Select.svelte';
-    import { useForm, page } from '@inertiajs/svelte';
+    import { latestClockInTime, toast } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy';
-    import { latestClockInTime, queryParams, toast } from '$lib/stores';
+    import { page, useForm } from '@inertiajs/svelte';
     import { setContext } from 'svelte';
-    import dayjs from 'dayjs';
-    import { isEmpty } from 'lodash';
 
     let entries: any[] = [], projects: any[] = [], projectDurations: any[] = [];
 

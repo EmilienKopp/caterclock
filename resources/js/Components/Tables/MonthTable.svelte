@@ -1,6 +1,6 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
-    import { leftPad } from "$Lib/text";
+    import { leftPad } from "$lib/utils/text";
     import ActivityInlineReport from "$pages";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router } from '@inertiajs/svelte';

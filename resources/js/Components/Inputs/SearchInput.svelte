@@ -1,9 +1,9 @@
 <script lang="ts">
-    import InputLabel from './InputLabel.svelte';
     import MiniButton from '$components/Buttons/MiniButton.svelte';
     import { FilterService } from '$lib/Filter';
     import { resolveNestedValue } from '$lib/Objects';
     import { createEventDispatcher } from 'svelte';
+    import InputLabel from './InputLabel.svelte';
 
     export let searchString = '';
     export let items: any[] = [];

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { toast } from '$lib/stores.ts';
-    import { onDestroy, onMount } from 'svelte';
     import { Link } from '@inertiajs/svelte';
+    import { onDestroy, onMount } from 'svelte';
 
     export let href: string | undefined = undefined;
     export let linkText: string | undefined = undefined;

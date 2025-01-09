@@ -1,15 +1,14 @@
 <script lang="ts">
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import InputLabel from "$components/Inputs/InputLabel.svelte";
+    import NumberInput from "$components/Inputs/NumberInput.svelte";
+    import Select from "$components/Inputs/Select.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
     import PageTitle from "$components/UI/PageTitle.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { page, useForm} from "@inertiajs/svelte";
-    import route from '$vendor/tightenco/ziggy';
-    import NumberInput from "$components/Inputs/NumberInput.svelte";
     import { toast, user } from "$lib/stores";
-    import SearchInput from "$components/Inputs/SearchInput.svelte";
-    import Select from "$components/Inputs/Select.svelte";
+    import route from '$vendor/tightenco/ziggy';
+    import { page, useForm } from "@inertiajs/svelte";
 
     const { project } = $page.props;
 

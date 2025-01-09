@@ -1,12 +1,12 @@
 <script lang="ts">
+import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
 import InputError from '$components/Inputs/InputError.svelte';
 import InputLabel from '$components/Inputs/InputLabel.svelte';
-import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
 import TextInput from '$components/Inputs/TextInput.svelte';
-import { Link, page, router, useForm } from '@inertiajs/svelte';
-import route from '../../../../../vendor/tightenco/ziggy';
 import { toast } from '$lib/stores';
+import { Link, page, useForm } from '@inertiajs/svelte';
 import { fade } from 'svelte/transition';
+import route from '../../../../../vendor/tightenco/ziggy';
 
 export let mustVerifyEmail: boolean = true;
 export let status: string = ''

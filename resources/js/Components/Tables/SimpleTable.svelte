@@ -32,7 +32,6 @@
     import { resolveNestedValue } from "$lib/Objects";
 
     import route from "$vendor/tightenco/ziggy";
-    import { each } from "chart.js/dist/helpers/helpers.core";
     import { Popover } from "flowbite-svelte";
     import { twMerge } from "tailwind-merge";
 
