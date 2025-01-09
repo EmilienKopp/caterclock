@@ -1,31 +1,21 @@
 <script lang="ts">
-  import PageWideLoadScreen from './PageWideLoadScreen.svelte';
-
-  import Select from '$components/Inputs/Select.svelte';
-  import { Duration } from '$lib/Duration';
-  import DurationInput from '$components/Inputs/DurationInput.svelte';
-  import { toast, user } from '$lib/stores';
-  import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-  import { router, useForm } from '@inertiajs/svelte';
-  import route from '$vendor/tightenco/ziggy';
+  
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
+  import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+  import DurationInput from '$components/Inputs/DurationInput.svelte';
+  import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
-  import dayjs from 'dayjs';
+  import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
+  import { Duration } from '$Lib/duration';
+  import { toast } from '$lib/stores';
   import type { TaskCategory } from '$models';
-  import {
-    Question,
-    QuestionCircleFill,
-    ShieldCheck,
-    ShieldFillCheck,
-    ShieldFillX,
-    ThreeDots,
-  } from 'svelte-bootstrap-icons';
-  import { fade } from 'svelte/transition';
+  import route from '$vendor/tightenco/ziggy';
+  import { useForm } from '@inertiajs/svelte';
+  import dayjs from 'dayjs';
   import timezone from 'dayjs/plugin/timezone';
   import utc from 'dayjs/plugin/utc';
-  import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import Calendar from '$components/UI/Calendar.svelte';
+  import { fade } from 'svelte/transition';
 
   dayjs.extend(timezone);
   dayjs.extend(utc);

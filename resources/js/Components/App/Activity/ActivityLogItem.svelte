@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Duration } from "$lib/Duration";
+    import { categoryColors } from "$lib/config";
+    import { Duration } from "$Lib/duration";
     import type { Activity } from "$types";
     import { twMerge } from "tailwind-merge";
-    import { categoryColors } from "$lib/config";
 
     export let activity: Activity;
 

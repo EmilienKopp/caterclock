@@ -1,14 +1,12 @@
 <script lang="ts">
-    import dayjs from "dayjs";
-    import localeData from "dayjs/plugin/localeData";
-    import { leftPad } from "$lib/Text";
+    import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import { leftPad } from "$Lib/text";
     import ActivityInlineReport from "$pages";
     import route from "$vendor/tightenco/ziggy/src/js";
-    import { _ } from 'lodash';
-    import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { router } from '@inertiajs/svelte';
+    import dayjs from "dayjs";
+    import localeData from "dayjs/plugin/localeData";
     import { onMount } from "svelte";
-    import MiniPie from "$components/Buttons/MiniPie.svelte";
     dayjs.extend(localeData);
 
     export let headers: string[] = [];

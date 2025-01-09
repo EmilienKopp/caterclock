@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Duration } from "$lib/Duration";
-    import { createEventDispatcher, tick } from "svelte";
+    import { Duration } from "$Lib/duration";
+    import { createEventDispatcher } from "svelte";
 
     export let activity: any;
     export let max: number = Number.MAX_SAFE_INTEGER;

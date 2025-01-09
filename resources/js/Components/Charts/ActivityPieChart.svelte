@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Chart } from 'chart.js/auto';
-    import { Duration } from "$lib/Duration";
-    import type { Activity } from "$types";
     import { categoryColors } from '$lib/config';
+    import { Duration } from "$Lib/duration";
+    import type { Activity } from "$types";
+    import { Chart } from 'chart.js/auto';
 
     export let activities: Activity[] = [];
     export let title: string;

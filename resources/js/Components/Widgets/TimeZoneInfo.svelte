@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Time } from "$lib/Time";
+    import { Time } from "$Lib/time";
     import { Timezone } from "$lib/types/timezones";
     
     // export let tz: Timezone = "UTC";
