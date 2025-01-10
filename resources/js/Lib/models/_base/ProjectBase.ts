@@ -1,11 +1,11 @@
-import { Company, User, Project } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
-export class ProjectBase implements Project {
+export class ProjectBase implements IProject {
     id: number;
     company_id?: number;
-    company?: Company;
+    company?: ICompany;
     user_id?: number;
-    user?: User;
+    user?: IUser;
     name: string;
     description?: string;
     start_date?: Date;
@@ -20,6 +20,14 @@ export class ProjectBase implements Project {
     balance_mid?: number;
     balance_high?: number;
     currency: any;
+
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
 
 
     constructor(data: Project) {
@@ -40,5 +48,13 @@ export class ProjectBase implements Project {
         this.balance_mid = data.balance_mid;
         this.balance_high = data.balance_high;
         this.currency = data.currency;
+
+        this.projects = data.projects ?? [];
+        this.timeLogs = data.timeLogs ?? [];
+        this.activities = data.activities ?? [];
+        this.companies = data.companies ?? [];
+        this.connectionRequests = data.connectionRequests ?? [];
+        this.rates = data.rates ?? [];
+        this.identities = data.identities ?? [];
     }
 }

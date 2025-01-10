@@ -7,15 +7,15 @@
     import TextInput from '$components/Inputs/TextInput.svelte';
     import PageTitle from '$components/UI/PageTitle.svelte';
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-    import { user } from '$lib/stores.svelte';
     import route from '$vendor/tightenco/ziggy';
-    import { useForm } from '@inertiajs/svelte';
+    import { page, useForm } from '@inertiajs/svelte';
 
 
     const form = useForm('createProject',{
         name: '',
         description: '',
     });
+    const { auth: user } = $page.props;
 
     async function handleSubmit(e: Event) {
         e.preventDefault();

@@ -1,6 +1,6 @@
-import { Company } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog } from '$models';
 
-export class CompanyBase implements Company {
+export class CompanyBase implements ICompany {
     id: number;
     name: string;
     address?: string;
@@ -14,6 +14,14 @@ export class CompanyBase implements Company {
     is_active: boolean;
     code?: any;
     corporate_number?: any;
+
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
 
 
     constructor(data: Company) {
@@ -30,5 +38,13 @@ export class CompanyBase implements Company {
         this.is_active = data.is_active;
         this.code = data.code;
         this.corporate_number = data.corporate_number;
+
+        this.projects = data.projects ?? [];
+        this.timeLogs = data.timeLogs ?? [];
+        this.activities = data.activities ?? [];
+        this.companies = data.companies ?? [];
+        this.connectionRequests = data.connectionRequests ?? [];
+        this.rates = data.rates ?? [];
+        this.identities = data.identities ?? [];
     }
 }

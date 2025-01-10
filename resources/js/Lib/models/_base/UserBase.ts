@@ -1,6 +1,6 @@
-import { User } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
-export class UserBase implements User {
+export class UserBase implements IUser {
     id: number;
     name: any;
     email: any;
@@ -12,6 +12,14 @@ export class UserBase implements User {
     avatar?: any;
     last_login?: any;
     timezone?: any;
+
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
 
 
     constructor(data: User) {
@@ -26,5 +34,13 @@ export class UserBase implements User {
         this.avatar = data.avatar;
         this.last_login = data.last_login;
         this.timezone = data.timezone;
+
+        this.projects = data.projects ?? [];
+        this.timeLogs = data.timeLogs ?? [];
+        this.activities = data.activities ?? [];
+        this.companies = data.companies ?? [];
+        this.connectionRequests = data.connectionRequests ?? [];
+        this.rates = data.rates ?? [];
+        this.identities = data.identities ?? [];
     }
 }

@@ -1,4 +1,4 @@
-import { Writable, derived, get, readable, writable } from "svelte/store";
+import { type Writable, derived, get, readable, writable } from "svelte/store";
 
 import { page } from "@inertiajs/svelte";
 import dayjs from "dayjs";

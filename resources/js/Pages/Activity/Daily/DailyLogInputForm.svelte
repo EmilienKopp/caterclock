@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { preventDefault, run } from 'svelte/legacy';
-
   
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
@@ -10,8 +8,10 @@
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
+  import type { Activity } from '$lib/models/Activity';
+  import type { DailyLog } from '$lib/models/DailyLog';
+  import { TaskCategory } from '$lib/models/TaskCategory';
   import { Duration } from '$lib/utils/duration';
-  import type { TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
   import { useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
@@ -24,19 +24,18 @@
 
   interface Props {
     taskCategories: TaskCategory[];
-    log: any;
+    log: DailyLog;
   }
 
   let { taskCategories, log = $bindable() }: Props = $props();
 
-  const logEntry = log.timeLogs[0];
+  let logEntry = $state(log.timeLogs?.[0]);
   let aboveMax: boolean = $state(true);
   let loading: boolean = false;
   let safetyOn: boolean = $state(true);
   let clockEntryModalOpen = $state(false);
-
-  const clockEntriesForm = useForm({
-    entries: log.timeLogs.map((entry: any) => {
+  let entries = $state(
+    log.timeLogs?.map((entry: any) => {
       return {
         ...entry,
         in_time: dayjs(entry.in_time).format('YYYY-MM-DDTHH:mm'),
@@ -44,22 +43,28 @@
           ? dayjs(entry.out_time).format('YYYY-MM-DDTHH:mm')
           : '',
       };
-    }),
+    })
+  );
+
+  const clockEntriesForm = useForm({
+    entries,
   });
 
   const form = useForm({
     date: log.date,
     project_id: log.project_id,
-    activities: log.activities.filter(
+    activities: log.activities?.filter(
       (a: any) => a.project_id == log.project_id
     ),
   });
 
-  let activitiesTotal = $derived($form.activities
-    .filter((a: any) => a.project_id == log.project_id)
-    .reduce((a: number, b: any) => a + b.duration, 0));
+  let activitiesTotal = $derived(
+    $form.activities
+      .filter((a: Activity) => a.project_id == log.project_id)
+      .reduce((a: number, b: any) => a + b.duration, 0)
+  );
 
-  run(() => {
+  $effect(() => {
     if (
       safetyOn &&
       log?.total_seconds &&
@@ -80,19 +85,20 @@
     console.log(activity, index);
   }
 
-  function handleKeydown(e: CustomEvent, activity: any, index: number) {
+  function handleKeydown(e: CustomEvent, activity: Activity, index: number) {
     if (e.detail.key == 'Enter') {
       addRow(activity.project_id);
-      if (document)
-        document
-          ?.querySelector(
-            `input[name="activity_${activity.project_id}[${index + 1}]"]`
-          )
-          ?.focus();
+      if (document) {
+        const target = document.querySelector(
+          `input[name="activity_${activity.project_id}[${index + 1}]"]`
+        ) as HTMLInputElement;
+        target?.focus();
+      }
     }
   }
 
-  function addRow(projectId: number) {
+  function addRow(projectId: number | undefined) {
+    if (!projectId) return;
     $form.activities = [
       ...$form.activities,
       {
@@ -104,12 +110,11 @@
       },
     ];
     log.activities = $form.activities;
-    console.log(log.activities);
   }
 
-  async function save() {
+  async function save(e: Event) {
+    e.preventDefault();
     loading = true;
-    console.log($form);
     $form.post(route('activities.store'), {
       onSuccess: () => {
         toaster.success('Activities saved successfully');
@@ -124,9 +129,8 @@
   }
 
   async function handleDelete() {
-    console.log($form);
     if (confirm('Are you sure you want to delete this log?')) {
-      $form.delete(route('timelog.destroy', { timelog: logEntry.id }), {
+      $form.delete(route('timelog.destroy', { timelog: logEntry?.id }), {
         onStart: () => {
           toaster.info('Deleting log...');
         },
@@ -144,14 +148,13 @@
     $form.activities = $form.activities.filter((a, i) => i != index);
   }
 
-  function fill(index: any) {
-    const remaining = log.total_seconds - activitiesTotal;
-    $form.activities[index].duration = Math.round(
-      $form.activities[index].duration + remaining
-    );
+  function fill(index: number) {
+    const remaining = (log.total_seconds ?? 0) - activitiesTotal;
+    const duration = $form.activities[index].duration + remaining || 0;
+    $form.activities[index].duration = Math.round(duration);
   }
 
-  function clear(index: any) {
+  function clear(index: number) {
     $form.activities[index].duration = 0;
   }
 
@@ -167,15 +170,11 @@
       },
     });
   }
-
-  run(() => {
-    log.activities = $form.activities;
-  });
 </script>
 
 <form
   class="rounded border p-5"
-  onsubmit={preventDefault(save)}
+  onsubmit={save}
   transition:fade
   class:border-green-600={!$form.isDirty}
   class:border-yellow-100={$form.isDirty && !aboveMax}
@@ -189,7 +188,7 @@
     <div class="flex justify-between text-lg">
       <h2>
         {log.date}・{log.project_name}・({Duration.toHrMinString(
-          log.total_seconds
+          (log.total_seconds ?? 0)
         )})
         <span
           class="tooltip"
@@ -328,13 +327,13 @@
                   <li>
                     <button
                       type="button"
-                      onclick={() => openTaskModal(activity, index)}>
+                      onclick={() => openTaskModal(activity, index)}
+                    >
                       Link Task
                     </button>
                   </li>
                   <li>
-                    <button type="button" onclick={$form.reset()}>Reset</button
-                    >
+                    <button type="button" onclick={$form.reset()}>Reset</button>
                   </li>
                 </ul>
               </div>
@@ -354,12 +353,12 @@
                 type="submit"
                 title={aboveMax
                   ? 'Total duration cannot be greater than ' +
-                    Duration.toHHMM(log.total_seconds)
+                    Duration.toHHMM((log.total_seconds ?? 0))
                   : 'Save activities'}
                 loading={$form.processing}
                 disabled={aboveMax ||
                   activitiesTotal == 0 ||
-                  log.activities.some((a) => !a.task_category_id)}
+                  log.activities?.some((a) => !a.task_category_id)}
               >
                 Save
               </PrimaryButton>
@@ -391,7 +390,7 @@
   {/each}
 
   {#snippet buttons()}
-    <div >
+    <div>
       <PrimaryButton on:click={updateClockEntries}>Save</PrimaryButton>
     </div>
   {/snippet}

@@ -1,4 +1,4 @@
-export interface Activity {
+export interface IActivity {
     id: number;
     project_id: number;
     project?: Project;
@@ -18,7 +18,7 @@ export interface Activity {
     updated_at?: any;
 }
 
-export interface Company {
+export interface ICompany {
     id: number;
     name: string;
     address?: string;
@@ -32,9 +32,12 @@ export interface Company {
     is_active: boolean;
     code?: any;
     corporate_number?: any;
+
+    projects?: Project[];
+    connectionRequests?: ConnectionRequest[];
 }
 
-export interface ConnectionRequest {
+export interface IConnectionRequest {
     id: number;
     sender_id: number;
     company_id?: number;
@@ -47,7 +50,7 @@ export interface ConnectionRequest {
     role?: Role;
 }
 
-export interface DailyLog {
+export interface IDailyLog {
     user_id?: number;
     user?: User;
     user_name?: any;
@@ -60,7 +63,7 @@ export interface DailyLog {
     is_running?: boolean;
 }
 
-export interface Identity {
+export interface IIdentity {
     id: number;
     user_id: number;
     user?: User;
@@ -73,7 +76,7 @@ export interface Identity {
     oauth_provider: any;
 }
 
-export interface Permission {
+export interface IPermission {
     id: number;
     role_id: number;
     role?: Role;
@@ -83,7 +86,7 @@ export interface Permission {
     updated_at?: any;
 }
 
-export interface Position {
+export interface IPosition {
     company_id: number;
     company?: Company;
     user_id: number;
@@ -94,7 +97,7 @@ export interface Position {
     role?: Role;
 }
 
-export interface Project {
+export interface IProject {
     id: number;
     company_id?: number;
     company?: Company;
@@ -114,9 +117,14 @@ export interface Project {
     balance_mid?: number;
     balance_high?: number;
     currency: any;
+
+    tasks?: Task[];
+    timeLogs?: TimeLog[];
+    activities?: Activity[];
+    rates?: Rate[];
 }
 
-export interface Rate {
+export interface IRate {
     id: number;
     project_id: number;
     project?: Project;
@@ -132,13 +140,13 @@ export interface Rate {
     updated_at?: any;
 }
 
-export interface Report {
+export interface IReport {
     id: number;
     created_at?: any;
     updated_at?: any;
 }
 
-export interface Role {
+export interface IRole {
     id: number;
     name: any;
     description?: string;
@@ -147,9 +155,12 @@ export interface Role {
     level: number;
     created_at?: any;
     updated_at?: any;
+
+    permissions?: Permission[];
+    connectionRequests?: ConnectionRequest[];
 }
 
-export interface Task {
+export interface ITask {
     id: number;
     project_id: number;
     project?: Project;
@@ -166,17 +177,23 @@ export interface Task {
     status: string;
     created_at?: any;
     updated_at?: any;
+
+    activities?: Activity[];
 }
 
-export interface TaskCategory {
+export interface ITaskCategory {
     id: number;
     name: string;
     description?: string;
     created_at?: any;
     updated_at?: any;
+
+    tasks?: Task[];
+    activities?: Activity[];
+    rates?: Rate[];
 }
 
-export interface TimeLog {
+export interface ITimeLog {
     id: number;
     user_id: number;
     user?: User;
@@ -196,7 +213,7 @@ export interface TimeLog {
     timezone?: any;
 }
 
-export interface User {
+export interface IUser {
     id: number;
     name: any;
     email: any;
@@ -208,6 +225,14 @@ export interface User {
     avatar?: any;
     last_login?: any;
     timezone?: any;
+
+    projects?: Project[];
+    timeLogs?: TimeLog[];
+    activities?: Activity[];
+    companies?: Company[];
+    connectionRequests?: ConnectionRequest[];
+    rates?: Rate[];
+    identities?: Identity[];
 }
 
 export type ModelTypes = Activity | Company | ConnectionRequest | DailyLog | Identity | Permission | Position | Project | Rate | Report | Role | Task | TaskCategory | TimeLog | User;

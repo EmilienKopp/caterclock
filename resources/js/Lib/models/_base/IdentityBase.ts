@@ -1,9 +1,9 @@
-import { User, Identity } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
-export class IdentityBase implements Identity {
+export class IdentityBase implements IIdentity {
     id: number;
     user_id: number;
-    user?: User;
+    user?: IUser;
     oauth_id: string;
     access_token?: string;
     refresh_token?: string;
@@ -11,6 +11,14 @@ export class IdentityBase implements Identity {
     created_at?: any;
     updated_at?: any;
     oauth_provider: any;
+
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
 
 
     constructor(data: Identity) {
@@ -23,5 +31,13 @@ export class IdentityBase implements Identity {
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
         this.oauth_provider = data.oauth_provider;
+
+        this.projects = data.projects ?? [];
+        this.timeLogs = data.timeLogs ?? [];
+        this.activities = data.activities ?? [];
+        this.companies = data.companies ?? [];
+        this.connectionRequests = data.connectionRequests ?? [];
+        this.rates = data.rates ?? [];
+        this.identities = data.identities ?? [];
     }
 }

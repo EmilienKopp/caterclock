@@ -10,6 +10,7 @@
         variant?: ButtonVariant;
         shape?: ButtonShape;
         children?: import('svelte').Snippet;
+        onclick?: (e: Event) => void;
         [key: string]: any
     }
 
@@ -20,6 +21,7 @@
         variant = "primary",
         shape = undefined,
         children,
+        onclick,
         ...rest
     }: Props = $props();
 
@@ -60,7 +62,7 @@
 {#if !href}
     <button
         type="button"
-        onclick={bubble('click')}
+        {onclick}
         {...rest}
         class={twMerge(classes,"min-h-fit h-8", rest.class)}
     >

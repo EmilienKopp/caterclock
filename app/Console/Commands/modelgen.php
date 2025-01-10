@@ -27,6 +27,7 @@ class ModelGen extends Command
     protected $typesOutputPath;
     protected $models;
     protected Collection $selectedModels;
+    protected $currentModelClass;
 
     public function __construct()
     {
@@ -149,13 +150,14 @@ class ModelGen extends Command
         $interfaces = $this->selectedModels->map(function ($modelClass) use (&$modelNames) {
             $model = app()->make($modelClass);
             $className = class_basename($model);
+            $this->currentModelClass = $modelClass;
             $this->info("Generating interface for $className...");
 
             $modelNames[] = $className;
             $columns = $this->getTableColumns($model->getTable());
             $properties = $this->generateInterfaceProperties($columns);
 
-            return "export interface $className {\n$properties\n}";
+            return "export interface I{$className} {\n$properties\n}";
         })->implode("\n\n");
 
         // Add union type for dynamic indexing
@@ -167,7 +169,10 @@ class ModelGen extends Command
 
     protected function generateInterfaceProperties(Collection $columns): string
     {
-        return $columns->map(function ($column) {
+        $model = $this->getCurrentModel();
+        $hasManyRelations = $this->findHasManyRelationships(get_class($model), $model->getTable());
+
+        $properties = $columns->map(function ($column) {
             $db_type = $column->data_type;
             $type = config("typegen.mapping.$db_type", 'any');
             $attributeString = $column->is_nullable === 'YES' ? "$column->column_name?" : "$column->column_name";
@@ -178,14 +183,24 @@ class ModelGen extends Command
                 $relatedModel = $this->findRelatedModel($relationship);
                 if ($relatedModel) {
                     $relatedType = class_basename($relatedModel);
-                    $this->line("    Found relationship: $relatedType");
+                    $this->line("    Found BelongsTo relationship: $relatedType");
                     $typeEntry .= "\n    $relationship?: $relatedType;";
                 }
             }
 
-            $this->line("    Inserting type: $typeEntry from $db_type");
             return $typeEntry;
         })->implode("\n");
+
+        // Add HasMany relationships
+        if ($hasManyRelations->isNotEmpty()) {
+            $properties .= "\n";
+            $hasManyRelations->each(function ($relation) use (&$properties) {
+                $this->line("    Found HasMany relationship: {$relation['name']} -> {$relation['type']}[]");
+                $properties .= "\n    {$relation['name']}?: {$relation['type']}[];";
+            });
+        }
+
+        return $properties;
     }
 
     protected function generateModelClasses(): void
@@ -220,30 +235,51 @@ class ModelGen extends Command
 
     protected function generateImports(Collection $columns, string $className, ModelType $modelType): string
     {
-        $imports = "";
-        if ($modelType === ModelType::BASE) {
-            $imports .= "import { ";
-            $columns->each(function ($column) use (&$imports) {
-                if (Str::endsWith($column->column_name, '_id')) {
-                    $relationship = Str::beforeLast($column->column_name, '_id');
-                    $relatedModel = $this->findRelatedModel($relationship);
-                    if ($relatedModel) {
-                        $relatedType = class_basename($relatedModel);
-                        $this->line("    Found relationship: $relatedType");
-                        $imports .= "$relatedType, ";
-                    }
-                }
-            });
-            $imports .= "$className } from '\$models';";
-        } else {
-            $imports = "import { {$className}Base } from './_base/{$className}Base';";
+        if ($modelType === ModelType::MODEL) {
+            $interfaceName = $this->classNameToInterfaceName($className);
+            return "import { {$className}Base } from './_base/{$className}Base';
+            import type { $interfaceName } from '\$models';
+            ";
         }
-        return $imports;
+
+        $imports = new Collection();
+
+        // Add the current model's interface
+        $imports->push($className);
+
+        // Add BelongsTo relationships from foreign keys
+        $columns->each(function ($column) use ($imports) {
+            if (Str::endsWith($column->column_name, '_id')) {
+                $relationship = Str::beforeLast($column->column_name, '_id');
+                $relatedModel = $this->findRelatedModel($relationship);
+                if ($relatedModel) {
+                    $relatedType = class_basename($relatedModel);
+                    $imports->push($relatedType);
+                }
+            }
+        });
+
+        // Add HasMany relationships
+        $model = $this->getCurrentModel();
+        $hasManyRelations = $this->findHasManyRelationships(get_class($model), $model->getTable());
+        $hasManyRelations->each(function ($relation) use ($imports) {
+            $imports->push($relation['type']);
+        });
+
+        $imports = $imports->unique()
+            ->map(fn($import) => $this->classNameToInterfaceName($import))
+            ->sort()
+            ->values();
+
+        return "import type { " . $imports->implode(', ') . " } from '\$models';";
     }
 
     protected function generateClassProperties(Collection $columns): string
     {
-        return $columns->map(function ($column) {
+        $model = $this->getCurrentModel();
+        $hasManyRelations = $this->findHasManyRelationships(get_class($model), $model->getTable());
+
+        $properties = $columns->map(function ($column) {
             $type = config("typegen.mapping.{$column->data_type}", 'any');
             $attributeName = $column->is_nullable === 'YES' ? "{$column->column_name}?" : $column->column_name;
             $typeEntry = "    $attributeName: $type;";
@@ -253,19 +289,42 @@ class ModelGen extends Command
                 $relatedModel = $this->findRelatedModel($relationship);
                 if ($relatedModel) {
                     $relatedType = class_basename($relatedModel);
-                    $typeEntry .= "\n    $relationship?: $relatedType;";
+                    $relatedInterfaceName = $this->classNameToInterfaceName($relatedType);
+                    $typeEntry .= "\n    $relationship?: $relatedInterfaceName;";
                 }
             }
 
             return $typeEntry;
         })->implode("\n");
+
+        // Add HasMany relationships
+        if ($hasManyRelations->isNotEmpty()) {
+            $properties .= "\n";
+            $hasManyRelations->each(function ($relation) use (&$properties) {
+                $interfaceName = $this->classNameToInterfaceName($relation['type']);
+                $properties .= "\n    {$relation['name']}?: {$interfaceName}[];";
+            });
+        }
+
+        return $properties;
     }
 
     protected function generateConstructor(Collection $columns, string $className): string
     {
+        $model = $this->getCurrentModel();
+        $hasManyRelations = $this->findHasManyRelationships(get_class($model), $model->getTable());
+
         $constructorBody = $columns->map(function ($column) {
             return "        this.{$column->column_name} = data.{$column->column_name};";
         })->implode("\n");
+
+        // Add HasMany relationships initialization
+        if ($hasManyRelations->isNotEmpty()) {
+            $constructorBody .= "\n";
+            $hasManyRelations->each(function ($relation) use (&$constructorBody) {
+                $constructorBody .= "\n        this.{$relation['name']} = data.{$relation['name']} ?? [];";
+            });
+        }
 
         return "\n    constructor(data: $className) {\n$constructorBody\n    }";
     }
@@ -277,6 +336,78 @@ class ModelGen extends Command
         });
     }
 
+    protected function findHasManyRelationships(string $modelClass, string $tableName): Collection
+    {
+        // Get all foreign key constraints pointing to this table
+        $foreignKeys = DB::select(
+            "
+        SELECT
+            tc.table_name as child_table,
+            kcu.column_name as foreign_key_column
+        FROM information_schema.table_constraints AS tc 
+        JOIN information_schema.key_column_usage AS kcu
+            ON tc.constraint_name = kcu.constraint_name
+            AND tc.table_schema = kcu.table_schema
+        JOIN information_schema.constraint_column_usage AS ccu
+            ON ccu.constraint_name = tc.constraint_name
+            AND ccu.table_schema = tc.table_schema
+        WHERE tc.constraint_type = 'FOREIGN KEY'
+        AND ccu.table_name = :tableName
+        AND tc.table_schema = 'public'",
+            ['tableName' => $tableName]
+        );
+
+        $transformed = collect([]);
+        $foreignKeys = collect($foreignKeys);
+        foreach ($foreignKeys as $fk) {
+            $found = $foreignKeys->first(function ($item) use ($fk) {
+                return $item->child_table === $fk->child_table;
+            });
+            if ($found) {
+                $before_id = Str::beforeLast($fk->foreign_key_column, '_id');
+                $new = (object) [
+                    'child_table' => "{$before_id}_{$fk->child_table}",
+                    'foreign_key_column' => $fk->foreign_key_column,
+                ];
+                $transformed->push($new);
+            }
+            $transformed->push($fk);
+        }
+
+        return collect($transformed)->unique('child_table')->map(function ($fk) use ($modelClass) {
+            // Convert the table name to a potential model name
+            $childTable = Str::singular($fk->child_table);
+            $relationshipName = Str::camel(Str::plural($childTable)); // products, orderItems, etc.
+
+            $relatedModel = $this->findModelByTable($childTable);
+
+            if ($relatedModel) {
+                return [
+                    'name' => $relationshipName,
+                    'type' => class_basename($relatedModel),
+                    'foreign_key' => $fk->foreign_key_column
+                ];
+            }
+
+            return null;
+        })->filter();
+    }
+
+    protected function findModelByTable(string $tableName): ?string
+    {
+        $modelName = Str::studly(Str::singular($tableName));
+
+        return $this->models->first(function ($model) use ($modelName) {
+            return class_basename($model) === $modelName;
+        });
+    }
+
+    protected function getCurrentModel(): object
+    {
+        // This helper method should be called from within a context where $modelClass is available
+        return app()->make($this->currentModelClass);
+    }
+
     protected function writeModelFile(string $className, string $imports, string $properties, string $constructor, ModelType $modelType): void
     {
         $outputDir = $this->outputDirs[$modelType->value];
@@ -284,20 +415,33 @@ class ModelGen extends Command
             ModelType::BASE => "{$className}Base",
             ModelType::MODEL => "{$className}",
         };
+        $interfaceName = $this->classNameToInterfaceName($className);
         $implementsString = match ($modelType) {
-            ModelType::BASE => "implements {$className}",
-            ModelType::MODEL => "extends {$className}Base",
+            ModelType::BASE => "implements {$interfaceName}",
+            ModelType::MODEL => "extends {$className}Base implements {$interfaceName}",
         };
+
+        // Add imports for array types if we have HasMany relationships
+        if ($modelType === ModelType::BASE) {
+            $model = $this->getCurrentModel();
+            $hasManyRelations = $this->findHasManyRelationships(get_class($model), $model->getTable());
+        }
+
         $contents = <<<TS
-$imports
-
-export class {$modelName} {$implementsString} {
-$properties
-
-$constructor
-}
-TS;
+    $imports
+    
+    export class {$modelName} {$implementsString} {
+    $properties
+    
+    $constructor
+    }
+    TS;
 
         file_put_contents("{$outputDir}{$modelName}.ts", $contents);
+    }
+
+    private function classNameToInterfaceName(string $className): string
+    {
+        return "I{$className}";
     }
 }

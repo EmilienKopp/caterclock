@@ -9,24 +9,19 @@
   import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
   import type { Activity, DailyLog, TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
-  import { router, useForm } from '@inertiajs/svelte';
+  import { page, router, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
   import DailyLogInputForm from './DailyLogInputForm.svelte';
   
 
-  interface Props {
+  interface PageProps {
     activities: Activity[];
     dailyLogs: DailyLog[];
     taskCategories: TaskCategory[];
     date: string;
   }
 
-  let {
-    activities,
-    dailyLogs,
-    taskCategories,
-    date
-  }: Props = $props();
+  let { activities, dailyLogs, taskCategories, date}: PageProps = $page.props;
 
   let selectedDate = $state(dayjs(date).format('YYYY-MM-DD'));
   let logModalOpen = $state(false);
@@ -70,7 +65,7 @@
   }
 
   run(() => {
-    $form.activities = dailyLogs.flatMap((log) => {
+    $form.activities = dailyLogs?.flatMap((log) => {
       return log.activities;
     });
   });
@@ -96,7 +91,7 @@
     {:else}
       {#each dailyLogs as log, i}
         {#if log.activities}
-          <DailyLogInputForm bind:log={log.activities[i]} {taskCategories} />
+          <DailyLogInputForm bind:log={dailyLogs[i]} {taskCategories} />
         {/if}
       {/each}
       <div class="2xl:col-span-2 col-span-1">

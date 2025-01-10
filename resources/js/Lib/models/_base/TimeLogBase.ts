@@ -1,11 +1,11 @@
-import { User, Project, TimeLog } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
-export class TimeLogBase implements TimeLog {
+export class TimeLogBase implements ITimeLog {
     id: number;
     user_id: number;
-    user?: User;
+    user?: IUser;
     project_id: number;
-    project?: Project;
+    project?: IProject;
     date: any;
     in_time: any;
     out_time?: any;
@@ -18,6 +18,14 @@ export class TimeLogBase implements TimeLog {
     created_at?: any;
     updated_at?: any;
     timezone?: any;
+
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
 
 
     constructor(data: TimeLog) {
@@ -36,5 +44,13 @@ export class TimeLogBase implements TimeLog {
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
         this.timezone = data.timezone;
+
+        this.projects = data.projects ?? [];
+        this.timeLogs = data.timeLogs ?? [];
+        this.activities = data.activities ?? [];
+        this.companies = data.companies ?? [];
+        this.connectionRequests = data.connectionRequests ?? [];
+        this.rates = data.rates ?? [];
+        this.identities = data.identities ?? [];
     }
 }

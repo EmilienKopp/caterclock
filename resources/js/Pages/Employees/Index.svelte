@@ -1,13 +1,14 @@
 <script lang="ts">
-    import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
-    import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import route from "$vendor/tightenco/ziggy/src/js";
-    import { useForm, router } from "@inertiajs/svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
+    import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
+    import { Company } from "$lib/models/Company";
+    import { ConnectionRequest } from "$lib/models/ConnectionRequest";
+    import { Project } from "$lib/models/Project";
+    import route from "$vendor/tightenco/ziggy/src/js";
+    import { router, useForm } from "@inertiajs/svelte";
     import dayjs from "dayjs";
-    import { Label, P } from "flowbite-svelte";
-    import { Company, ConnectionRequest, Project } from "$models";
 
     interface Props {
         auth: any;
