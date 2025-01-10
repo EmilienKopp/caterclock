@@ -1,10 +1,7 @@
-import { Permission } from '$models';
+import { PermissionBase } from './_base/PermissionBase';
 
-export class PermissionBase implements Permission {
+export class Permission extends PermissionBase {
 
 
 
-    constructor(data: Permission) {
-
-    }
 }

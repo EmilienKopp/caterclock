@@ -1,10 +1,7 @@
-import { Activity } from '$models';
+import { ActivityBase } from './_base/ActivityBase';
 
-export class ActivityBase implements Activity {
+export class Activity extends ActivityBase {
 
 
 
-    constructor(data: Activity) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { DailyLog } from '$models';
+import { DailyLogBase } from './_base/DailyLogBase';
 
-export class DailyLogBase implements DailyLog {
+export class DailyLog extends DailyLogBase {
 
 
 
-    constructor(data: DailyLog) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { Position } from '$models';
+import { PositionBase } from './_base/PositionBase';
 
-export class PositionBase implements Position {
+export class Position extends PositionBase {
 
 
 
-    constructor(data: Position) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { Company } from '$models';
+import { CompanyBase } from './_base/CompanyBase';
 
-export class CompanyBase implements Company {
+export class Company extends CompanyBase {
 
 
 
-    constructor(data: Company) {
-
-    }
 }

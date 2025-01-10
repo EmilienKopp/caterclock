@@ -1,10 +1,7 @@
-import { Report } from '$models';
+import { ReportBase } from './_base/ReportBase';
 
-export class ReportBase implements Report {
+export class Report extends ReportBase {
 
 
 
-    constructor(data: Report) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { Rate } from '$models';
+import { RateBase } from './_base/RateBase';
 
-export class RateBase implements Rate {
+export class Rate extends RateBase {
 
 
 
-    constructor(data: Rate) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { Role } from '$models';
+import { RoleBase } from './_base/RoleBase';
 
-export class RoleBase implements Role {
+export class Role extends RoleBase {
 
 
 
-    constructor(data: Role) {
-
-    }
 }

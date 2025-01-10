@@ -1,10 +1,7 @@
-import { Task } from '$models';
+import { TaskBase } from './_base/TaskBase';
 
-export class TaskBase implements Task {
+export class Task extends TaskBase {
 
 
 
-    constructor(data: Task) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { User } from '$models';
+import { UserBase } from './_base/UserBase';
 
-export class UserBase implements User {
+export class User extends UserBase {
 
 
 
-    constructor(data: User) {
-
-    }
 }

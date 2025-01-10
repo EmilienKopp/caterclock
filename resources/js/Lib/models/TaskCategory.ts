@@ -1,10 +1,7 @@
-import { TaskCategory } from '$models';
+import { TaskCategoryBase } from './_base/TaskCategoryBase';
 
-export class TaskCategoryBase implements TaskCategory {
+export class TaskCategory extends TaskCategoryBase {
 
 
 
-    constructor(data: TaskCategory) {
-
-    }
 }

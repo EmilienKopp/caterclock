@@ -1,10 +1,7 @@
-import { Project } from '$models';
+import { ProjectBase } from './_base/ProjectBase';
 
-export class ProjectBase implements Project {
+export class Project extends ProjectBase {
 
 
 
-    constructor(data: Project) {
-
-    }
 }

@@ -1,10 +1,7 @@
-import { ConnectionRequest } from '$models';
+import { ConnectionRequestBase } from './_base/ConnectionRequestBase';
 
-export class ConnectionRequestBase implements ConnectionRequest {
+export class ConnectionRequest extends ConnectionRequestBase {
 
 
 
-    constructor(data: ConnectionRequest) {
-
-    }
 }

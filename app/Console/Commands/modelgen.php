@@ -12,12 +12,18 @@ use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\confirm;
 
+enum ModelType: int
+{
+    case BASE = 0;
+    case MODEL = 1;
+}
+
 class ModelGen extends Command
 {
     protected $signature = 'split:modelgen {--types-only : Generate only TypeScript interfaces}';
     protected $description = 'Generate TypeScript models and interfaces from Laravel models';
 
-    protected $outputDir;
+    protected $outputDirs;
     protected $typesOutputPath;
     protected $models;
     protected Collection $selectedModels;
@@ -25,7 +31,10 @@ class ModelGen extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->outputDir = base_path('resources/js/Lib/models/');
+        $this->outputDirs =  [
+            ModelType::BASE->value => base_path('resources/js/Lib/models/_base/'),
+            ModelType::MODEL->value => base_path('resources/js/Lib/models/'),
+        ];
         $this->typesOutputPath = config('typegen.output', base_path('resources/js/types/models.d.ts'));
     }
 
@@ -60,16 +69,18 @@ class ModelGen extends Command
 
     protected function validateEnvironment(): bool
     {
-        // if (config('database.default') !== 'pgsql') {
-        //     $this->error('Only PostgreSQL is supported at the moment.');
-        //     return false;
-        // }
+        if (config('database.default') !== 'pgsql') {
+            $this->error('Only PostgreSQL is supported at the moment.');
+            return false;
+        }
 
-        // $this->info('Using PostgreSQL database driver.');
+        $this->info('Using PostgreSQL database driver.');
 
         if (!$this->option('types-only')) {
-            if (!is_dir($this->outputDir)) {
-                mkdir($this->outputDir, 0755, true);
+            foreach ($this->outputDirs as $outputDir) {
+                if (!is_dir($outputDir)) {
+                    mkdir($outputDir, 0755, true);
+                }
             }
         }
 
@@ -181,35 +192,52 @@ class ModelGen extends Command
     {
         $this->line('Generating JavaScript model classes...');
 
-        $this->selectedModels->each(function ($modelClass) {
+        collect([ModelType::BASE, ModelType::MODEL])->each(
+            fn($modelType) => $this->generateModelClassesByType($modelType)
+        );
+    }
+
+    protected function generateModelClassesByType(ModelType $modelType): void
+    {
+        $this->selectedModels->each(function ($modelClass) use ($modelType) {
             $model = app()->make($modelClass);
             $className = class_basename($model);
             $this->info("Generating class for {$className}Base...");
 
             $columns = $this->getTableColumns($model->getTable());
-            $imports = $this->generateImports($columns, $className);
-            $properties = $this->generateClassProperties($columns);
-            $constructor = $this->generateConstructor($columns, $className);
+            $imports = $this->generateImports($columns, $className, $modelType);
+            if ($modelType === ModelType::BASE) {
+                $properties = $this->generateClassProperties($columns);
+                $constructor = $this->generateConstructor($columns, $className);
+            } else {
+                $properties = "";
+                $constructor = "";
+            }
 
-            $this->writeModelFile($className, $imports, $properties, $constructor);
+            $this->writeModelFile($className, $imports, $properties, $constructor, $modelType);
         });
     }
 
-    protected function generateImports(Collection $columns, string $className): string
+    protected function generateImports(Collection $columns, string $className, ModelType $modelType): string
     {
-        $imports = "import { ";
-        $columns->each(function ($column) use (&$imports) {
-            if (Str::endsWith($column->column_name, '_id')) {
-                $relationship = Str::beforeLast($column->column_name, '_id');
-                $relatedModel = $this->findRelatedModel($relationship);
-                if ($relatedModel) {
-                    $relatedType = class_basename($relatedModel);
-                    $this->line("    Found relationship: $relatedType");
-                    $imports .= "$relatedType, ";
+        $imports = "";
+        if ($modelType === ModelType::BASE) {
+            $imports .= "import { ";
+            $columns->each(function ($column) use (&$imports) {
+                if (Str::endsWith($column->column_name, '_id')) {
+                    $relationship = Str::beforeLast($column->column_name, '_id');
+                    $relatedModel = $this->findRelatedModel($relationship);
+                    if ($relatedModel) {
+                        $relatedType = class_basename($relatedModel);
+                        $this->line("    Found relationship: $relatedType");
+                        $imports .= "$relatedType, ";
+                    }
                 }
-            }
-        });
-        $imports .= "$className } from '\$models';";
+            });
+            $imports .= "$className } from '\$models';";
+        } else {
+            $imports = "import { {$className}Base } from './_base/{$className}Base';";
+        }
         return $imports;
     }
 
@@ -249,18 +277,27 @@ class ModelGen extends Command
         });
     }
 
-    protected function writeModelFile(string $className, string $imports, string $properties, string $constructor): void
+    protected function writeModelFile(string $className, string $imports, string $properties, string $constructor, ModelType $modelType): void
     {
+        $outputDir = $this->outputDirs[$modelType->value];
+        $modelName = match ($modelType) {
+            ModelType::BASE => "{$className}Base",
+            ModelType::MODEL => "{$className}",
+        };
+        $implementsString = match ($modelType) {
+            ModelType::BASE => "implements {$className}",
+            ModelType::MODEL => "extends {$className}Base",
+        };
         $contents = <<<TS
 $imports
 
-export class {$className}Base implements $className {
+export class {$modelName} {$implementsString} {
 $properties
 
 $constructor
 }
 TS;
 
-        file_put_contents("{$this->outputDir}{$className}.ts", $contents);
+        file_put_contents("{$outputDir}{$modelName}.ts", $contents);
     }
 }

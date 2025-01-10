@@ -1,10 +1,6 @@
-import { TimeLog } from '$models';
+import { TimeLogBase } from './_base/TimeLogBase';
 
-export class TimeLogBase implements TimeLog {
+export class TimeLog extends TimeLogBase {
 
 
-
-    constructor(data: TimeLog) {
-
-    }
 }

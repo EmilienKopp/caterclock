@@ -1,10 +1,7 @@
-import { Identity } from '$models';
+import { IdentityBase } from './_base/IdentityBase';
 
-export class IdentityBase implements Identity {
+export class Identity extends IdentityBase {
 
 
 
-    constructor(data: Identity) {
-
-    }
 }
