@@ -5,9 +5,13 @@
     import { createEventDispatcher } from 'svelte';
     import InputLabel from './InputLabel.svelte';
 
-    export let searchString = '';
-    export let items: any[] = [];
-    export let key: string = 'name';
+    interface Props {
+        searchString?: string;
+        items?: any[];
+        key?: string;
+    }
+
+    let { searchString = $bindable(''), items = [], key = 'name' }: Props = $props();
 
     const dispatch = createEventDispatcher();
 </script>

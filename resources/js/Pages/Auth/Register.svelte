@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run, preventDefault } from 'svelte/legacy';
+
     import { router, Link } from '@inertiajs/svelte';
     import GuestLayout from "$layouts/GuestLayout.svelte";
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
@@ -8,10 +10,16 @@
     import LineLoginButton from '$components/Buttons/LineLoginButton.svelte';
     import { useForm } from "@inertiajs/svelte";
 
-    export let auth: any, oauth: any, session: any;
+    interface Props {
+        auth: any;
+        oauth: any;
+        session: any;
+    }
+
+    let { auth, oauth, session }: Props = $props();
 
 
-    let loading = false;
+    let loading = $state(false);
 
     const form = useForm({
         name: auth.oauth_user?.name || "",
@@ -47,7 +55,9 @@
         });
     }
 
-    $: console.log($form);
+    run(() => {
+        console.log($form);
+    });
 </script>
 <svelte:head>
     <title>Caterclock | Register</title>
@@ -61,7 +71,7 @@
             Please fill in the form to complete your registration.
         </div>
     {/if}
-    <form on:submit|preventDefault={submit}>
+    <form onsubmit={preventDefault(submit)}>
         <div>
             <InputLabel for="name">Name</InputLabel>
             <TextInput

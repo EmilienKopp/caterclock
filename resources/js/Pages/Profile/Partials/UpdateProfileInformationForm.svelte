@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run, preventDefault } from 'svelte/legacy';
+
 import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
 import InputError from '$components/Inputs/InputError.svelte';
 import InputLabel from '$components/Inputs/InputLabel.svelte';
@@ -8,8 +10,12 @@ import { Link, page, useForm } from '@inertiajs/svelte';
 import { fade } from 'svelte/transition';
 import route from '../../../../../vendor/tightenco/ziggy';
 
-export let mustVerifyEmail: boolean = true;
-export let status: string = ''
+    interface Props {
+        mustVerifyEmail?: boolean;
+        status?: string;
+    }
+
+    let { mustVerifyEmail = true, status = '' }: Props = $props();
 
 const {user} = $page;
 
@@ -32,7 +38,9 @@ async function updateInfo() {
     })
 }
 
-$: console.log($form.processing);
+run(() => {
+        console.log($form.processing);
+    });
 </script>
 
 <section>
@@ -51,7 +59,7 @@ $: console.log($form.processing);
         {/if}
     </header>
 
-    <form on:submit|preventDefault={updateInfo} class="mt-6 space-y-6">
+    <form onsubmit={preventDefault(updateInfo)} class="mt-6 space-y-6">
         <div>
             <InputLabel for="name" value="Name" />
 

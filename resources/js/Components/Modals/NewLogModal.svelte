@@ -13,7 +13,11 @@
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
-    export let open: boolean = false;
+    interface Props {
+        open?: boolean;
+    }
+
+    let { open = $bindable(false) }: Props = $props();
 
     const form = useForm({
         user_id: $page.props.auth.user.id,

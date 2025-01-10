@@ -2,17 +2,31 @@
     import BaseButton from "./BaseButton.svelte";
     import type { ButtonSize, ButtonShape, ButtonVariant } from "$types";
     
-    export let href: string | undefined = undefined;
-    export let loading: boolean = false;
-    export let size: ButtonSize = "md";
-    export let variant: ButtonVariant = "primary";
-    export let shape: ButtonShape = "block";
+    interface Props {
+        href?: string | undefined;
+        loading?: boolean;
+        size?: ButtonSize;
+        variant?: ButtonVariant;
+        shape?: ButtonShape;
+        children?: import('svelte').Snippet;
+        [key: string]: any
+    }
+
+    let {
+        href = undefined,
+        loading = false,
+        size = "md",
+        variant = "primary",
+        shape = "block",
+        children,
+        ...rest
+    }: Props = $props();
 </script>
 
 <BaseButton {size} {shape} {variant} {loading} {href}
-    on:click {...$$restProps}
+    on:click {...rest}
 >
 
-    <slot />
+    {@render children?.()}
 
 </BaseButton>

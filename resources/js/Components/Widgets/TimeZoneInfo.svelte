@@ -2,10 +2,16 @@
     import { Timezone } from "$lib/types/timezones";
     import { Time } from "$lib/utils/time";
     
-    // export let tz: Timezone = "UTC";
-    export let titled: boolean = false;
-    export let position: "before" | "after" = "after";
-    export let timezone: Timezone | string = Time.tz();
+    
+    interface Props {
+        // export let tz: Timezone = "UTC";
+        titled?: boolean;
+        position?: "before" | "after";
+        timezone?: Timezone | string;
+        [key: string]: any
+    }
+
+    let { titled = false, position = "after", timezone = Time.tz(), ...rest }: Props = $props();
 </script>
 
 {#if titled}
@@ -15,7 +21,7 @@
         </svg>
     </span>
 {:else}
-    <data value={timezone} {...$$restProps} 
+    <data value={timezone} {...rest} 
         class:before={position == "before"} 
         class:after={position == "after"}
         class:side={!titled}>

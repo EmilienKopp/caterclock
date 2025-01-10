@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { preventDefault } from 'svelte/legacy';
+
 import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
 import InputError from '$components/Inputs/InputError.svelte';
 import InputLabel from '$components/Inputs/InputLabel.svelte';
@@ -7,8 +9,8 @@ import { toast } from '$lib/stores';
 import route from '$vendor/tightenco/ziggy';
 import { useForm } from '@inertiajs/svelte';
 
-let passwordInput: any = null;
-let currentPasswordInput: any = null;
+let passwordInput: any = $state(null);
+let currentPasswordInput: any = $state(null);
 
 const form = useForm({
     current_password: '',
@@ -45,7 +47,7 @@ const updatePassword = () => {
         </p>
     </header>
 
-    <form on:submit|preventDefault={updatePassword} class="mt-6 space-y-6">
+    <form onsubmit={preventDefault(updatePassword)} class="mt-6 space-y-6">
         <div>
             <InputLabel for="current_password" value="Current Password" />
 

@@ -1,13 +1,30 @@
 <script lang="ts">
+    import { createBubbler } from 'svelte/legacy';
+
+    const bubble = createBubbler();
     import { twMerge } from "tailwind-merge";
     import { Link } from '@inertiajs/svelte';
     import { ButtonShape, ButtonVariant } from "$types";
 
-    export let href: string | undefined = undefined;
-    export let loading: boolean = false;
-    export let size: ButtonSize = "md";
-    export let variant: ButtonVariant = "primary";
-    export let shape: ButtonShape = undefined;
+    interface Props {
+        href?: string | undefined;
+        loading?: boolean;
+        size?: ButtonSize;
+        variant?: ButtonVariant;
+        shape?: ButtonShape;
+        children?: import('svelte').Snippet;
+        [key: string]: any
+    }
+
+    let {
+        href = undefined,
+        loading = false,
+        size = "md",
+        variant = "primary",
+        shape = undefined,
+        children,
+        ...rest
+    }: Props = $props();
 
     const sizes: any = {
         xs: "btn-xs",
@@ -46,20 +63,20 @@
 {#if !href}
     <button
         type="button"
-        on:click
-        {...$$restProps}
-        class={twMerge(classes,"min-h-fit h-8", $$restProps.class)}
+        onclick={bubble('click')}
+        {...rest}
+        class={twMerge(classes,"min-h-fit h-8", rest.class)}
     >
         {#if !loading}
-            <slot />
+            {@render children?.()}
         {:else}
             <span class="loading loading-dots loading-sm"></span>
         {/if}
     </button>
 {:else}
-    <Link href={href} {...$$restProps} class={twMerge(classes,"min-h-fit h-8",$$restProps.class)}  on:click >
+    <Link href={href} {...rest} class={twMerge(classes,"min-h-fit h-8",rest.class)}  on:click >
         {#if !loading}
-            <slot />
+            {@render children?.()}
         {:else}
             <span class="loading loading-dots loading-lg"></span>
         {/if}

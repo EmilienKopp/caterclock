@@ -15,16 +15,41 @@
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router, useForm } from "@inertiajs/svelte";
 
-    export let auth: any, roles: any, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], 
-    employers: Company[], clients: Company[], projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;
+    interface Props {
+        auth: any;
+        roles: any;
+        companies: Company[];
+        ownedCompanies: Company[];
+        managedCompanies: Company[];
+        employers: Company[];
+        clients: Company[];
+        projects: Project[];
+        sentConnectionRequests: ConnectionRequest[];
+        ziggy: any;
+        errors: any;
+    }
+
+    let {
+        auth,
+        roles,
+        companies,
+        ownedCompanies,
+        managedCompanies,
+        employers,
+        clients,
+        projects,
+        sentConnectionRequests,
+        ziggy,
+        errors
+    }: Props = $props();
 
     let activeTab: string = "Employers";
-    let searchString = '';
+    let searchString = $state('');
 
-    const modals = {
+    const modals = $state({
         addClient: false,
         addEmployer: false,
-    }
+    })
 
     const clientForm = useForm({
         company_id: '',
@@ -84,7 +109,7 @@
         });
     }
 
-    $: tab = $queryParams?.tab ?? 'employers';
+    let tab = $derived($queryParams?.tab ?? 'employers');
     
 </script>
 
@@ -93,11 +118,13 @@
 
     <TabLayout class="px-32">
         <TabItem title="employers" open={tab == 'employers'}>
-            <div slot="head" class="w-full flex justify-end">
-                <MiniButton on:click={() => modals.addEmployer = true } >
-                    Add Employer
-                </MiniButton>
-            </div>
+            {#snippet head()}
+                        <div  class="w-full flex justify-end">
+                    <MiniButton on:click={() => modals.addEmployer = true } >
+                        Add Employer
+                    </MiniButton>
+                </div>
+                    {/snippet}
             {#if !employers.length}
                 <div class="p-3 my-2 text-primary text-lg">
                     No employers registered yet
@@ -113,11 +140,13 @@
             {/if}
         </TabItem>
         <TabItem title="clients" open={tab == 'clients'}>
-            <div slot="head" class="w-full flex justify-end">
-                <MiniButton on:click={() => modals.addClient = true } >
-                    New Client
-                </MiniButton>
-            </div>
+            {#snippet head()}
+                        <div  class="w-full flex justify-end">
+                    <MiniButton on:click={() => modals.addClient = true } >
+                        New Client
+                    </MiniButton>
+                </div>
+                    {/snippet}
             {#if !clients.length}
                 <div class="p-3 my-2 text-primary text-lg">
                     No clients registered yet

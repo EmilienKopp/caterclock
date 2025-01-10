@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run, preventDefault } from 'svelte/legacy';
+
     import GoogleLoginButton from '$components/Buttons/GoogleLoginButton.svelte';
     import GuestLayout from "$layouts/GuestLayout.svelte";
     import Checkbox from "$components/Inputs/Checkbox.svelte";
@@ -10,24 +12,30 @@
     import route from '$vendor/tightenco/ziggy';
     import LineLoginButton from "$components/Buttons/LineLoginButton.svelte";
 
-    export let canResetPassword: boolean = false;
-    export let status: string | null = null;
-    export let errors: any;
+    interface Props {
+        canResetPassword?: boolean;
+        status?: string | null;
+        errors: any;
+    }
 
-    let form: HTMLFormElement;
-    let formData = {
+    let { canResetPassword = false, status = null, errors }: Props = $props();
+
+    let form: HTMLFormElement = $state();
+    let formData = $state({
         email: "",
         password: "",
         remember: false,
         processing: false,
-    };
+    });
     
 
     const submit = () => {
         router.post(route("login"), formData);
     };
 
-    $: console.log(errors);
+    run(() => {
+        console.log(errors);
+    });
 </script>
 
 <GuestLayout>
@@ -40,7 +48,7 @@
 
     
 
-    <form on:submit|preventDefault={submit} bind:this={form}>
+    <form onsubmit={preventDefault(submit)} bind:this={form}>
         <div>
             <InputLabel for="email" value="Email" />
 

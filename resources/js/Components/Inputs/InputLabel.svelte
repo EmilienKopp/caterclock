@@ -1,23 +1,29 @@
 <script lang="ts">
     import { twMerge } from 'tailwind-merge';
-    export let value: string = "";
+    interface Props {
+        value?: string;
+        children?: import('svelte').Snippet;
+        [key: string]: any
+    }
+
+    let { value = "", children, ...rest }: Props = $props();
 </script>
 
 
-<!-- svelte-ignore a11y-label-has-associated-control -->
-<label {...$$restProps} class={twMerge("form-control",$$restProps.class)} >
+<!-- svelte-ignore a11y_label_has_associated_control -->
+<label {...rest} class={twMerge("form-control",rest.class)} >
 
     <span>{ value }</span>
 
-    <slot />
+    {@render children?.()}
 
 </label>
 
 
 <style>
-    label:has(input[required]) span::after,
-    label:has(select[required]) span::after,
-    label:has(textarea[required]) span::after {
+    label:has(:global(input[required])) span::after,
+    label:has(:global(select[required])) span::after,
+    label:has(:global(textarea[required])) span::after {
         color: red;
         content: " *";
     }

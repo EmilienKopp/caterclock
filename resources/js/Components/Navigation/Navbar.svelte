@@ -7,10 +7,14 @@
     import { Link, inertia, page } from '@inertiajs/svelte';
     import dayjs from 'dayjs';
 
-    export let menu: RouteItem[] = [];
+    interface Props {
+        menu?: RouteItem[];
+    }
+
+    let { menu = [] }: Props = $props();
     const { auth } = $page.props;
     const roles: number[] | string[] = auth.user.roles;
-    $: time = dayjs($now).format('HH:mm');
+    let time = $derived(dayjs($now).format('HH:mm'));
 </script>
 <nav
     class="navbar bg-base-100 border-b border-base-200 shadow-lg sticky top-0 z-50"

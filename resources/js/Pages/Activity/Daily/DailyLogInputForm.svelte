@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy';
+
   
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
@@ -20,14 +22,18 @@
   dayjs.extend(timezone);
   dayjs.extend(utc);
 
-  export let taskCategories: TaskCategory[];
-  export let log: any;
+  interface Props {
+    taskCategories: TaskCategory[];
+    log: any;
+  }
+
+  let { taskCategories, log = $bindable() }: Props = $props();
 
   const logEntry = log.timeLogs[0];
-  let aboveMax: boolean = true;
+  let aboveMax: boolean = $state(true);
   let loading: boolean = false;
-  let safetyOn: boolean = true;
-  let clockEntryModalOpen = false;
+  let safetyOn: boolean = $state(true);
+  let clockEntryModalOpen = $state(false);
 
   const clockEntriesForm = useForm({
     entries: log.timeLogs.map((entry: any) => {
@@ -49,25 +55,27 @@
     ),
   });
 
-  $: activitiesTotal = $form.activities
+  let activitiesTotal = $derived($form.activities
     .filter((a: any) => a.project_id == log.project_id)
-    .reduce((a: number, b: any) => a + b.duration, 0);
+    .reduce((a: number, b: any) => a + b.duration, 0));
 
-  $: if (
-    safetyOn &&
-    log?.total_seconds &&
-    Duration.flooredToMinute(activitiesTotal) >
-      Duration.flooredToMinute(log.total_seconds)
-  ) {
-    toast.show(
-      'Total duration cannot be greater than ' +
-        Duration.toHHMM(log.total_seconds),
-      'error'
-    );
-    aboveMax = true;
-  } else {
-    aboveMax = false;
-  }
+  run(() => {
+    if (
+      safetyOn &&
+      log?.total_seconds &&
+      Duration.flooredToMinute(activitiesTotal) >
+        Duration.flooredToMinute(log.total_seconds)
+    ) {
+      toast.show(
+        'Total duration cannot be greater than ' +
+          Duration.toHHMM(log.total_seconds),
+        'error'
+      );
+      aboveMax = true;
+    } else {
+      aboveMax = false;
+    }
+  });
 
   function opentTaskModal(activity: any, index: number) {
     console.log(activity, index);
@@ -161,12 +169,14 @@
     });
   }
 
-  $: log.activities = $form.activities;
+  run(() => {
+    log.activities = $form.activities;
+  });
 </script>
 
 <form
   class="rounded border p-5"
-  on:submit|preventDefault={save}
+  onsubmit={preventDefault(save)}
   transition:fade
   class:border-green-600={!$form.isDirty}
   class:border-yellow-100={$form.isDirty && !aboveMax}
@@ -191,7 +201,7 @@
             class="text-xs"
             class:text-red-500={!safetyOn}
             class:text-green-400={safetyOn}
-            on:click={() => (safetyOn = !safetyOn)}
+            onclick={() => (safetyOn = !safetyOn)}
           >
             {#if safetyOn}
               <!-- ShieldFillCheck -->
@@ -299,13 +309,13 @@
                 >
                   {#if Duration.flooredToMinute(activitiesTotal) < Duration.flooredToMinute(log.total_seconds)}
                     <li>
-                      <button type="button" on:click={() => fill(index)}
+                      <button type="button" onclick={() => fill(index)}
                         >Fill</button
                       >
                     </li>
                   {/if}
                   <li>
-                    <button type="button" on:click={() => clear(index)}
+                    <button type="button" onclick={() => clear(index)}
                       >Clear</button
                     >
                   </li>
@@ -313,18 +323,18 @@
                     <button
                       type="button"
                       class="text-red-300"
-                      on:click={() => removeItem(index)}>Remove</button
+                      onclick={() => removeItem(index)}>Remove</button
                     >
                   </li>
                   <li>
                     <button
                       type="button"
-                      on:click={() => openTaskModal(activity, index)}>
+                      onclick={() => openTaskModal(activity, index)}>
                       Link Task
                     </button>
                   </li>
                   <li>
-                    <button type="button" on:click={$form.reset()}>Reset</button
+                    <button type="button" onclick={$form.reset()}>Reset</button
                     >
                   </li>
                 </ul>
@@ -381,7 +391,9 @@
     </div>
   {/each}
 
-  <div slot="buttons">
-    <PrimaryButton on:click={updateClockEntries}>Save</PrimaryButton>
-  </div>
+  {#snippet buttons()}
+    <div >
+      <PrimaryButton on:click={updateClockEntries}>Save</PrimaryButton>
+    </div>
+  {/snippet}
 </Dialog>

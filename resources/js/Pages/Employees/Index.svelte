@@ -9,8 +9,31 @@
     import { Label, P } from "flowbite-svelte";
     import { Company, ConnectionRequest, Project } from "$models";
 
-    export let auth, companies: Company[], ownedCompanies: Company[], managedCompanies: Company[], employers: Company[], clients: Company[], 
-    projects: Project[], sentConnectionRequests: ConnectionRequest[], ziggy, errors;
+    interface Props {
+        auth: any;
+        companies: Company[];
+        ownedCompanies: Company[];
+        managedCompanies: Company[];
+        employers: Company[];
+        clients: Company[];
+        projects: Project[];
+        sentConnectionRequests: ConnectionRequest[];
+        ziggy: any;
+        errors: any;
+    }
+
+    let {
+        auth,
+        companies,
+        ownedCompanies,
+        managedCompanies,
+        employers,
+        clients,
+        projects,
+        sentConnectionRequests,
+        ziggy,
+        errors
+    }: Props = $props();
 
     const form = useForm({
         code: ""

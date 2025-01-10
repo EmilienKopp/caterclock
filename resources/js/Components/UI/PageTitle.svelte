@@ -1,5 +1,10 @@
 <script lang="ts">
-    export let headTitle: string;
+   interface Props {
+      headTitle: string;
+      children?: import('svelte').Snippet;
+   }
+
+   let { headTitle, children }: Props = $props();
 </script>
 <svelte:head>
     <title>
@@ -7,5 +12,5 @@
     </title>
 </svelte:head>
 <h1 class="text-3xl flex w-full items-center justify-between">
-   <slot /> 
+   {@render children?.()} 
 </h1>

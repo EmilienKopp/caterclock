@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import MiniButton from "$components/Buttons/MiniButton.svelte";
     import { Duration } from "$lib/utils/duration";
     import { Time } from "$lib/utils/time";
@@ -10,28 +12,38 @@
     dayjs.extend(timezone);
     dayjs.extend(utc);
 
-    export let entries: any[];
-    let secondsSinceLastClockIn: number
+    interface Props {
+        entries: any[];
+    }
+
+    let { entries = $bindable() }: Props = $props();
+    let secondsSinceLastClockIn: number = $state()
 
     console.log(entries);
 
-    $: entries = entries.map( (entry: any) => {
-        if(entry.out_time && new Date(entry.out_time) < new Date(entry.in_time)) {
-            // Display the out time as if on the next day but with hours+24
-            entry.out_time = new Date(entry.out_time).setHours(new Date(entry.out_time).getHours() + 24);
-        }
-        return entry
-    })
+    run(() => {
+        entries = entries.map( (entry: any) => {
+            if(entry.out_time && new Date(entry.out_time) < new Date(entry.in_time)) {
+                // Display the out time as if on the next day but with hours+24
+                entry.out_time = new Date(entry.out_time).setHours(new Date(entry.out_time).getHours() + 24);
+            }
+            return entry
+        })
+    });
 
-    $: console.log(entries);
+    run(() => {
+        console.log(entries);
+    });
 
-    $: latestEntry = entries[0] ?? null;
-    $: if(latestEntry) {
-        secondsSinceLastClockIn = (dayjs().diff(dayjs(latestEntry.in_time), "second"));
-        setInterval(() => {
+    let latestEntry = $derived(entries[0] ?? null);
+    run(() => {
+        if(latestEntry) {
             secondsSinceLastClockIn = (dayjs().diff(dayjs(latestEntry.in_time), "second"));
-        }, 1000)
-    }
+            setInterval(() => {
+                secondsSinceLastClockIn = (dayjs().diff(dayjs(latestEntry.in_time), "second"));
+            }, 1000)
+        }
+    });
 </script>
 
 <div class="sm:w-2/3 w-full overflow-x-auto mx-auto">

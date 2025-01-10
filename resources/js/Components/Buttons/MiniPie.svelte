@@ -1,7 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    export let data: number[];
+    interface Props {
+        data: number[];
+    }
+
+    let { data }: Props = $props();
 
     console.log(data);
 
@@ -22,7 +26,7 @@
 
     // SVG setup
     let svgns = "http://www.w3.org/2000/svg";
-    let chart: SVGElement;
+    let chart: SVGElement = $state();
     onMount(() => {
 
         chart.setAttribute("viewBox", `${viewBoxMin} ${viewBoxMin} ${viewBoxSize} ${viewBoxSize}`); // Setting the viewbox

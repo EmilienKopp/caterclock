@@ -1,6 +1,10 @@
 <script lang="ts">
 
-    export let steps: any[] = ["start","mid","end"];
+    interface Props {
+        steps?: any[];
+    }
+
+    let { steps = ["start","mid","end"] }: Props = $props();
 
 </script>
 

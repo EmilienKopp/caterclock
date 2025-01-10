@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
     import { writable, type Writable } from "svelte/store";
 
     export interface TabInfo {
@@ -12,8 +12,14 @@
     import { setContext } from "svelte";
     import { twMerge } from "tailwind-merge";
 
-    export let contentClass: string = "";
-    export let open: string | undefined = undefined;
+    interface Props {
+        contentClass?: string;
+        open?: string | undefined;
+        children?: import('svelte').Snippet;
+        [key: string]: any
+    }
+
+    let { contentClass = "", open = undefined, children, ...rest }: Props = $props();
 
     const tablistClasses = "tabs tabs-bordered w-full";
 
@@ -36,7 +42,7 @@
     }
 </script>
 
-<div role="tablist" class={twMerge(tablistClasses,$$restProps.class)}>
-    <slot />
+<div role="tablist" class={twMerge(tablistClasses,rest.class)}>
+    {@render children?.()}
 </div>
-<div role="tabpanel" aria-labelledby="id-tab" class={twMerge("pt-3",$$restProps.class,contentClass)} use:init></div>
+<div role="tabpanel" aria-labelledby="id-tab" class={twMerge("pt-3",rest.class,contentClass)} use:init></div>

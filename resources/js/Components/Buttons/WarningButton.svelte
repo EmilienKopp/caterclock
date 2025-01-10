@@ -3,16 +3,30 @@
     import type { ButtonSize, ButtonShape, ButtonVariant } from "$types";
     import { twMerge } from "tailwind-merge";
     
-    export let href: string | undefined = undefined;
-    export let loading: boolean = false;
-    export let size: ButtonSize = "md";
-    export let variant: ButtonVariant = "warning";
-    export let shape: ButtonShape = undefined;
+    interface Props {
+        href?: string | undefined;
+        loading?: boolean;
+        size?: ButtonSize;
+        variant?: ButtonVariant;
+        shape?: ButtonShape;
+        children?: import('svelte').Snippet;
+        [key: string]: any
+    }
+
+    let {
+        href = undefined,
+        loading = false,
+        size = "md",
+        variant = "warning",
+        shape = undefined,
+        children,
+        ...rest
+    }: Props = $props();
 </script>
 
 <BaseButton {size} {shape} {variant} {loading} {href}
     on:click
-    {...$$restProps}
+    {...rest}
 >
-    <slot />
+    {@render children?.()}
 </BaseButton>

@@ -1,7 +1,9 @@
-<script context="module" lang="ts">
+<script module lang="ts">
     export let openPopoverId: string;
 </script>
 <script lang="ts">
+    import { preventDefault } from 'svelte/legacy';
+
     import ActivityLogItem from '$components/App/Activity/ActivityLogItem.svelte';
     import MiniPie from '$components/Buttons/MiniPie.svelte';
     import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
@@ -14,13 +16,17 @@
     import { onDestroy } from 'svelte';
     import { slide } from 'svelte/transition';
 
-    export let log: any;
-    export let detailsOpen: boolean = false;
-    export let id : string;
+    interface Props {
+        log: any;
+        detailsOpen?: boolean;
+        id: string;
+    }
 
-    let open: boolean = false;
+    let { log = $bindable(), detailsOpen = false, id }: Props = $props();
+
+    let open: boolean = $state(false);
     let projectName: string = log?.project_name;
-    let elapsedSeconds: number = 0;
+    let elapsedSeconds: number = $state(0);
     const interval = setInterval(() => {
         elapsedSeconds++;
     }, 1000);
@@ -59,7 +65,7 @@
     let fillSteps = {
 
     }
-    let selectedCategoryId: number = 0;
+    let selectedCategoryId: number = $state(0);
 
     function handleFill(log: any) {
         selectedLog = log;
@@ -76,7 +82,7 @@
         
         {projectName}
         
-        <form class="dropdown" on:submit|preventDefault={clock} >
+        <form class="dropdown" onsubmit={preventDefault(clock)} >
             <input type="hidden" name="project_id" value={$form.project_id} />
             <button type="button" class="badge md:text-md text-xs whitespace-nowrap flex items-center" class:text-red-500={log.is_running} >
                 {#if log.is_running}
@@ -87,14 +93,14 @@
             </button>
             <ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 {#if log.is_running}
-                    <li><button on:click={clock}>Clock Out</button></li>
-                    <li><a on:click|preventDefault={clock} href={route('activities.show',{date: log.date})} >
+                    <li><button onclick={clock}>Clock Out</button></li>
+                    <li><a onclick={preventDefault(clock)} href={route('activities.show',{date: log.date})} >
                         Clock Out and Edit
                     </a></li>
                 {/if}
                 <li>
 
-                    <button type="button" on:click={() => handleFill(log)}>Fill</button>
+                    <button type="button" onclick={() => handleFill(log)}>Fill</button>
                     {#if fillModalOpen}
                         <Select name="activity" 
                             label="Task Category"
@@ -106,7 +112,7 @@
             </ul>
         </form>
         {#if log.activities.length}
-            <button {id} class="ml-2" title="Click to enlarge" on:click={handleClick} on:mouseenter={() => openPopoverId = id}>
+            <button {id} class="ml-2" title="Click to enlarge" onclick={handleClick} onmouseenter={() => openPopoverId = id}>
                 <MiniPie data={log.activities.map(a => a.duration)} />
             </button>
         {:else}

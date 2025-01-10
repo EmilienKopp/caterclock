@@ -4,15 +4,20 @@
     import { getContext } from "svelte";
     import { twMerge } from "tailwind-merge";
 
-    export let running: any = getContext("running")
+    interface Props {
+        running?: any;
+        [key: string]: any
+    }
 
-    let secondsSinceLastClockIn = 0;
+    let { running = getContext("running"), ...rest }: Props = $props();
+
+    let secondsSinceLastClockIn = $state(0);
     setInterval(() => {
         if(running?.in_time)
             secondsSinceLastClockIn = (dayjs().diff(dayjs(running.in_time), "second"));
     }, 1000)
 
-    const classes = twMerge("flex items-center justify-center",$$restProps.class);
+    const classes = twMerge("flex items-center justify-center",rest.class);
 </script>
 
 {#if running}

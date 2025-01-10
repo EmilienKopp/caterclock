@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
     export type Header = {
         label: string;
         key: string;
@@ -35,14 +35,25 @@
     import { Popover } from "flowbite-svelte";
     import { twMerge } from "tailwind-merge";
 
-    export let data: any[] = [];
-    export let title: string = "Companies";
-    export let headers: Header[] = [
+    interface Props {
+        data?: any[];
+        title?: string;
+        headers?: Header[];
+        popovers?: PopoverList;
+        classes?: { [key: string]: string };
+        actions?: DropdownAction[];
+    }
+
+    let {
+        data = [],
+        title = "Companies",
+        headers = [
         { label: "Company", key: "name", route: "companies.show" },
-    ];
-    export let popovers: PopoverList = {};
-    export let classes: { [key: string]: string } = {};
-    export let actions: DropdownAction[] = [];
+    ],
+        popovers = {},
+        classes = {},
+        actions = []
+    }: Props = $props();
 </script>
 
 <table class="table table-hover w-full table-md">
@@ -75,7 +86,8 @@
                     {#if popovers[header.key] != undefined}
                     
                         <Popover trigger="hover">
-                            <svelte:component this={popovers[header.key].component} data={resolveNestedValue(item, popovers[header.key].prop ?? "")}/>
+                            {@const SvelteComponent = popovers[header.key].component}
+                            <SvelteComponent data={resolveNestedValue(item, popovers[header.key].prop ?? "")}/>
                         </Popover>
                     {/if}
                 </td>

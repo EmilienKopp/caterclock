@@ -1,20 +1,33 @@
 <script lang="ts">
+    import { run, preventDefault } from 'svelte/legacy';
+
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import Select from '$components/Inputs/Select.svelte';
     import { latestClockInTime, toast } from '$lib/stores';
     import route from '$vendor/tightenco/ziggy';
     import { page, useForm } from '@inertiajs/svelte';
     import { setContext } from 'svelte';
+    interface Props {
+        indicator?: import('svelte').Snippet<[any]>;
+    }
 
-    let entries: any[] = [], projects: any[] = [], projectDurations: any[] = [];
+    let { indicator }: Props = $props();
 
-    $: ({entries,projects,projectDurations} = $page.props);
-    $: running = entries?.find((entry: any) => entry?.out_time == null);
-    $: projectName = projects?.find((project: any) => project.id == $form.project_id)?.name;
-    $: $latestClockInTime = Date.parse(running?.in_time);
-    $: setContext('running', running );
+    let entries: any[] = $state([]), projects: any[] = $state([]), projectDurations: any[] = $state([]);
 
-    let action: "in" | "out" = "in";
+    run(() => {
+        ({entries,projects,projectDurations} = $page.props);
+    });
+    let running = $derived(entries?.find((entry: any) => entry?.out_time == null));
+    let projectName = $derived(projects?.find((project: any) => project.id == $form.project_id)?.name);
+    run(() => {
+        $latestClockInTime = Date.parse(running?.in_time);
+    });
+    run(() => {
+        setContext('running', running );
+    });
+
+    let action: "in" | "out" = $state("in");
 
     const {user} = $page.props.auth;
 
@@ -44,16 +57,18 @@
     }
     
 
-    $: if(entries && (!entries?.length || !entries?.some((entry: any) => entry.out_time == null)) ) {
-        action = "in";
-    } else if (entries?.some((entry: any) => entry?.out_time == null)) {
-        action = "out";
-    }
-    $: switchingProjects = (action == "out" && entries?.[0]?.project_id != $form.project_id)
+    run(() => {
+        if(entries && (!entries?.length || !entries?.some((entry: any) => entry.out_time == null)) ) {
+            action = "in";
+        } else if (entries?.some((entry: any) => entry?.out_time == null)) {
+            action = "out";
+        }
+    });
+    let switchingProjects = ($derived(action == "out" && entries?.[0]?.project_id != $form.project_id))
 
 </script>
 
-<form method="POST" on:submit|preventDefault={clock} class="grid grid-cols-2 gap-4 items-center">
+<form method="POST" onsubmit={preventDefault(clock)} class="grid grid-cols-2 gap-4 items-center">
     {#if switchingProjects}
         <PrimaryButton disabled={!$form.project_id} type="submit">Switch Project</PrimaryButton>
     {:else}
@@ -65,7 +80,7 @@
 
     
     <div class="col-span-2">
-        <slot name="indicator" {running} />
+        {@render indicator?.({ running, })}
     </div>
 </form>
 

@@ -1,12 +1,17 @@
 <script lang="ts">
-    export let href: string = "";
+    interface Props {
+        href?: string;
+        [key: string]: any
+    }
+
+    let { href = "", ...rest }: Props = $props();
 </script>
 
 <a
     {href}
     class="line-login-btn flex items-center px-2"
-    on:click={() => console.log("Button clicked")}
-    {...$$restProps}
+    onclick={() => console.log("Button clicked")}
+    {...rest}
 >
     <img src="/line_44.png" alt="line login" class="border-r border-black border-opacity-10 mr-3"/>
     Log in with LINE

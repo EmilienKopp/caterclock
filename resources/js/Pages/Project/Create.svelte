@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { preventDefault } from 'svelte/legacy';
+
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
     import Fieldset from '$components/Inputs/Fieldset.svelte';
@@ -40,7 +42,7 @@
             Create Project
         </PageTitle>
 
-        <form method="POST" on:submit|preventDefault={handleSubmit}>
+        <form method="POST" onsubmit={preventDefault(handleSubmit)}>
             <input type="hidden" name="user_id" value={user.id} />
             <Fieldset>
                 <legend>Basic Information</legend>

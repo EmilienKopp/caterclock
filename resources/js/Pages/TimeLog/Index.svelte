@@ -4,7 +4,11 @@
     import Clock from '$components/App/TimeLog/Clock.svelte';
     import TimeLogTable from '$components/App/TimeLog/TimeLogTable.svelte';
 
-    export let entries: any[];
+    interface Props {
+        entries: any[];
+    }
+
+    let { entries }: Props = $props();
 
 </script>
 

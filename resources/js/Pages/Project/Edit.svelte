@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { preventDefault } from 'svelte/legacy';
+
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import InputLabel from "$components/Inputs/InputLabel.svelte";
     import NumberInput from "$components/Inputs/NumberInput.svelte";
@@ -51,7 +53,7 @@
 
 <AuthenticatedLayout>
     <PageTitle headTitle="Edit Project {$form.name}">Edit Project</PageTitle>
-    <form class="grid grid-cols-2 gap-8" on:submit|preventDefault={handleSubmit}>
+    <form class="grid grid-cols-2 gap-8" onsubmit={preventDefault(handleSubmit)}>
         <InputLabel value="Name">
             <TextInput required label="Name" bind:value={$form.name} name="name" placeholder="Name"/>
         </InputLabel>
@@ -84,7 +86,7 @@
     </form>
     {#if $user.roles.some( r => r.name == 'freelancer')}
         <div class="divider"> Freelancer Space </div>
-        <form class="grid grid-cols-2 gap-8" on:submit|preventDefault={handleFreelancerRateSubmit}>
+        <form class="grid grid-cols-2 gap-8" onsubmit={preventDefault(handleFreelancerRateSubmit)}>
             <InputLabel value="Rate">
                 <NumberInput label="Rate" bind:value={$freelancerRateForm.rate} name="rate" placeholder="Rate"/>
             </InputLabel>

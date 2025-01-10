@@ -7,7 +7,12 @@
     import { page, router } from '@inertiajs/svelte';
     import SimpleTable from '$components/Tables/SimpleTable.svelte';
 
-    export let projects: any[];
+    interface Props {
+        projects: any[];
+        children?: import('svelte').Snippet;
+    }
+
+    let { projects, children }: Props = $props();
     const { auth } = $page.props;
 </script>
 
@@ -37,5 +42,5 @@
         {/if}
     </div>
 
-    <slot />
+    {@render children?.()}
 </AuthenticatedLayout>

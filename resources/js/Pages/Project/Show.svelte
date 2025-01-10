@@ -8,8 +8,12 @@
     import SimpleBudgetChart from "$components/Charts/SimpleBudgetChart.svelte";
     
     
-    export let project: any;
-    export let auth: any;
+    interface Props {
+        project: any;
+        auth: any;
+    }
+
+    let { project, auth }: Props = $props();
 </script>
 
 <AuthenticatedLayout>

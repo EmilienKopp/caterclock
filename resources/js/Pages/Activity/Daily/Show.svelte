@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
@@ -11,13 +13,22 @@
   import dayjs from 'dayjs';
   import DailyLogInputForm from './DailyLogInputForm.svelte';
 
-  export let activities: Activity[];
-  export let dailyLogs: DailyLog[];
-  export let taskCategories: TaskCategory[];
-  export let date: string;
+  interface Props {
+    activities: Activity[];
+    dailyLogs: DailyLog[];
+    taskCategories: TaskCategory[];
+    date: string;
+  }
 
-  let selectedDate = dayjs(date).format('YYYY-MM-DD');
-  let logModalOpen = false;
+  let {
+    activities,
+    dailyLogs,
+    taskCategories,
+    date
+  }: Props = $props();
+
+  let selectedDate = $state(dayjs(date).format('YYYY-MM-DD'));
+  let logModalOpen = $state(false);
 
   let form = useForm({
     date: selectedDate,
@@ -58,8 +69,10 @@
     logModalOpen = true;
   }
 
-  $: $form.activities = dailyLogs.flatMap((log) => {
-    return log.activities;
+  run(() => {
+    $form.activities = dailyLogs.flatMap((log) => {
+      return log.activities;
+    });
   });
 </script>
 
@@ -68,7 +81,7 @@
   <input
     type="date"
     class="rounded bg-transparent w-44 text-sm"
-    on:change={handleDateSelection}
+    onchange={handleDateSelection}
     bind:value={selectedDate}
   />
 

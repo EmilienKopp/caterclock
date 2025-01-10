@@ -1,17 +1,30 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import { categoryColors } from '$lib/config';
     import { Duration } from "$lib/utils/duration";
     import type { Activity } from "$types";
     import { Chart } from 'chart.js/auto';
 
-    export let activities: Activity[] = [];
-    export let title: string;
-    export let width: number | string = 400;
-    export let height: number | string = 400;
+    interface Props {
+        activities?: Activity[];
+        title: string;
+        width?: number | string;
+        height?: number | string;
+    }
 
-    let canvas: HTMLCanvasElement;
+    let {
+        activities = [],
+        title,
+        width = 400,
+        height = 400
+    }: Props = $props();
 
-    $: console.log(activities)
+    let canvas: HTMLCanvasElement = $state();
+
+    run(() => {
+        console.log(activities)
+    });
 
     const data = {
         labels: activities.map(activity => activity.task_category.name),
@@ -28,12 +41,14 @@
         }]
     };
 
-    $: if(canvas) {
-        const chart = new Chart(canvas, {
-            type: 'doughnut',
-            data: data,
-        });
-    }
+    run(() => {
+        if(canvas) {
+            const chart = new Chart(canvas, {
+                type: 'doughnut',
+                data: data,
+            });
+        }
+    });
 </script>
 
 <div class="modal-action flex justify-center h-[400px]">

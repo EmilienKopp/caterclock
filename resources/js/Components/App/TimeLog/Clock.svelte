@@ -2,7 +2,11 @@
     import { containerColors } from '$lib/config';
     import { time } from '$lib/stores';
 
-    export let color = 'neutral';
+    interface Props {
+        color?: string;
+    }
+
+    let { color = 'neutral' }: Props = $props();
 
 </script>
 

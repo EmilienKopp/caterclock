@@ -4,9 +4,13 @@
     import type { Activity } from "$types";
     import { twMerge } from "tailwind-merge";
 
-    export let activity: Activity;
+    interface Props {
+        activity: Activity; //TODO: set as settings data in DB
+    }
 
-    //TODO: set as settings data in DB
+    let { activity }: Props = $props();
+
+    
 </script>
 
 <div class="flex flex-row gap-2">

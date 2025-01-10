@@ -8,10 +8,14 @@
   dayjs.extend(timezone);
   dayjs.extend(utc);
 
-  export let tz: Timezone = 'UTC';
-  export let value: string | number | Date = dayjs().format(
+  interface Props {
+    tz?: Timezone;
+    value?: string | number | Date;
+  }
+
+  let { tz = 'UTC', value = $bindable(dayjs().format(
     'YYYY-MM-DDTHH:mm:ss'
-  );
+  )) }: Props = $props();
 </script>
 
 <div class="flex items-center">

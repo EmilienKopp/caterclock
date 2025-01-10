@@ -10,7 +10,7 @@ import { tick } from 'svelte';
 import route from '$vendor/tightenco/ziggy';
 
 let confirmingUserDeletion: boolean = false;
-let passwordInput: any;
+let passwordInput: any = $state();
 const form = useForm('deleteUserForm',{
     password: '',
     processing: false,

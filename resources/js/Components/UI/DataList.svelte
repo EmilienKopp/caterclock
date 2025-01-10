@@ -3,15 +3,25 @@
     import { isEmpty } from "lodash";
     import { resolveNestedValue } from "supakit-eloquent/lib/objects";
 
-    export let title: string = "";
-    export let definition: DataListDefinition; 
-    export let data: {[key:string]: any};
+    interface Props {
+        title?: string;
+        definition: DataListDefinition;
+        data: {[key:string]: any};
+        button?: import('svelte').Snippet;
+    }
+
+    let {
+        title = "",
+        definition,
+        data,
+        button
+    }: Props = $props();
 </script>
 
 {#if title}
     <div class="flex w-full justify-between border-b border-gray-300">
         <h3 class="mt-5 ml-5 font-semibold text-xl">{title}</h3>
-            <slot name="button" />
+            {@render button?.()}
     </div>
 {/if}
 

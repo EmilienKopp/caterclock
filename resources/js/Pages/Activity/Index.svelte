@@ -3,8 +3,12 @@
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
     import type { DailyLog } from "$models";
 
-    export let dailyLogs: DailyLog[] = [];
-    export let date: Date = new Date();
+    interface Props {
+        dailyLogs?: DailyLog[];
+        date?: Date;
+    }
+
+    let { dailyLogs = [], date = new Date() }: Props = $props();
 
 </script>
 

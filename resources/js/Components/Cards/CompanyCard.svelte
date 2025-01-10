@@ -3,7 +3,11 @@
     import OutlineButton from "../Buttons/OutlineButton.svelte";
     import MiniButton from "../MiniButton.svelte";
 
-    export let data: any;
+    interface Props {
+        data: any;
+    }
+
+    let { data }: Props = $props();
 
     console.log(data);
 

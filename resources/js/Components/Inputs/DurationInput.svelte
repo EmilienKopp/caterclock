@@ -1,21 +1,38 @@
 <script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import { Duration } from "$lib/utils/duration";
     import { createEventDispatcher } from "svelte";
 
-    export let activity: any;
-    export let max: number = Number.MAX_SAFE_INTEGER;
-    export let parentTotal: number = 0;
-    export let safetyOn: boolean = true;
+    interface Props {
+        activity: any;
+        max?: number;
+        parentTotal?: number;
+        safetyOn?: boolean;
+    }
 
-    $: hours = Duration.getHours(activity.duration);
-    $: minutes = Duration.getMinutes(activity.duration);
+    let {
+        activity = $bindable(),
+        max = Number.MAX_SAFE_INTEGER,
+        parentTotal = 0,
+        safetyOn = true
+    }: Props = $props();
+
+    let hours;
+    run(() => {
+        hours = Duration.getHours(activity.duration);
+    });
+    let minutes;
+    run(() => {
+        minutes = Duration.getMinutes(activity.duration);
+    });
 
     const dispatch = createEventDispatcher();
 
     // $: activity.duration = hours * 3600 + minutes * 60;
 
-    let hoursInput: HTMLInputElement;
-    let minutesInput: HTMLInputElement;
+    let hoursInput: HTMLInputElement = $state();
+    let minutesInput: HTMLInputElement = $state();
 
     function hoursChangeHandler(e: Event | KeyboardEvent) {
         const target = e.target as HTMLInputElement;
@@ -56,9 +73,9 @@
             min="0" max="23" step="1" name="hours"
             class:border-red-500={safetyOn && parentTotal > max}
             value={hours}
-            on:focus={e => hoursInput.select()}
-            on:keydown={(e) => dispatch('hourkeydown', {key: e.key})}
-            on:input={hoursChangeHandler} /> hr
+            onfocus={e => hoursInput.select()}
+            onkeydown={(e) => dispatch('hourkeydown', {key: e.key})}
+            oninput={hoursChangeHandler} /> hr
     </label>
 
     <label class="flex items-center gap-1">
@@ -66,9 +83,9 @@
             min="0" max="60" step="1" name="minutes"
             class:border-red-500={safetyOn && parentTotal > max}
             value={minutes}
-            on:focus={e => minutesInput.select()}
-            on:keydown={(e) => dispatch('minutekeydown', {key: e.key})}
-            on:input={minutesChangeHandler} /> min
+            onfocus={e => minutesInput.select()}
+            onkeydown={(e) => dispatch('minutekeydown', {key: e.key})}
+            oninput={minutesChangeHandler} /> min
     </label>
 
 

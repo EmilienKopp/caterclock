@@ -5,19 +5,30 @@
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
     import Clock from '$components/App/TimeLog/Clock.svelte';
 
-    export let ziggy: any;
-    export let auth: {
+
+    interface Props {
+        ziggy: any;
+        auth: {
         user: {
             name: string;
             email: string;
             profile_photo_url: string;
         };
     };
+        canLogin: boolean;
+        canRegister: boolean;
+        laravelVersion: string;
+        phpVersion: string;
+    }
 
-    export let canLogin: boolean;
-    export let canRegister: boolean;
-    export let laravelVersion: string;
-    export let phpVersion: string;
+    let {
+        ziggy,
+        auth,
+        canLogin,
+        canRegister,
+        laravelVersion,
+        phpVersion
+    }: Props = $props();
 
     let modal: HTMLDialogElement;
 

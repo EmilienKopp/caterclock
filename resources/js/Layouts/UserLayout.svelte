@@ -5,6 +5,12 @@
     import type { RouteItem } from "$types";
     import Navbar from "$components/Navigation/Navbar.svelte";
     import dayjs from "dayjs";
+    interface Props {
+        header?: import('svelte').Snippet;
+        children?: import('svelte').Snippet;
+    }
+
+    let { header, children }: Props = $props();
 
     const { auth } = $page.props;
 
@@ -30,10 +36,10 @@
         <Navbar {menu}/>
 
         <!-- Page Heading -->
-        {#if $$slots.header}
+        {#if header}
             <header class="bg-white dark:bg-gray-800 shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+                    {@render header?.()}
                 </div>
             </header>
         {/if}
@@ -41,7 +47,7 @@
         <!-- Page Content -->
         <main class="sm:p-6 p-0">
             <MiniToast show={false} />
-            <slot />
+            {@render children?.()}
         </main>
     </div>
 </div>

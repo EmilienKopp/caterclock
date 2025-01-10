@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `<h2>` cannot be a child of `<head>`. `<head>` only allows these children: `<base>`, `<basefont>`, `<bgsound>`, `<link>`, `<meta>`, `<title>`, `<noscript>`, `<noframes>`, `<style>`, `<script>`, `<template>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement -->
 <script lang="ts">
     import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
