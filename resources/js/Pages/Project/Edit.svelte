@@ -8,18 +8,17 @@
     import TextInput from "$components/Inputs/TextInput.svelte";
     import PageTitle from "$components/UI/PageTitle.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { toast, user } from "$lib/stores";
+    import { user } from "$lib/stores";
+    import { toaster } from '$lib/utils/Toast';
     import route from '$vendor/tightenco/ziggy';
-    import { page, useForm } from "@inertiajs/svelte";
+    import { useForm } from "@inertiajs/svelte";
 
-    const { project } = $page.props;
+    const { project } = $props();
 
     /** ProjectForm **/
     const form = useForm({
         ...project
     });
-
-    console.log(project);
 
     function handleSubmit() {
         $form.patch(route('projects.update', project.id),{
@@ -36,7 +35,6 @@
         rate: rateInfo?.rate,
         currency: rateInfo?.currency
     });
-    console.log($freelancerRateForm, rateInfo);
 
     function handleFreelancerRateSubmit() {
         $freelancerRateForm.post(route('rates.upsert', {user: $user.id, project: project.id}),{
@@ -44,7 +42,7 @@
                 console.log(errors);
             },
             onSuccess: () => {
-                toast.success('Rate Updated');
+                toaster.success('Rate Updated');
             }
         });
     }

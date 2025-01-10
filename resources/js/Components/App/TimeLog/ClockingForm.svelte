@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { run, preventDefault } from 'svelte/legacy';
+    import { preventDefault, run } from 'svelte/legacy';
 
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import Select from '$components/Inputs/Select.svelte';
@@ -9,15 +9,14 @@
     import { setContext } from 'svelte';
     interface Props {
         indicator?: import('svelte').Snippet<[any]>;
+        entries: any[];
+        projects: any[];
+        projectDurations: any[];
     }
 
     let { indicator }: Props = $props();
 
     let entries: any[] = $state([]), projects: any[] = $state([]), projectDurations: any[] = $state([]);
-
-    run(() => {
-        ({entries,projects,projectDurations} = $page.props);
-    });
     let running = $derived(entries?.find((entry: any) => entry?.out_time == null));
     let projectName = $derived(projects?.find((project: any) => project.id == $form.project_id)?.name);
     run(() => {

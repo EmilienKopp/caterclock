@@ -1,14 +1,18 @@
 import { Writable, derived, readable, writable } from "svelte/store";
+import { Toastable, toastable } from "./utils/Toast";
 
 import { page } from "@inertiajs/svelte";
 import dayjs from "dayjs";
 import localeData from "dayjs/plugin/localeData";
+import { Toast } from "flowbite-svelte";
 import { isEmpty } from "lodash";
 
 dayjs.extend(localeData);
 dayjs().localeData();
 
-export const today = $state(dayjs().format("YYYY-MM-DD"));
+export const toast: Toastable<Toast> = toastable();
+
+export const today = readable(dayjs().format("YYYY-MM-DD"));
 
 export const thisMonth = readable( dayjs.months()[dayjs().month()]);
 

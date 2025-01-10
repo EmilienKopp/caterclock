@@ -1,19 +1,18 @@
 <script lang="ts">
-    import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
-    import MiniButton from '$components/Buttons/MiniButton.svelte';
-    import PageTitle from '$components/UI/PageTitle.svelte';
-    import route from '$vendor/tightenco/ziggy';
-    import { page, router } from '@inertiajs/svelte';
     import SimpleTable from '$components/Tables/SimpleTable.svelte';
+    import PageTitle from '$components/UI/PageTitle.svelte';
+    import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
+    import route from '$vendor/tightenco/ziggy';
+    import { router } from '@inertiajs/svelte';
 
     interface Props {
         projects: any[];
         children?: import('svelte').Snippet;
+        auth: any;
     }
 
-    let { projects, children }: Props = $props();
-    const { auth } = $page.props;
+    let { projects, children, auth }: Props = $props();
 </script>
 
 
