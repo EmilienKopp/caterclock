@@ -1,10 +1,7 @@
 <script lang="ts">
-    import { createBubbler } from 'svelte/legacy';
-
-    const bubble = createBubbler();
-    import { twMerge } from "tailwind-merge";
+    import type { ButtonShape, ButtonSize, ButtonVariant } from "$types/index";
     import { Link } from '@inertiajs/svelte';
-    import { ButtonShape, ButtonVariant } from "$types";
+    import { twMerge } from "tailwind-merge";
 
     interface Props {
         href?: string | undefined;

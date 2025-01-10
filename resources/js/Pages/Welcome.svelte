@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { inertia, Link } from '@inertiajs/svelte';
-    import route from '../../../vendor/tightenco/ziggy';
+    import Clock from '$components/App/TimeLog/Clock.svelte';
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
-    import Clock from '$components/App/TimeLog/Clock.svelte';
+// import { Link } from '@inertiajs/svelte';
+    import route from '../../../vendor/tightenco/ziggy';
 
 
     interface Props {
@@ -22,17 +22,9 @@
     }
 
     let {
-        ziggy,
         auth,
         canLogin,
-        canRegister,
-        laravelVersion,
-        phpVersion
     }: Props = $props();
-
-    let modal: HTMLDialogElement;
-
-    console.log(auth);
 </script>
 <svelte:head>
     <title>Caterclock | Home</title>
@@ -44,23 +36,23 @@
         {#if canLogin}
         <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-end">
             {#if auth.user}
-            <Link
+            <a
                 href={route('dashboard')}
                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-primary focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
                 Dashboard
-            </Link>
+            </a>
             {:else}
 
-                <Link
+                <a
                     href={route('login')}
                     class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-primary focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Log in</Link
+                    >Log in</a
                 >
 
-                <Link
+                <a
                     href={route('register')}
                     class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-primary focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Register</Link
+                    >Register</a
                 >
             {/if}
         </div>

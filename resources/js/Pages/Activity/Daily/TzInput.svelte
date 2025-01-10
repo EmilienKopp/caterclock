@@ -1,6 +1,6 @@
 <script lang="ts">
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import { Timezone } from '$lib/types/timezones';
+  import type { Timezone } from '$lib/types/timezones';
   import dayjs from 'dayjs';
   import timezone from 'dayjs/plugin/timezone';
   import utc from 'dayjs/plugin/utc';

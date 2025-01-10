@@ -1,5 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: `<h2>` cannot be a child of `<head>`. `<head>` only allows these children: `<base>`, `<basefont>`, `<bgsound>`, `<link>`, `<meta>`, `<title>`, `<noscript>`, `<noframes>`, `<style>`, `<script>`, `<template>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
-https://svelte.dev/e/node_invalid_placement -->
 <script lang="ts">
     import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
@@ -70,7 +68,7 @@ https://svelte.dev/e/node_invalid_placement -->
 </script>
 <svelte:window bind:scrollY={scrollY} />
 
-<head class="flex justify-between">
+<header class="flex justify-between">
     <MiniButton color="ghost" href={route('activities.index',{date: dayjs(date).subtract(1,'month').format("YYYY-MM-DD")})}>
         Back
     </MiniButton>
@@ -78,7 +76,7 @@ https://svelte.dev/e/node_invalid_placement -->
     <MiniButton color="ghost" href={route('activities.index',{date: dayjs(date).add(1,'month').format("YYYY-MM-DD")})}>
         Next
     </MiniButton>
-</head>
+</header>
 <div class="w-11/12 pb-10 mx-auto border rounded-md shadow-sm flex gap-2" bind:this={container}>
     <table class="table table-hover w-full table-xs table-pin-rows table-pin-cols" >
         <thead class="z-50">

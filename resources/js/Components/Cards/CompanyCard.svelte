@@ -1,16 +1,10 @@
 <script lang="ts">
-    import route from "$vendor/tightenco/ziggy";
-    import OutlineButton from "../Buttons/OutlineButton.svelte";
-    import MiniButton from "../MiniButton.svelte";
-
+    
     interface Props {
         data: any;
     }
 
     let { data }: Props = $props();
-
-    console.log(data);
-
 </script>
 
 
