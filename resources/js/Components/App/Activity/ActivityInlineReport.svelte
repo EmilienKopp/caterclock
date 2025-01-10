@@ -8,11 +8,12 @@
   import ActivityLogItem from '$components/App/Activity/ActivityLogItem.svelte';
   import MiniPie from '$components/Buttons/MiniPie.svelte';
   import ActivityPieChart from '$components/Charts/ActivityPieChart.svelte';
+  import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import { TaskCategory } from '$lib/models/TaskCategory';
   import { TimeLog } from '$lib/models/TimeLog';
-  import { toast, user } from '$lib/stores';
+  import { user } from '$lib/stores.svelte';
   import { Duration } from '$lib/utils/duration';
   import route from '$vendor/tightenco/ziggy/src/js';
   import { router, useForm } from '@inertiajs/svelte';
@@ -54,7 +55,7 @@
 
     await $form.put(route('timelog.update', { timelog: logId }), {
       onSuccess: () => {
-        toast.success('Clocked out successfully');
+        toaster.success('Clocked out successfully');
         log.is_running = false;
         if (target.tagName == 'A' && target.href) {
           router.get(target.href);

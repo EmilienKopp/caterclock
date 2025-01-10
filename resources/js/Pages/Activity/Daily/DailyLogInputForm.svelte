@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { run, preventDefault } from 'svelte/legacy';
+  import { preventDefault, run } from 'svelte/legacy';
 
   
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+  import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import DurationInput from '$components/Inputs/DurationInput.svelte';
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import { toast } from '$lib/stores';
   import { Duration } from '$lib/utils/duration';
   import type { TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
@@ -66,10 +66,9 @@
       Duration.flooredToMinute(activitiesTotal) >
         Duration.flooredToMinute(log.total_seconds)
     ) {
-      toast.show(
+      toaster.error(
         'Total duration cannot be greater than ' +
-          Duration.toHHMM(log.total_seconds),
-        'error'
+          Duration.toHHMM(log.total_seconds)
       );
       aboveMax = true;
     } else {
@@ -113,12 +112,12 @@
     console.log($form);
     $form.post(route('activities.store'), {
       onSuccess: () => {
-        toast.success('Activities saved successfully');
+        toaster.success('Activities saved successfully');
         $form.isDirty = false;
         loading = false;
       },
       onError: (error: any) => {
-        toast.error('Error saving activities');
+        toaster.error('Error saving activities');
         console.log(error);
       },
     });
@@ -129,13 +128,13 @@
     if (confirm('Are you sure you want to delete this log?')) {
       $form.delete(route('timelog.destroy', { timelog: logEntry.id }), {
         onStart: () => {
-          toast.info('Deleting log...');
+          toaster.info('Deleting log...');
         },
         onSuccess: () => {
-          toast.success('Log deleted successfully');
+          toaster.success('Log deleted successfully');
         },
         onError: () => {
-          toast.error('Error deleting log');
+          toaster.error('Error deleting log');
         },
       });
     }
@@ -159,11 +158,11 @@
   async function updateClockEntries() {
     $clockEntriesForm.put(route('timelog.batch-update'), {
       onSuccess: () => {
-        toast.success('Clock entries updated successfully');
+        toaster.success('Clock entries updated successfully');
         clockEntryModalOpen = false;
       },
       onError: () => {
-        toast.error('Error updating clock entries');
+        toaster.error('Error updating clock entries');
         console.log($clockEntriesForm.errors);
       },
     });
@@ -274,7 +273,7 @@
             </td>
             <td>
               <DurationInput
-                bind:activity
+                bind:activity={$form.activities[index]}
                 max={log.total_seconds}
                 parentTotal={activitiesTotal}
                 {safetyOn}

@@ -2,10 +2,10 @@
     import { preventDefault } from 'svelte/legacy';
 
 import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
 import InputError from '$components/Inputs/InputError.svelte';
 import InputLabel from '$components/Inputs/InputLabel.svelte';
 import TextInput from '$components/Inputs/TextInput.svelte';
-import { toast } from '$lib/stores';
 import route from '$vendor/tightenco/ziggy';
 import { useForm } from '@inertiajs/svelte';
 
@@ -23,7 +23,7 @@ const updatePassword = () => {
         preserveScroll: true,
         onSuccess: () => {
             $form.reset();
-            toast.show('Password updated.', 'success');
+            toaster.success('Password updated.');
         },
         onError: () => {
             if ($form.errors.password) {

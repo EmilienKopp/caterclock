@@ -2,14 +2,14 @@
     import { preventDefault } from 'svelte/legacy';
 
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
+    import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
     import InputLabel from "$components/Inputs/InputLabel.svelte";
     import NumberInput from "$components/Inputs/NumberInput.svelte";
     import Select from "$components/Inputs/Select.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
     import PageTitle from "$components/UI/PageTitle.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { user } from "$lib/stores";
-    import { toaster } from '$lib/utils/Toast';
+    import { user } from "$lib/stores.svelte";
     import route from '$vendor/tightenco/ziggy';
     import { useForm } from "@inertiajs/svelte";
 
@@ -37,7 +37,7 @@
     });
 
     function handleFreelancerRateSubmit() {
-        $freelancerRateForm.post(route('rates.upsert', {user: $user.id, project: project.id}),{
+        $freelancerRateForm.post(route('rates.upsert', {user: user.id, project: project.id}),{
             onError: (errors: any) => {
                 console.log(errors);
             },
@@ -82,7 +82,7 @@
 
         <PrimaryButton type="submit">Save</PrimaryButton>
     </form>
-    {#if $user.roles.some( r => r.name == 'freelancer')}
+    {#if user.roles.some( r => r.name == 'freelancer')}
         <div class="divider"> Freelancer Space </div>
         <form class="grid grid-cols-2 gap-8" onsubmit={preventDefault(handleFreelancerRateSubmit)}>
             <InputLabel value="Rate">

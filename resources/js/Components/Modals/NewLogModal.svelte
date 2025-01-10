@@ -1,30 +1,38 @@
 <script lang="ts">
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
+    import { toaster } from "$components/Feedback/Toast/ToastHandler.svelte";
     import InputLabel from "$components/Inputs/InputLabel.svelte";
     import Select from "$components/Inputs/Select.svelte";
-    import { toast } from "$lib/stores";
+    import { Project } from "$lib/models/Project";
+    import { User } from "$lib/models/User";
     import route from '$vendor/tightenco/ziggy';
-    import { page, useForm } from "@inertiajs/svelte";
+    import { useForm } from "@inertiajs/svelte";
     import dayjs from "dayjs";
     import timezone from 'dayjs/plugin/timezone';
     import utc from 'dayjs/plugin/utc';
     import Dialog from "./Dialog.svelte";
+
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
     interface Props {
         open?: boolean;
+        auth: { user: User };
+        date: string;
+        query: any;
+        projects: Project[];
     }
 
-    let { open = $bindable(false) }: Props = $props();
+    let { open = $bindable(false), auth, date, query, projects }: Props = $props();
+    let user = auth.user;
 
     const form = useForm({
-        user_id: $page.props.auth.user.id,
+        user_id: user.id,
         project_id: null,
-        in_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T10:00:00',
-        out_time: dayjs($page.props.date).format('YYYY-MM-DD') + 'T18:00:00',
-        date: dayjs($page.props.query.date).format('YYYY-MM-DD'),
+        in_time: dayjs(date).format('YYYY-MM-DD') + 'T10:00:00',
+        out_time: dayjs(date).format('YYYY-MM-DD') + 'T18:00:00',
+        date: dayjs(query.date).format('YYYY-MM-DD'),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     });
 
@@ -33,10 +41,10 @@
         $form.post(route('timelog.store'), {
             onSuccess: () => {
                 open = false;
-                toast.success('Log saved successfully.');
+                toaster.success('Log saved successfully.');
             },
             onError: () => {
-                toast.error('Error saving log.');
+                toaster.error('Error saving log.');
                 console.log($form.errors);
             }
         });
@@ -70,7 +78,7 @@
         <div class="flex flex-col space-y-2">
             <InputLabel value="Project" for="project_id">
                 <Select required id="project_id" name="project_id" bind:value={$form.project_id} >
-                    {#each $page.props?.projects ?? [] as project}
+                    {#each projects ?? [] as project}
                         <option value={project.id}>{project.name}</option>
                     {/each}
                 </Select>

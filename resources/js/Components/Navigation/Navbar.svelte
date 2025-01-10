@@ -1,20 +1,20 @@
 <script lang="ts">
     import ThemeSwitch from '$components/Buttons/ThemeSwitch.svelte';
     import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-    import { now } from '$lib/stores';
+    import { User } from '$lib/models/User';
     import type { RouteItem } from '$types';
     import route from '$vendor/tightenco/ziggy';
-    import { Link, inertia, page } from '@inertiajs/svelte';
+    import { Link, inertia } from '@inertiajs/svelte';
     import dayjs from 'dayjs';
 
     interface Props {
         menu?: RouteItem[];
+        auth: { user: User };
     }
 
-    let { menu = [] }: Props = $props();
-    const { auth } = $page.props;
-    const roles: number[] | string[] = auth.user.roles;
-    let time = $derived(dayjs($now).format('HH:mm'));
+    let { menu = [], auth }: Props = $props();
+    const user = auth.user;
+    let time = $derived(dayjs().format('HH:mm'));
 </script>
 <nav
     class="navbar bg-base-100 border-b border-base-200 shadow-lg sticky top-0 z-50"
@@ -60,7 +60,7 @@
             </ul>
         </div>
         <div class="flex items-center">
-        <a class="btn btn-ghost text-xl" href={auth.user ? route('dashboard') : '/'}>caterclock</a>
+        <a class="btn btn-ghost text-xl" href={user ? route('dashboard') : '/'}>caterclock</a>
             <span class="hidden sm:inline-block">{time}</span>
             <TimeZoneInfo />
         </div>
@@ -88,7 +88,7 @@
     </div>
     <div class="navbar-end  flex items-center gap-2">
         <ThemeSwitch />
-        <span class="text-sm hidden sm:inline-block">{auth?.user?.name ?? ""}</span>
+        <span class="text-sm hidden sm:inline-block">{user?.name ?? ""}</span>
         <div class="dropdown dropdown-end">
             <div
                 tabindex="0"
@@ -96,8 +96,8 @@
                 class="btn btn-ghost btn-circle avatar"
             >
                 <div class="w-10 rounded-full">
-                    <img title={auth.user.name} alt={auth.user.name} 
-                        src="{auth.user.avatar ?? 'avatar-default.jpg'}"
+                    <img title={user.name} alt={user.name} 
+                        src="{user.avatar ?? 'avatar-default.jpg'}"
                     />
                 </div>
             </div>

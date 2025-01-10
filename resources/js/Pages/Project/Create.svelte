@@ -1,33 +1,32 @@
 <script lang="ts">
-    import { preventDefault } from 'svelte/legacy';
-
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
     import SecondaryButton from '$components/Buttons/SecondaryButton.svelte';
+    import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
     import Fieldset from '$components/Inputs/Fieldset.svelte';
     import InputLabel from '$components/Inputs/InputLabel.svelte';
     import TextInput from '$components/Inputs/TextInput.svelte';
     import PageTitle from '$components/UI/PageTitle.svelte';
     import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-    import { toast } from '$lib/stores';
+    import { user } from '$lib/stores.svelte';
     import route from '$vendor/tightenco/ziggy';
-    import { page, useForm } from '@inertiajs/svelte';
+    import { useForm } from '@inertiajs/svelte';
 
-    const {user} = $page.props.auth;
 
     const form = useForm('createProject',{
         name: '',
         description: '',
     });
 
-    async function handleSubmit() {
+    async function handleSubmit(e: Event) {
+        e.preventDefault();
         $form.post(route('projects.store'), {
             preserveScroll: true,
             onSuccess: () => {
                 $form.reset();
-                toast.success('Project created successfully!');
+                toaster.success('Project created successfully!');
             },
             onError: () => {
-                toast.error('There was a problem creating the project.');
+                toaster.error('There was a problem creating the project.');
                 console.warn($form.errors);
             },
         });
@@ -38,11 +37,11 @@
 
     <div>
 
-        <PageTitle headTitle="Create Project - FleaClock">
+        <PageTitle headTitle="Create Project - Caterclock">
             Create Project
         </PageTitle>
 
-        <form method="POST" onsubmit={preventDefault(handleSubmit)}>
+        <form method="POST" onsubmit={handleSubmit}>
             <input type="hidden" name="user_id" value={user.id} />
             <Fieldset>
                 <legend>Basic Information</legend>

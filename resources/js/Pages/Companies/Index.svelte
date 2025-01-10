@@ -2,6 +2,7 @@
     import MiniButton from "$components/Buttons/MiniButton.svelte";
     import SecondaryButton from "$components/Buttons/SecondaryButton.svelte";
     import CompanyCard from "$components/Cards/CompanyCard.svelte";
+    import { toaster } from "$components/Feedback/Toast/ToastHandler.svelte";
     import InputLabel from "$components/Inputs/InputLabel.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
     import Dialog from "$components/Modals/Dialog.svelte";
@@ -9,7 +10,6 @@
     import TabItem from "$components/UI/TabItem.svelte";
     import TabLayout from "$components/UI/TabLayout.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { queryParams, toast } from "$lib/stores";
     import { FilterService } from "$lib/utils/filter";
     import type { Company, ConnectionRequest, Project } from "$models";
     import route from "$vendor/tightenco/ziggy/src/js";
@@ -101,7 +101,7 @@
         await router.delete(route('connection-requests.destroy', requestItem.id), {
             preserveScroll: true,
             onSuccess: async () => {
-                toast.success('Request withdrawn');
+                toaster.success('Request withdrawn');
             },
             onError: () => {
                 console.log('error');
@@ -109,8 +109,10 @@
         });
     }
 
-    let tab = $derived($queryParams?.tab ?? 'employers');
+    const queryParams = $state(router.current().params);
+    let tab = $derived(queryParams?.tab ?? 'employers');
     
+    $inspect(queryParams);
 </script>
 
 <AuthenticatedLayout>

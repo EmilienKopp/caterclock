@@ -4,14 +4,15 @@
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+  import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import NewLogModal from '$components/Modals/NewLogModal.svelte';
   import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
-  import { toast } from '$lib/stores';
   import type { Activity, DailyLog, TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
   import { router, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
   import DailyLogInputForm from './DailyLogInputForm.svelte';
+  
 
   interface Props {
     activities: Activity[];
@@ -36,7 +37,6 @@
   });
 
   function handleDateSelection() {
-    console.log(selectedDate);
     if (!selectedDate) return;
     router.get(route('activities.show', { date: selectedDate }));
   }
@@ -44,10 +44,10 @@
   async function saveAll() {
     $form.post(route('activities.store'), {
       onSuccess: () => {
-        toast.success('Activities saved successfully.');
+        toaster.success('Activities saved successfully.');
       },
       onError: () => {
-        toast.error('Error saving activities.');
+        toaster.error('Error saving activities.');
         console.log($form);
       },
     });
@@ -56,11 +56,11 @@
   async function saveAllAndReturn() {
     $form.post(route('activities.store'), {
       onSuccess: () => {
-        toast.success('Activities saved successfully.');
+        toaster.success('Activities saved successfully.');
         router.get(route('activities.index'));
       },
       onError: () => {
-        toast.error('Error saving activities.');
+        toaster.error('Error saving activities.');
       },
     });
   }
@@ -94,9 +94,9 @@
         </MiniButton>
       </div>
     {:else}
-      {#each dailyLogs as log}
+      {#each dailyLogs as log, i}
         {#if log.activities}
-          <DailyLogInputForm bind:log {taskCategories} />
+          <DailyLogInputForm bind:log={log.activities[i]} {taskCategories} />
         {/if}
       {/each}
       <div class="2xl:col-span-2 col-span-1">

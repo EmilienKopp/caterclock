@@ -1,21 +1,20 @@
 <script lang="ts">
 
-    import MiniToast from "$components/Feedback/MiniToast.svelte";
-    import { Link, page, router} from "@inertiajs/svelte";
-    import type { RouteItem } from "$types";
+    import Toast from "$components/Feedback/Toast/Toast.svelte";
     import Navbar from "$components/Navigation/Navbar.svelte";
+    import type { RouteItem } from "$types";
+    import { router } from "@inertiajs/svelte";
     import dayjs from "dayjs";
-    import route from "$vendor/tightenco/ziggy";
-    import { fade, fly, slide } from "svelte/transition";
     import { sineInOut } from "svelte/easing";
+    import { fade } from "svelte/transition";
     interface Props {
         header?: import('svelte').Snippet;
         children?: import('svelte').Snippet;
+        auth: any;
+        roles: any;
     }
 
-    let { header, children }: Props = $props();
-
-    const { auth, roles } = $page.props;
+    let { header, children, auth, roles }: Props = $props();
 
     let showingNavigationDropdown = false;
 
@@ -62,7 +61,7 @@
 
         <!-- Page Content -->
         <main class="sm:p-6 py-2"  transition:fade={{duration: 400, easing: sineInOut}}>
-            <MiniToast show={false} />
+            <Toast show={false} />
             {@render children?.()}
         </main>
     </div>

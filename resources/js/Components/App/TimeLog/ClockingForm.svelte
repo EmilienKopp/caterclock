@@ -2,25 +2,30 @@
     import { preventDefault, run } from 'svelte/legacy';
 
     import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
+    import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
     import Select from '$components/Inputs/Select.svelte';
-    import { latestClockInTime, toast } from '$lib/stores';
+    import { latestClockInTime } from '$lib/stores.svelte';
     import route from '$vendor/tightenco/ziggy';
-    import { page, useForm } from '@inertiajs/svelte';
+    import { useForm } from '@inertiajs/svelte';
+    import { User } from 'lucide-svelte';
     import { setContext } from 'svelte';
+
     interface Props {
         indicator?: import('svelte').Snippet<[any]>;
         entries: any[];
         projects: any[];
         projectDurations: any[];
+        auth: { user: User };
     }
 
-    let { indicator }: Props = $props();
+    let { indicator, auth }: Props = $props();
+    let user = auth.user;
 
     let entries: any[] = $state([]), projects: any[] = $state([]), projectDurations: any[] = $state([]);
     let running = $derived(entries?.find((entry: any) => entry?.out_time == null));
     let projectName = $derived(projects?.find((project: any) => project.id == $form.project_id)?.name);
     run(() => {
-        $latestClockInTime = Date.parse(running?.in_time);
+        latestClockInTime.set(Date.parse(running?.in_time))
     });
     run(() => {
         setContext('running', running );
@@ -28,7 +33,6 @@
 
     let action: "in" | "out" = $state("in");
 
-    const {user} = $page.props.auth;
 
     const form = useForm({
         user_id: user.id,
@@ -46,7 +50,7 @@
 
         $form.post(route('timelog.store'), {
             onError: () => {
-                toast.error('An error occurred while trying to clock in/out');
+                toaster.error('An error occurred while trying to clock in/out');
                 console.log($form.errors);
             },
             onSuccess: () => {
