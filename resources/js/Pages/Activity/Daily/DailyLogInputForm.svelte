@@ -12,6 +12,7 @@
   import type { DailyLog } from '$lib/models/DailyLog';
   import { TaskCategory } from '$lib/models/TaskCategory';
   import { Duration } from '$lib/utils/duration';
+  import { asSelectOptions } from '$lib/utils/formatting';
   import route from '$vendor/tightenco/ziggy';
   import { useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
@@ -263,7 +264,7 @@
                 name="activity_{activity.project_id}[{index}]"
                 label="Task Category"
                 bind:value={activity.task_category_id}
-                items={taskCategories}
+                items={asSelectOptions(taskCategories, 'name', 'id')}
                 mapping={{
                   labelColumn: 'name',
                   valueColumn: 'id',

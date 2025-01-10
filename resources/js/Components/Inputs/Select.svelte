@@ -1,7 +1,7 @@
 <script lang="ts">
   interface Props {
     value?: string | number | null;
-    items?: { label: string; value: number | string }[];
+    items?: SelectOption[];
     name: string;
     mapping?: { labelColumn: string; valueColumn: string };
     children?: import('svelte').Snippet;
