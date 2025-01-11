@@ -1,7 +1,7 @@
 <script lang="ts">
     import MiniButton from '$components/Buttons/MiniButton.svelte';
     import { FilterService } from '$lib/utils/filter';
-    import { resolveNestedValue } from '$lib/utils/objects';
+    import { dotResolve } from '$lib/utils/objects';
     import { createEventDispatcher } from 'svelte';
     import InputLabel from './InputLabel.svelte';
 
@@ -22,10 +22,10 @@
         <input type="text" id="name" bind:value={searchString} />
     </div>
     <ul>
-        {#each items.filter( (item) => FilterService.Fuzzy(resolveNestedValue(item,key),searchString)) ?? [] as item}
+        {#each items.filter( (item) => FilterService.Fuzzy(dotResolve(item,key),searchString)) ?? [] as item}
             <li class="p-3 my-2 text-primary text-lg flex justify-between w-full">
                 <span>
-                    {@html FilterService.fuzzyHighlight(resolveNestedValue(item,key), searchString)}
+                    {@html FilterService.fuzzyHighlight(dotResolve(item,key), searchString)}
                 </span>
 
                 <MiniButton on:click={() => dispatch('chose',{item})} >

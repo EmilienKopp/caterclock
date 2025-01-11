@@ -1,20 +1,20 @@
 <script lang="ts">
-  
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
   import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
-  import DurationInput from '$components/Inputs/DurationInput.svelte';
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import type { Activity } from '$lib/models/Activity';
-  import type { DailyLog } from '$lib/models/DailyLog';
+  import { computeActivitiesTotalDuration } from '$lib/domain/activities';
+  import { Activity } from '$lib/models/Activity.svelte';
+  import { DailyLog } from '$lib/models/DailyLog';
   import { TaskCategory } from '$lib/models/TaskCategory';
+  import { collect, Collection } from '$lib/utils/collection';
   import { Duration } from '$lib/utils/duration';
-  import { asSelectOptions } from '$lib/utils/formatting';
+  import type { IActivity } from '$models';
   import route from '$vendor/tightenco/ziggy';
-  import { useForm } from '@inertiajs/svelte';
+  import { page, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
   import timezone from 'dayjs/plugin/timezone';
   import utc from 'dayjs/plugin/utc';
@@ -24,7 +24,7 @@
   dayjs.extend(utc);
 
   interface Props {
-    taskCategories: TaskCategory[];
+    taskCategories: TaskCategory[] | Collection<TaskCategory>;
     log: DailyLog;
   }
 
@@ -47,68 +47,74 @@
     })
   );
 
+  const taskCategoriesOptions = collect(taskCategories).toSelect('id', 'name');
   const clockEntriesForm = useForm({
     entries,
   });
 
-  const form = useForm({
-    date: log.date,
-    project_id: log.project_id,
-    activities: log.activities?.filter(
-      (a: any) => a.project_id == log.project_id
-    ),
-  });
-
-  let activitiesTotal = $derived(
-    $form.activities
-      .filter((a: Activity) => a.project_id == log.project_id)
-      .reduce((a: number, b: any) => a + b.duration, 0)
+  const form = $state(
+    useForm({
+      date: log.date,
+      project_id: log.project_id,
+      activities:
+        log.activities
+          ?.filter((a: any) => a.project_id == log.project_id)
+          .map((a) => new Activity(a)) ?? [],
+    })
   );
 
-  $effect(() => {
-    if (
-      safetyOn &&
-      log?.total_seconds &&
-      Duration.flooredToMinute(activitiesTotal) >
-        Duration.flooredToMinute(log.total_seconds)
-    ) {
-      toaster.error(
-        'Total duration cannot be greater than ' +
-          Duration.toHHMM(log.total_seconds)
-      );
-      aboveMax = true;
-    } else {
-      aboveMax = false;
-    }
-  });
+  let activitiesTotal = $derived(
+    computeActivitiesTotalDuration($form.activities)
+  );
 
-  function opentTaskModal(activity: any, index: number) {
+  let duration = $derived(Duration.toHHMM(log?.total_seconds ?? 0));
+
+  function openTaskModal(activity: any, index: number) {
     console.log(activity, index);
   }
 
-  function handleKeydown(e: CustomEvent, activity: Activity, index: number) {
-    if (e.detail.key == 'Enter') {
+  function handleKeydown(e: Event, activity: IActivity, index: number) {
+    const key = (e as KeyboardEvent).key;
+    console.log('DailyLogInputForm.svelte: handleKeydown: key: ', key, e);
+    if (key == 'Enter') {
       addRow(activity.project_id);
-      if (document) {
-        const target = document.querySelector(
-          `input[name="activity_${activity.project_id}[${index + 1}]"]`
-        ) as HTMLInputElement;
-        target?.focus();
+    }
+  }
+
+  function handleInput(
+    e: Event,
+    activity: IActivity,
+    unit: 'hours' | 'minutes'
+  ) {
+    activity.duration =
+      ((activity.hours || 0) * 60 + (activity.minutes || 0)) * 60;
+    if (safetyOn) {
+      aboveMax = activitiesTotal > (log?.total_seconds ?? 0);
+      if (aboveMax) {
+        toaster.error(
+          'Total duration cannot be greater than ' +
+            Duration.toHHMM(log.total_seconds ?? 0)
+        );
       }
     }
   }
 
+  let totalDuration = $derived.by(() => {
+    return $form.activities.reduce((acc, a) => acc + a.duration, 0);
+  });
+
   function addRow(projectId: number | undefined) {
     if (!projectId) return;
+    const newActivity = new Activity({
+      project_id: projectId,
+      user_id: log.user_id || $page.props.auth.user.id,
+      task_category_id: 0,
+      date: log.date,
+      duration: 0,
+    });
     $form.activities = [
       ...$form.activities,
-      {
-        project_id: projectId,
-        task_category_id: null,
-        user_id: log.user_id,
-        date: log.date,
-        duration: 0,
-      },
+      newActivity,
     ];
     log.activities = $form.activities;
   }
@@ -160,6 +166,7 @@
   }
 
   async function updateClockEntries() {
+    console.log('Updating clock entries', $clockEntriesForm);
     $clockEntriesForm.put(route('timelog.batch-update'), {
       onSuccess: () => {
         toaster.success('Clock entries updated successfully');
@@ -167,15 +174,16 @@
       },
       onError: () => {
         toaster.error('Error updating clock entries');
-        console.log($clockEntriesForm.errors);
       },
     });
   }
+
+  $inspect(totalDuration, $form.activities);
 </script>
 
 <form
   class="rounded border p-5"
-  onsubmit={save}
+  onsubmit={(e) => DailyLog.save(e, $form, loading)}
   transition:fade
   class:border-green-600={!$form.isDirty}
   class:border-yellow-100={$form.isDirty && !aboveMax}
@@ -188,9 +196,7 @@
   {:else}
     <div class="flex justify-between text-lg">
       <h2>
-        {log.date}・{log.project_name}・({Duration.toHrMinString(
-          (log.total_seconds ?? 0)
-        )})
+        {log.date}・{log.project_name}・({duration})
         <span
           class="tooltip"
           data-tip="Safety mode prevents you from saving activities that exceed the total duration of the log."
@@ -248,6 +254,10 @@
         >
       </div>
     </div>
+    <button class="text-xs" type="button">
+      {totalDuration}
+    </button>
+
     <table class="table">
       <thead>
         <tr>
@@ -264,7 +274,7 @@
                 name="activity_{activity.project_id}[{index}]"
                 label="Task Category"
                 bind:value={activity.task_category_id}
-                items={asSelectOptions(taskCategories, 'name', 'id')}
+                items={taskCategoriesOptions}
                 mapping={{
                   labelColumn: 'name',
                   valueColumn: 'id',
@@ -272,13 +282,36 @@
               />
             </td>
             <td>
-              <DurationInput
+              <!-- <DurationInput
                 bind:activity={$form.activities[index]}
                 max={log.total_seconds}
                 parentTotal={activitiesTotal}
                 {safetyOn}
-                on:minutekeydown={(e) => handleKeydown(e, activity, index)}
-                on:hourkeydown={(e) => handleKeydown(e, activity, index)}
+                handleKeydown={(e: Event) => handleKeydown(e, activity, index)}
+                handleChange={handleInput}
+              /> -->
+              <input
+                type="number"
+                class="input input-bordered"
+                min="0"
+                max="23"
+                step="1"
+                name="hours"
+                bind:value={activity.hours}
+                onchange={(e) =>
+                  handleInput(e, $form.activities[index], 'hours')}
+              />
+
+              <input
+                type="number"
+                class="input input-bordered"
+                min="0"
+                max="59"
+                step="1"
+                bind:value={activity.minutes}
+                name="minutes"
+                onchange={(e) =>
+                  handleInput(e, $form.activities[index], 'minutes')}
               />
             </td>
             <td>
@@ -344,7 +377,7 @@
         <tr>
           <td colspan="3">
             <OutlineButton
-              on:click={() => addRow(log.project_id)}
+              onclick={() => addRow(log.project_id)}
               disabled={$form.processing}
             >
               Add Activity
@@ -354,7 +387,7 @@
                 type="submit"
                 title={aboveMax
                   ? 'Total duration cannot be greater than ' +
-                    Duration.toHHMM((log.total_seconds ?? 0))
+                    Duration.toHHMM(log.total_seconds ?? 0)
                   : 'Save activities'}
                 loading={$form.processing}
                 disabled={aboveMax ||
@@ -392,7 +425,7 @@
 
   {#snippet buttons()}
     <div>
-      <PrimaryButton on:click={updateClockEntries}>Save</PrimaryButton>
+      <PrimaryButton onclick={updateClockEntries}>Save</PrimaryButton>
     </div>
   {/snippet}
 </Dialog>

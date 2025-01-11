@@ -7,6 +7,7 @@ use App\Models\TimeLog;
 use App\Http\Requests\StoreTimeLogRequest;
 use App\Http\Requests\UpdateTimeLogRequest;
 use App\Http\Requests\BatchUpdateTimeLogRequest;
+use App\Models\DailyLog;
 use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -147,7 +148,7 @@ class TimeLogController extends Controller
                 }
             });
 
-            return redirect()->back();
+            return to_route('activities.show');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response(status: 500, content: $e->getMessage());

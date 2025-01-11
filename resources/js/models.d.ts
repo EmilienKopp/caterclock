@@ -16,6 +16,8 @@ export interface IActivity {
     rate?: number;
     created_at?: any;
     updated_at?: any;
+    hours?: number;
+    minutes?: number;
 }
 
 export interface ICompany {

@@ -1,6 +1,6 @@
 <script lang="ts">
+    import type { ButtonShape, ButtonSize, ButtonVariant } from "$types";
     import BaseButton from "./BaseButton.svelte";
-    import type { ButtonSize, ButtonShape, ButtonVariant } from "$types";
     
     interface Props {
         href?: string | undefined;
@@ -8,6 +8,7 @@
         size?: ButtonSize;
         variant?: ButtonVariant;
         shape?: ButtonShape;
+        onclick?: (event: Event) => void;
         children?: import('svelte').Snippet;
         [key: string]: any
     }
@@ -24,7 +25,6 @@
 </script>
 
 <BaseButton {size} {shape} {variant} {loading} {href}
-    on:click
     {...rest}
 >
     {@render children?.()}

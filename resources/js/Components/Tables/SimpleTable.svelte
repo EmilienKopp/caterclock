@@ -29,7 +29,7 @@
 <script lang="ts">
     import MiniButton from "$components/Buttons/MiniButton.svelte";
 
-    import { resolveNestedValue } from "$lib/utils/objects";
+    import { dotResolve } from "$lib/utils/objects";
 
     import route from "$vendor/tightenco/ziggy";
     import { Popover } from "flowbite-svelte";
@@ -68,7 +68,7 @@
         {#each data ?? [] as item}
         <tr>
             {#each headers as header}
-                {@const unformatted = resolveNestedValue(item, header.key) ?? ""}
+                {@const unformatted = dotResolve(item, header.key) ?? ""}
                 {@const transformed = header.transform ? header.transform(unformatted) : unformatted}
                 {@const value = header.format ? header.format(transformed) : transformed}
                 
@@ -87,7 +87,7 @@
                     
                         <Popover trigger="hover">
                             {@const SvelteComponent = popovers[header.key].component}
-                            <SvelteComponent data={resolveNestedValue(item, popovers[header.key].prop ?? "")}/>
+                            <SvelteComponent data={dotResolve(item, popovers[header.key].prop ?? "")}/>
                         </Popover>
                     {/if}
                 </td>

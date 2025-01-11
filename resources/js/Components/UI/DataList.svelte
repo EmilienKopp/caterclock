@@ -1,7 +1,7 @@
 <script lang="ts">
+    import { dotResolve } from "$lib/utils/objects";
     import type { DataListDefinition } from "$types";
     import { isEmpty } from "lodash";
-    import { resolveNestedValue } from "supakit-eloquent/lib/objects";
 
     interface Props {
         title?: string;
@@ -27,7 +27,7 @@
 
 <dl>
     {#each Object.keys(definition) as key}
-    {@const value = resolveNestedValue(data, key)}
+    {@const value = dotResolve(data, key)}
         <dt>{definition[key].label}</dt>
         <dd>
         {#if Array.isArray(value) && value.length > 0}

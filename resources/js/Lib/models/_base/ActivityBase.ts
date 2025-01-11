@@ -18,6 +18,8 @@ export class ActivityBase implements IActivity {
     rate?: number;
     created_at?: any;
     updated_at?: any;
+    hours?: number;
+    minutes?: number;
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -42,6 +44,8 @@ export class ActivityBase implements IActivity {
         this.rate = data.rate;
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
+        this.hours = data.hours;
+        this.minutes = data.minutes;
 
         this.projects = data.projects ?? [];
         this.timeLogs = data.timeLogs ?? [];

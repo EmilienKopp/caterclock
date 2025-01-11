@@ -28,6 +28,7 @@ class ModelGen extends Command
     protected $models;
     protected Collection $selectedModels;
     protected $currentModelClass;
+    protected $uiFramework;
 
     public function __construct()
     {
@@ -44,6 +45,11 @@ class ModelGen extends Command
         if (!$this->validateEnvironment()) {
             return;
         }
+
+        $frameworks = ['Svelte 4', 'Svelte 5'];
+        //Prompt for UI Framework
+        $uiFramework = select('Select the UI Framework:', $frameworks);
+        $this->info("UI Framework selected: {$uiFramework}");
 
         $this->loadModels();
 
@@ -237,9 +243,13 @@ class ModelGen extends Command
     {
         if ($modelType === ModelType::MODEL) {
             $interfaceName = $this->classNameToInterfaceName($className);
-            return "import { {$className}Base } from './_base/{$className}Base';
-            import type { $interfaceName } from '\$models';
-            ";
+            $frameworkSpecificPath = match ($this->uiFramework) {
+                'Svelte 4' => "'./_base/{$className}Base';",
+                'Svelte 5' => "'./_base/{$className}Base.svelte';",
+                default => "'./_base/{$className}Base';",
+            };
+            return "import { {$className}Base } from {$frameworkSpecificPath};\n"
+                . "import type { $interfaceName } from '\$models';";
         }
 
         $imports = new Collection();
@@ -281,7 +291,13 @@ class ModelGen extends Command
 
         $properties = $columns->map(function ($column) {
             $type = config("typegen.mapping.{$column->data_type}", 'any');
-            $attributeName = $column->is_nullable === 'YES' ? "{$column->column_name}?" : $column->column_name;
+            $isNullable = $column->is_nullable === 'YES';
+            $attributeName = $isNullable ? "{$column->column_name}?" : $column->column_name;
+            $frameworkSpecificTypeDef = match ($this->uiFramework) {
+                'Svelte 4' => ": $type;",
+                'Svelte 5' => " = \$state<$type>();",
+                default => $type,
+            };
             $typeEntry = "    $attributeName: $type;";
 
             if (Str::endsWith($column->column_name, '_id')) {

@@ -24,7 +24,6 @@ class ToastHandler {
     this.#show = true;
     setTimeout(() => {
       this.hide();
-      console.log(this);
     }, this.options.duration);
   }
 

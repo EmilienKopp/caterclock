@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
@@ -9,7 +8,7 @@
   import AuthenticatedLayout from '$layouts/AuthenticatedLayout.svelte';
   import type { Activity, DailyLog, TaskCategory } from '$models';
   import route from '$vendor/tightenco/ziggy';
-  import { page, router, useForm } from '@inertiajs/svelte';
+  import { router, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
   import DailyLogInputForm from './DailyLogInputForm.svelte';
   
@@ -21,14 +20,14 @@
     date: string;
   }
 
-  let { activities, dailyLogs, taskCategories, date}: PageProps = $page.props;
+  let { activities, dailyLogs, taskCategories, date}: PageProps = $props();
 
   let selectedDate = $state(dayjs(date).format('YYYY-MM-DD'));
   let logModalOpen = $state(false);
 
   let form = useForm({
     date: selectedDate,
-    activities: activities,
+    activities: flattenActivities(),
   });
 
   function handleDateSelection() {
@@ -37,6 +36,7 @@
   }
 
   async function saveAll() {
+    $form.activities = flattenActivities();
     $form.post(route('activities.store'), {
       onSuccess: () => {
         toaster.success('Activities saved successfully.');
@@ -49,6 +49,7 @@
   }
 
   async function saveAllAndReturn() {
+    $form.activities = flattenActivities();
     $form.post(route('activities.store'), {
       onSuccess: () => {
         toaster.success('Activities saved successfully.');
@@ -64,11 +65,11 @@
     logModalOpen = true;
   }
 
-  run(() => {
-    $form.activities = dailyLogs?.flatMap((log) => {
+  function flattenActivities() {
+    return dailyLogs?.flatMap((log) => {
       return log.activities;
     });
-  });
+  }
 </script>
 
 <AuthenticatedLayout>
