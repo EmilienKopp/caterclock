@@ -1,7 +1,7 @@
 <script lang="ts">
     import ThemeSwitch from '$components/Buttons/ThemeSwitch.svelte';
     import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-    import { User } from '$lib/models/User';
+    import { User } from '$lib/models/User.svelte';
     import type { RouteItem } from '$types';
     import route from '$vendor/tightenco/ziggy';
     import { Link, inertia } from '@inertiajs/svelte';

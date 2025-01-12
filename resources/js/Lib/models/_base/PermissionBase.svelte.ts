@@ -1,11 +1,13 @@
-import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITaskCategory, ITimeLog } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IPermission, IProject, IRate, IRole, ITimeLog } from '$models';
 
-export class TaskCategoryBase implements ITaskCategory {
-    id: number;
-    name: string;
-    description?: string;
-    created_at?: any;
-    updated_at?: any;
+export class PermissionBase implements IPermission {
+    id = $state<number>(0);
+    role_id = $state<number>(0);
+    role?: IRole;
+    ability = $state<any>();
+    model = $state<any>();
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -16,10 +18,11 @@ export class TaskCategoryBase implements ITaskCategory {
     identities?: IIdentity[];
 
 
-    constructor(data: TaskCategory) {
+    constructor(data: IPermission) {
         this.id = data.id;
-        this.name = data.name;
-        this.description = data.description;
+        this.role_id = data.role_id;
+        this.ability = data.ability;
+        this.model = data.model;
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
 

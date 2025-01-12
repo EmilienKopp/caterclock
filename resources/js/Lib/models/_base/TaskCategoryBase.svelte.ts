@@ -1,9 +1,11 @@
-import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, IReport, ITimeLog } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITaskCategory, ITimeLog } from '$models';
 
-export class ReportBase implements IReport {
-    id: number;
-    created_at?: any;
-    updated_at?: any;
+export class TaskCategoryBase implements ITaskCategory {
+    id = $state<number>(0);
+    name = $state<string>('');
+    description? = $state<string>('');
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -14,8 +16,10 @@ export class ReportBase implements IReport {
     identities?: IIdentity[];
 
 
-    constructor(data: Report) {
+    constructor(data: ITaskCategory) {
         this.id = data.id;
+        this.name = data.name;
+        this.description = data.description;
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
 

@@ -48,8 +48,8 @@ class ModelGen extends Command
 
         $frameworks = ['Svelte 4', 'Svelte 5'];
         //Prompt for UI Framework
-        $uiFramework = select('Select the UI Framework:', $frameworks);
-        $this->info("UI Framework selected: {$uiFramework}");
+        $this->uiFramework = select('Select the UI Framework:', $frameworks);
+        $this->info("UI Framework selected: {$this->uiFramework}");
 
         $this->loadModels();
 
@@ -181,7 +181,8 @@ class ModelGen extends Command
         $properties = $columns->map(function ($column) {
             $db_type = $column->data_type;
             $type = config("typegen.mapping.$db_type", 'any');
-            $attributeString = $column->is_nullable === 'YES' ? "$column->column_name?" : "$column->column_name";
+            $shouldBeOptional = $column->is_nullable === 'YES' || $column->column_name === 'id';
+            $attributeString = $shouldBeOptional ? "$column->column_name?" : "$column->column_name";
             $typeEntry = "    $attributeString: $type;";
 
             if (Str::endsWith($column->column_name, '_id')) {
@@ -248,6 +249,7 @@ class ModelGen extends Command
                 'Svelte 5' => "'./_base/{$className}Base.svelte';",
                 default => "'./_base/{$className}Base';",
             };
+            $this->line("    Framework specific path: $frameworkSpecificPath");
             return "import { {$className}Base } from {$frameworkSpecificPath};\n"
                 . "import type { $interfaceName } from '\$models';";
         }
@@ -293,12 +295,13 @@ class ModelGen extends Command
             $type = config("typegen.mapping.{$column->data_type}", 'any');
             $isNullable = $column->is_nullable === 'YES';
             $attributeName = $isNullable ? "{$column->column_name}?" : $column->column_name;
+            $default = $this->getDefaultForType($type, $isNullable);
             $frameworkSpecificTypeDef = match ($this->uiFramework) {
                 'Svelte 4' => ": $type;",
-                'Svelte 5' => " = \$state<$type>();",
-                default => $type,
+                'Svelte 5' => " = \$state<$type>($default);",
+                default => ": $type;",
             };
-            $typeEntry = "    $attributeName: $type;";
+            $typeEntry = "    {$attributeName}{$frameworkSpecificTypeDef}";
 
             if (Str::endsWith($column->column_name, '_id')) {
                 $relationship = Str::beforeLast($column->column_name, '_id');
@@ -342,7 +345,7 @@ class ModelGen extends Command
             });
         }
 
-        return "\n    constructor(data: $className) {\n$constructorBody\n    }";
+        return "\n    constructor(data: I$className) {\n$constructorBody\n    }";
     }
 
     protected function findRelatedModel(string $relationship): ?string
@@ -452,12 +455,27 @@ class ModelGen extends Command
     $constructor
     }
     TS;
-
-        file_put_contents("{$outputDir}{$modelName}.ts", $contents);
+        $filename = match($this->uiFramework) {
+            'Svelte 4' => "{$outputDir}{$modelName}.ts",
+            'Svelte 5' => "{$outputDir}{$modelName}.svelte.ts",
+            default => "{$outputDir}{$modelName}.ts",
+        };
+        file_put_contents($filename, $contents);
     }
 
     private function classNameToInterfaceName(string $className): string
     {
         return "I{$className}";
+    }
+
+    private function getDefaultForType(string $type, bool $isNullable): string
+    {
+        return match ($type) {
+            'string' => "''",
+            'number' => "0",
+            'boolean' => "false",
+            default => "",
+        };
+        
     }
 }

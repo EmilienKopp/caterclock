@@ -1,32 +1,53 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITask, ITaskCategory, ITimeLog, IUser } from '$models';
 
 export class ActivityBase implements IActivity {
-    id: number = $state<number>(0);
-    project_id: number = $state<number>(0);
-    project?: IProject = $state<IProject>();
-    user_id: number = $state<number>(0);
-    user?: IUser = $state<IUser>();
-    task_category_id: number = $state<number>(0);
-    task_category?: ITaskCategory = $state<ITaskCategory>();
-    task_id?: number = $state<number>(0);
-    task?: ITask = $state<ITask>();
-    date?: Date = $state<Date>();
-    comment?: string = $state<string>('');
-    start_time?: any = $state<any>();
-    end_time?: any = $state<any>();
-    duration?: number = $state<number>(0);
-    rate?: number = $state<number>(0);
-    created_at?: any = $state<any>();
-    updated_at?: any = $state<any>();
-    hours?: number = $state<number>(0);
-    minutes?: number = $state<number>(0);
+    id = $state<number>(0);
+    project_id = $state<number>(0);
+    project?: IProject;
+    user_id = $state<number>(0);
+    user?: IUser;
+    task_category_id = $state<number>(0);
+    task_category?: ITaskCategory;
+    task_id? = $state<number>(0);
+    task?: ITask;
+    date? = $state<Date>();
+    comment? = $state<string>('');
+    start_time? = $state<any>();
+    end_time? = $state<any>();
+    duration? = $state<number>(0);
+    rate? = $state<number>(0);
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    hours? = $state<number>(0);
+    minutes? = $state<number>(0);
 
-    projects?: IProject[] = $state<IProject[]>([]);
-    timeLogs?: ITimeLog[] = $state<ITimeLog[]>([]);
-    companies?: ICompany[] = $state<ICompany[]>([]);
-    connectionRequests?: IConnectionRequest[] = $state<IConnectionRequest[]>([]);
-    rates?: IRate[] = $state<IRate[]>([]);
-    identities?: IIdentity[] = $state<IIdentity[]>([]);
+    projects?: IProject[];
+    timeLogs?: ITimeLog[];
+    activities?: IActivity[];
+    companies?: ICompany[];
+    connectionRequests?: IConnectionRequest[];
+    rates?: IRate[];
+    identities?: IIdentity[];
+
+    public plain() {
+        return {
+            id: this.id,
+            project_id: this.project_id,
+            user_id: this.user_id,
+            task_category_id: this.task_category_id,
+            task_id: this.task_id,
+            date: this.date,
+            comment: this.comment,
+            start_time: this.start_time,
+            end_time: this.end_time,
+            duration: this.duration,
+            rate: this.rate,
+            created_at: this.created_at,
+            updated_at: this.updated_at,
+            hours: this.hours,
+            minutes: this.minutes,
+        };
+    }
 
 
     constructor(data: IActivity) {

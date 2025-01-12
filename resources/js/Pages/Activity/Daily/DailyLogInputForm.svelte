@@ -6,10 +6,10 @@
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
-  import { computeActivitiesTotalDuration } from '$lib/domain/activities';
+  import { superUseForm } from '$lib/inertia';
   import { Activity } from '$lib/models/Activity.svelte';
-  import { DailyLog } from '$lib/models/DailyLog';
-  import { TaskCategory } from '$lib/models/TaskCategory';
+  import { DailyLog } from '$lib/models/DailyLog.svelte';
+  import { TaskCategory } from '$lib/models/TaskCategory.svelte';
   import { collect, Collection } from '$lib/utils/collection';
   import { Duration } from '$lib/utils/duration';
   import type { IActivity } from '$models';
@@ -31,7 +31,6 @@
   let { taskCategories, log = $bindable() }: Props = $props();
 
   let logEntry = $state(log.timeLogs?.[0]);
-  let aboveMax: boolean = $state(true);
   let loading: boolean = false;
   let safetyOn: boolean = $state(true);
   let clockEntryModalOpen = $state(false);
@@ -52,22 +51,25 @@
     entries,
   });
 
-  const form = $state(
-    useForm({
-      date: log.date,
-      project_id: log.project_id,
-      activities:
-        log.activities
-          ?.filter((a: any) => a.project_id == log.project_id)
-          .map((a) => new Activity(a)) ?? [],
-    })
-  );
-
+  const form = superUseForm<DailyLog>({
+    date: log.date,
+    project_id: log.project_id,
+    activities:
+      log.activities
+        ?.filter((a: any) => a.project_id == log.project_id)
+        .map((a) => new Activity(a)) ?? [],
+  });
   let activitiesTotal = $derived(
-    computeActivitiesTotalDuration($form.activities)
+    $form.activities?.reduce(
+      (acc: number, a: IActivity) => acc + (a.duration || 0),
+      0
+    )
   );
-
   let duration = $derived(Duration.toHHMM(log?.total_seconds ?? 0));
+  let aboveMax = $derived((activitiesTotal || 0) > (log?.total_seconds ?? 0));
+  let hasUnselectedTaskCategories = $derived(
+    $form.activities?.some((a: IActivity) => !a.task_category_id)
+  );
 
   function openTaskModal(activity: any, index: number) {
     console.log(activity, index);
@@ -81,30 +83,19 @@
     }
   }
 
-  function handleInput(
-    e: Event,
-    activity: IActivity,
-    unit: 'hours' | 'minutes'
-  ) {
+  function handleInput(activity: IActivity) {
     activity.duration =
       ((activity.hours || 0) * 60 + (activity.minutes || 0)) * 60;
-    if (safetyOn) {
-      aboveMax = activitiesTotal > (log?.total_seconds ?? 0);
-      if (aboveMax) {
-        toaster.error(
-          'Total duration cannot be greater than ' +
-            Duration.toHHMM(log.total_seconds ?? 0)
-        );
-      }
+    if (safetyOn && aboveMax) {
+      toaster.error(
+        'Total duration cannot be greater than ' +
+          Duration.toHHMM(log.total_seconds ?? 0)
+      );
     }
   }
 
-  let totalDuration = $derived.by(() => {
-    return $form.activities.reduce((acc, a) => acc + a.duration, 0);
-  });
-
   function addRow(projectId: number | undefined) {
-    if (!projectId) return;
+    if (!projectId || !$form.activities) return;
     const newActivity = new Activity({
       project_id: projectId,
       user_id: log.user_id || $page.props.auth.user.id,
@@ -112,16 +103,13 @@
       date: log.date,
       duration: 0,
     });
-    $form.activities = [
-      ...$form.activities,
-      newActivity,
-    ];
-    log.activities = $form.activities;
+    $form.activities = [...$form.activities, newActivity];
   }
 
   async function save(e: Event) {
     e.preventDefault();
     loading = true;
+    $form.activities = $form.activities?.map((a: IActivity) => a.plain?.()!) ?? [];
     $form.post(route('activities.store'), {
       onSuccess: () => {
         toaster.success('Activities saved successfully');
@@ -152,16 +140,20 @@
   }
 
   function removeItem(index: number) {
-    $form.activities = $form.activities.filter((a, i) => i != index);
+    $form.activities = $form.activities?.filter(
+      (a: IActivity, i: number) => i != index
+    );
   }
 
   function fill(index: number) {
-    const remaining = (log.total_seconds ?? 0) - activitiesTotal;
-    const duration = $form.activities[index].duration + remaining || 0;
+    if (!$form.activities) return;
+    const remaining = (log.total_seconds ?? 0) - (activitiesTotal || 0);
+    const duration = ($form.activities[index].duration || 0) + remaining || 0;
     $form.activities[index].duration = Math.round(duration);
   }
 
   function clear(index: number) {
+    if (!$form.activities) return;
     $form.activities[index].duration = 0;
   }
 
@@ -177,13 +169,11 @@
       },
     });
   }
-
-  $inspect(totalDuration, $form.activities);
 </script>
 
 <form
   class="rounded border p-5"
-  onsubmit={(e) => DailyLog.save(e, $form, loading)}
+  onsubmit={(e) => save(e)}
   transition:fade
   class:border-green-600={!$form.isDirty}
   class:border-yellow-100={$form.isDirty && !aboveMax}
@@ -255,7 +245,7 @@
       </div>
     </div>
     <button class="text-xs" type="button">
-      {totalDuration}
+      {activitiesTotal} / {log.total_seconds}
     </button>
 
     <table class="table">
@@ -267,14 +257,14 @@
         </tr>
       </thead>
       <tbody>
-        {#each $form.activities as activity, index}
+        {#each $form.activities ?? [] as activity, index}
           <tr>
             <td>
               <Select
                 name="activity_{activity.project_id}[{index}]"
                 label="Task Category"
-                bind:value={activity.task_category_id}
-                items={taskCategoriesOptions}
+                bind:value={$form.activities![index].task_category_id}
+                options={taskCategoriesOptions}
                 mapping={{
                   labelColumn: 'name',
                   valueColumn: 'id',
@@ -297,9 +287,8 @@
                 max="23"
                 step="1"
                 name="hours"
-                bind:value={activity.hours}
-                onchange={(e) =>
-                  handleInput(e, $form.activities[index], 'hours')}
+                bind:value={$form.activities![index].hours}
+                onchange={() => handleInput($form.activities![index])}
               />
 
               <input
@@ -308,10 +297,9 @@
                 min="0"
                 max="59"
                 step="1"
-                bind:value={activity.minutes}
+                bind:value={$form.activities![index].minutes}
                 name="minutes"
-                onchange={(e) =>
-                  handleInput(e, $form.activities[index], 'minutes')}
+                onchange={() => handleInput($form.activities![index])}
               />
             </td>
             <td>
@@ -339,7 +327,7 @@
                 <ul
                   class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
                 >
-                  {#if Duration.flooredToMinute(activitiesTotal) < Duration.flooredToMinute(log.total_seconds)}
+                  {#if Duration.flooredToMinute(activitiesTotal || 0) < Duration.flooredToMinute(log.total_seconds || 0)}
                     <li>
                       <button type="button" onclick={() => fill(index)}
                         >Fill</button
@@ -367,7 +355,9 @@
                     </button>
                   </li>
                   <li>
-                    <button type="button" onclick={$form.reset()}>Reset</button>
+                    <button type="button" onclick={() => $form.reset()}
+                      >Reset</button
+                    >
                   </li>
                 </ul>
               </div>
@@ -392,7 +382,7 @@
                 loading={$form.processing}
                 disabled={aboveMax ||
                   activitiesTotal == 0 ||
-                  log.activities?.some((a) => !a.task_category_id)}
+                  hasUnselectedTaskCategories}
               >
                 Save
               </PrimaryButton>

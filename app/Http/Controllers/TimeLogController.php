@@ -148,7 +148,9 @@ class TimeLogController extends Controller
                 }
             });
 
-            return to_route('activities.show');
+            return to_route('activities.show', [
+                'date' => $validated['date']
+            ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response(status: 500, content: $e->getMessage());

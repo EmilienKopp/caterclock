@@ -1,13 +1,13 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IPosition, IProject, IRate, IRole, ITimeLog, IUser } from '$models';
 
 export class PositionBase implements IPosition {
-    company_id: number;
+    company_id = $state<number>(0);
     company?: ICompany;
-    user_id: number;
+    user_id = $state<number>(0);
     user?: IUser;
-    created_at?: any;
-    updated_at?: any;
-    role_id: number;
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    role_id = $state<number>(0);
     role?: IRole;
 
     projects?: IProject[];
@@ -19,7 +19,7 @@ export class PositionBase implements IPosition {
     identities?: IIdentity[];
 
 
-    constructor(data: Position) {
+    constructor(data: IPosition) {
         this.company_id = data.company_id;
         this.user_id = data.user_id;
         this.created_at = data.created_at;

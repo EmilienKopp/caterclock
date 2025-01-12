@@ -1,13 +1,9 @@
-import type { IActivity, ICompany, IConnectionRequest, IIdentity, IPermission, IProject, IRate, IRole, ITimeLog } from '$models';
+import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, IReport, ITimeLog } from '$models';
 
-export class PermissionBase implements IPermission {
-    id: number;
-    role_id: number;
-    role?: IRole;
-    ability: any;
-    model: any;
-    created_at?: any;
-    updated_at?: any;
+export class ReportBase implements IReport {
+    id = $state<number>(0);
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -18,11 +14,8 @@ export class PermissionBase implements IPermission {
     identities?: IIdentity[];
 
 
-    constructor(data: Permission) {
+    constructor(data: IReport) {
         this.id = data.id;
-        this.role_id = data.role_id;
-        this.ability = data.ability;
-        this.model = data.model;
         this.created_at = data.created_at;
         this.updated_at = data.updated_at;
 

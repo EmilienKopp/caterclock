@@ -11,8 +11,8 @@
   import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
-  import { TaskCategory } from '$lib/models/TaskCategory';
-  import { TimeLog } from '$lib/models/TimeLog';
+  import { TaskCategory } from '$lib/models/TaskCategory.svelte';
+  import { TimeLog } from '$lib/models/TimeLog.svelte';
   import { user } from '$lib/stores.svelte';
   import { Duration } from '$lib/utils/duration';
   import route from '$vendor/tightenco/ziggy/src/js';

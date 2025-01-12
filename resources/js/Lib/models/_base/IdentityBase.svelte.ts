@@ -1,16 +1,16 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
 export class IdentityBase implements IIdentity {
-    id: number;
-    user_id: number;
+    id = $state<number>(0);
+    user_id = $state<number>(0);
     user?: IUser;
-    oauth_id: string;
-    access_token?: string;
-    refresh_token?: string;
-    expires_in?: string;
-    created_at?: any;
-    updated_at?: any;
-    oauth_provider: any;
+    oauth_id = $state<string>('');
+    access_token? = $state<string>('');
+    refresh_token? = $state<string>('');
+    expires_in? = $state<string>('');
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    oauth_provider = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -21,7 +21,7 @@ export class IdentityBase implements IIdentity {
     identities?: IIdentity[];
 
 
-    constructor(data: Identity) {
+    constructor(data: IIdentity) {
         this.id = data.id;
         this.user_id = data.user_id;
         this.oauth_id = data.oauth_id;

@@ -4,7 +4,7 @@
   import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import InputLabel from '$components/Inputs/InputLabel.svelte';
   import Select from '$components/Inputs/Select.svelte';
-  import { Project } from '$lib/models/Project';
+  import { Project } from '$lib/models/Project.svelte';
   import route from '$vendor/tightenco/ziggy';
   import { page, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';

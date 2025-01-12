@@ -6,7 +6,7 @@
   import InputError from '$components/Inputs/InputError.svelte';
   import InputLabel from '$components/Inputs/InputLabel.svelte';
   import TextInput from '$components/Inputs/TextInput.svelte';
-  import { User } from '$lib/models/User';
+  import { User } from '$lib/models/User.svelte';
   import route from '$vendor/tightenco/ziggy';
   import { Link, useForm } from '@inertiajs/svelte';
   import { fade } from 'svelte/transition';

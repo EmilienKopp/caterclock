@@ -3,9 +3,9 @@
     import PrimaryButton from "$components/Buttons/PrimaryButton.svelte";
     import TextInput from "$components/Inputs/TextInput.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { Company } from "$lib/models/Company";
-    import { ConnectionRequest } from "$lib/models/ConnectionRequest";
-    import { Project } from "$lib/models/Project";
+    import { Company } from "$lib/models/Company.svelte";
+    import { ConnectionRequest } from "$lib/models/ConnectionRequest.svelte";
+    import { Project } from "$lib/models/Project.svelte";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router, useForm } from "@inertiajs/svelte";
     import dayjs from "dayjs";

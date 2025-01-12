@@ -1,22 +1,22 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITask, ITimeLog } from '$models';
 
 export class TaskBase implements ITask {
-    id: number;
-    project_id: number;
+    id = $state<number>(0);
+    project_id = $state<number>(0);
     project?: IProject;
-    category_id: number;
-    name: string;
-    description?: string;
-    rate?: number;
-    estimated_time?: any;
-    actual_time?: any;
-    date?: Date;
-    start_time?: any;
-    end_time?: any;
-    due_date?: any;
-    status: string;
-    created_at?: any;
-    updated_at?: any;
+    category_id = $state<number>(0);
+    name = $state<string>('');
+    description? = $state<string>('');
+    rate? = $state<number>(0);
+    estimated_time? = $state<any>();
+    actual_time? = $state<any>();
+    date? = $state<Date>();
+    start_time? = $state<any>();
+    end_time? = $state<any>();
+    due_date? = $state<any>();
+    status = $state<string>('');
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -27,7 +27,7 @@ export class TaskBase implements ITask {
     identities?: IIdentity[];
 
 
-    constructor(data: Task) {
+    constructor(data: ITask) {
         this.id = data.id;
         this.project_id = data.project_id;
         this.category_id = data.category_id;

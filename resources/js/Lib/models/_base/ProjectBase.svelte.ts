@@ -1,25 +1,25 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
 export class ProjectBase implements IProject {
-    id: number;
-    company_id?: number;
+    id = $state<number>(0);
+    company_id? = $state<number>(0);
     company?: ICompany;
-    user_id?: number;
+    user_id? = $state<number>(0);
     user?: IUser;
-    name: string;
-    description?: string;
-    start_date?: Date;
-    end_date?: Date;
-    created_at?: any;
-    updated_at?: any;
-    budget_low?: number;
-    budget_mid?: number;
-    budget_high?: number;
-    spent?: number;
-    balance_low?: number;
-    balance_mid?: number;
-    balance_high?: number;
-    currency: any;
+    name = $state<string>('');
+    description? = $state<string>('');
+    start_date? = $state<Date>();
+    end_date? = $state<Date>();
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    budget_low? = $state<number>(0);
+    budget_mid? = $state<number>(0);
+    budget_high? = $state<number>(0);
+    spent? = $state<number>(0);
+    balance_low? = $state<number>(0);
+    balance_mid? = $state<number>(0);
+    balance_high? = $state<number>(0);
+    currency = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -30,7 +30,7 @@ export class ProjectBase implements IProject {
     identities?: IIdentity[];
 
 
-    constructor(data: Project) {
+    constructor(data: IProject) {
         this.id = data.id;
         this.company_id = data.company_id;
         this.user_id = data.user_id;

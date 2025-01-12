@@ -1,17 +1,17 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
 export class UserBase implements IUser {
-    id: number;
-    name: any;
-    email: any;
-    email_verified_at?: any;
-    password?: any;
-    remember_token?: any;
-    created_at?: any;
-    updated_at?: any;
-    avatar?: any;
-    last_login?: any;
-    timezone?: any;
+    id = $state<number>(0);
+    name = $state<any>();
+    email = $state<any>();
+    email_verified_at? = $state<any>();
+    password? = $state<any>();
+    remember_token? = $state<any>();
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    avatar? = $state<any>();
+    last_login? = $state<any>();
+    timezone? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -22,7 +22,7 @@ export class UserBase implements IUser {
     identities?: IIdentity[];
 
 
-    constructor(data: User) {
+    constructor(data: IUser) {
         this.id = data.id;
         this.name = data.name;
         this.email = data.email;

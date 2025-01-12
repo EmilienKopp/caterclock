@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/svelte';
-import { Readable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
 import type { InertiaForm } from './types';
 
 export type * from './types';

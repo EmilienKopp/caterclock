@@ -15,8 +15,6 @@
   let { header, children }: Props = $props();
   const { auth, roles } = $page.props;
 
-  console.log(header, children, auth, roles);
-
   let showingNavigationDropdown = false;
 
   const menu: RouteItem[] = [

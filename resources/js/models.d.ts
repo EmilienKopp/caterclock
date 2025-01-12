@@ -1,5 +1,5 @@
 export interface IActivity {
-    id: number;
+    id?: number;
     project_id: number;
     project?: Project;
     user_id: number;
@@ -18,10 +18,12 @@ export interface IActivity {
     updated_at?: any;
     hours?: number;
     minutes?: number;
+
+    plain?: () => IActivity;
 }
 
 export interface ICompany {
-    id: number;
+    id?: number;
     name: string;
     address?: string;
     contact_email: string;
@@ -40,7 +42,7 @@ export interface ICompany {
 }
 
 export interface IConnectionRequest {
-    id: number;
+    id?: number;
     sender_id: number;
     company_id?: number;
     company?: Company;
@@ -66,7 +68,7 @@ export interface IDailyLog {
 }
 
 export interface IIdentity {
-    id: number;
+    id?: number;
     user_id: number;
     user?: User;
     oauth_id: string;
@@ -79,7 +81,7 @@ export interface IIdentity {
 }
 
 export interface IPermission {
-    id: number;
+    id?: number;
     role_id: number;
     role?: Role;
     ability: any;
@@ -100,7 +102,7 @@ export interface IPosition {
 }
 
 export interface IProject {
-    id: number;
+    id?: number;
     company_id?: number;
     company?: Company;
     user_id?: number;
@@ -127,7 +129,7 @@ export interface IProject {
 }
 
 export interface IRate {
-    id: number;
+    id?: number;
     project_id: number;
     project?: Project;
     user_id: number;
@@ -143,13 +145,13 @@ export interface IRate {
 }
 
 export interface IReport {
-    id: number;
+    id?: number;
     created_at?: any;
     updated_at?: any;
 }
 
 export interface IRole {
-    id: number;
+    id?: number;
     name: any;
     description?: string;
     is_default: boolean;
@@ -163,7 +165,7 @@ export interface IRole {
 }
 
 export interface ITask {
-    id: number;
+    id?: number;
     project_id: number;
     project?: Project;
     category_id: number;
@@ -184,7 +186,7 @@ export interface ITask {
 }
 
 export interface ITaskCategory {
-    id: number;
+    id?: number;
     name: string;
     description?: string;
     created_at?: any;
@@ -196,7 +198,7 @@ export interface ITaskCategory {
 }
 
 export interface ITimeLog {
-    id: number;
+    id?: number;
     user_id: number;
     user?: User;
     project_id: number;
@@ -216,7 +218,7 @@ export interface ITimeLog {
 }
 
 export interface IUser {
-    id: number;
+    id?: number;
     name: any;
     email: any;
     email_verified_at?: any;

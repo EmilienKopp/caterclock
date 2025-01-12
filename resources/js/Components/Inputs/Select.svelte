@@ -1,7 +1,7 @@
 <script lang="ts">
   interface Props {
     value?: string | number | null;
-    items?: SelectOption[];
+    options?: SelectOption[];
     name: string;
     mapping?: { labelColumn: string; valueColumn: string };
     children?: import('svelte').Snippet;
@@ -15,21 +15,12 @@
 
   let {
     value = $bindable(),
-    items = [],
+    options,
     name,
     mapping = { labelColumn: 'label', valueColumn: 'value' },
     children,
     ...rest
   }: Props = $props();
-
-  let options: { label: string; value: string | number }[] = items?.map(
-    (item: any) => {
-      return {
-        label: item[mapping.labelColumn],
-        value: item[mapping.valueColumn],
-      };
-    }
-  );
 </script>
 
 <select

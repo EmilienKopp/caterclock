@@ -1,14 +1,14 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, IRole, ITimeLog } from '$models';
 
 export class RoleBase implements IRole {
-    id: number;
-    name: any;
-    description?: string;
-    is_default: boolean;
-    is_protected: boolean;
-    level: number;
-    created_at?: any;
-    updated_at?: any;
+    id = $state<number>(0);
+    name = $state<any>();
+    description? = $state<string>('');
+    is_default = $state<boolean>(false);
+    is_protected = $state<boolean>(false);
+    level = $state<number>(0);
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -19,7 +19,7 @@ export class RoleBase implements IRole {
     identities?: IIdentity[];
 
 
-    constructor(data: Role) {
+    constructor(data: IRole) {
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;

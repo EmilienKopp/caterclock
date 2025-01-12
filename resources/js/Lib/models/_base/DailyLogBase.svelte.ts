@@ -1,16 +1,16 @@
 import type { IActivity, ICompany, IConnectionRequest, IDailyLog, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
 export class DailyLogBase implements IDailyLog {
-    user_id?: number;
+    user_id? = $state<number>(0);
     user?: IUser;
-    user_name?: any;
-    project_id?: number;
+    user_name? = $state<any>();
+    project_id? = $state<number>(0);
     project?: IProject;
-    project_name?: string;
-    date?: any;
-    total_seconds?: number;
-    total_minutes?: number;
-    is_running?: boolean;
+    project_name? = $state<string>('');
+    date? = $state<any>();
+    total_seconds? = $state<number>(0);
+    total_minutes? = $state<number>(0);
+    is_running? = $state<boolean>(false);
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -21,7 +21,7 @@ export class DailyLogBase implements IDailyLog {
     identities?: IIdentity[];
 
 
-    constructor(data: DailyLog) {
+    constructor(data: IDailyLog) {
         this.user_id = data.user_id;
         this.user_name = data.user_name;
         this.project_id = data.project_id;

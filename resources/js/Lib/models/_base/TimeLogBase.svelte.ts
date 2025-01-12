@@ -1,23 +1,23 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog, IUser } from '$models';
 
 export class TimeLogBase implements ITimeLog {
-    id: number;
-    user_id: number;
+    id = $state<number>(0);
+    user_id = $state<number>(0);
     user?: IUser;
-    project_id: number;
+    project_id = $state<number>(0);
     project?: IProject;
-    date: any;
-    in_time: any;
-    out_time?: any;
-    break_start?: any;
-    break_end?: any;
-    break_duration?: number;
-    total_duration?: number;
-    is_running: boolean;
-    notes?: string;
-    created_at?: any;
-    updated_at?: any;
-    timezone?: any;
+    date = $state<any>();
+    in_time = $state<any>();
+    out_time? = $state<any>();
+    break_start? = $state<any>();
+    break_end? = $state<any>();
+    break_duration? = $state<number>(0);
+    total_duration? = $state<number>(0);
+    is_running = $state<boolean>(false);
+    notes? = $state<string>('');
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    timezone? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -28,7 +28,7 @@ export class TimeLogBase implements ITimeLog {
     identities?: IIdentity[];
 
 
-    constructor(data: TimeLog) {
+    constructor(data: ITimeLog) {
         this.id = data.id;
         this.user_id = data.user_id;
         this.project_id = data.project_id;

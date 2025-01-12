@@ -1,19 +1,19 @@
 import type { IActivity, ICompany, IConnectionRequest, IIdentity, IProject, IRate, ITimeLog } from '$models';
 
 export class CompanyBase implements ICompany {
-    id: number;
-    name: string;
-    address?: string;
-    contact_email: string;
-    created_at?: any;
-    updated_at?: any;
-    representative_id: number;
-    contact_phone?: any;
-    employees_count?: number;
-    is_public: boolean;
-    is_active: boolean;
-    code?: any;
-    corporate_number?: any;
+    id = $state<number>(0);
+    name = $state<string>('');
+    address? = $state<string>('');
+    contact_email = $state<string>('');
+    created_at? = $state<any>();
+    updated_at? = $state<any>();
+    representative_id = $state<number>(0);
+    contact_phone? = $state<any>();
+    employees_count? = $state<number>(0);
+    is_public = $state<boolean>(false);
+    is_active = $state<boolean>(false);
+    code? = $state<any>();
+    corporate_number? = $state<any>();
 
     projects?: IProject[];
     timeLogs?: ITimeLog[];
@@ -24,7 +24,7 @@ export class CompanyBase implements ICompany {
     identities?: IIdentity[];
 
 
-    constructor(data: Company) {
+    constructor(data: ICompany) {
         this.id = data.id;
         this.name = data.name;
         this.address = data.address;
