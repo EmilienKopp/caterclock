@@ -1,14 +1,14 @@
 <script lang="ts">
     import MonthTable from "$components/Tables/MonthTable.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import type { DailyLog } from "$models";
+    import { DailyLog } from "$lib/models/DailyLog.svelte";
 
     interface Props {
-        dailyLogs?: DailyLog[];
+        dailyLogs?: {[key:string]: DailyLog[]};
         date?: Date;
     }
 
-    let { dailyLogs = [], date = new Date() }: Props = $props();
+    let { dailyLogs, date = new Date() }: Props = $props();
 
 </script>
 

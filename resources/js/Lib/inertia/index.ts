@@ -11,4 +11,3 @@ export function superUseForm<T extends object>(obj: T): Readable<InertiaForm<T>>
 export function hookSuccess<T extends object>(form: InertiaForm<T>, callback: () => void): void {
   form.recentlySuccessful && callback();
 }
-

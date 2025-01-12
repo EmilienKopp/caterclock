@@ -1,6 +1,8 @@
 <script lang="ts">
+    
     import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
+    import type { DailyLog } from '$lib/models/DailyLog.svelte';
     import { leftPad } from "$lib/utils/text";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router } from '@inertiajs/svelte';
@@ -9,16 +11,23 @@
     import { onMount } from "svelte";
     dayjs.extend(localeData);
 
-    export let headers: string[] = [];
-    export let data: any[] = [];
-    export let date: Date;
+    // export let headers: string[] = [];
+    // export let data: any[] = [];
+    // export let date: Date;
+    interface Props {
+        headers: string[];
+        data: {[key:string]: DailyLog[]};
+        date: Date;
+    }
+
+    let { headers, data, date }: Props = $props();
 
     const latestDateWithLogs = Object.keys(data).sort().reverse()[0]
-    let detailsOpen: boolean[] = Array.from({ length: 31 }, () => false);
-    let container: HTMLDivElement;
+    let detailsOpen: boolean[] = $state(Array.from({ length: 31 }, () => false));
+    let container: HTMLDivElement | undefined = $state();
     let latestNonEmptyRow: HTMLTableRowElement;
-    let scrollY: number = 0;
-    $: allOpen = detailsOpen.every(b => b);
+    let scrollY: number = $state(0);
+    let allOpen = $derived(detailsOpen.every(b => b));
 
     onMount(() => {
         scrollToLatest();
@@ -41,19 +50,19 @@
         detailsOpen = Array.from({ length: 31 }, () => !allOpen);
     }
 
-    function handleContextMenu(event: MouseEvent) {
-        console.log(event);
+    function handleContextMenu(e: Event) {
+        e.preventDefault();
+        const event = e as MouseEvent;
         const X = event.clientX;
         const Y = event.clientY;
-        console.log(X, Y);
     }
 
 
 
-    $: year = dayjs(date).format('YYYY');
-    $: month = dayjs(date).format('MM');
-    $: readableMonth = dayjs(date).format('MMMM');
-    $: dateMap = Object.fromEntries(
+    let year = $derived(dayjs(date).format('YYYY'));
+    let month = $derived(dayjs(date).format('MM'));
+    let readableMonth = $derived(dayjs(date).format('MMMM'));
+    let dateMap = $derived(Object.fromEntries(
         Array.from(
             { length: dayjs(date).daysInMonth() },
             (_, i) => {
@@ -62,8 +71,8 @@
                 return [date, data[date]];
             }
         )
-    );
-    $: datesArray = Object.entries(dateMap);
+    ));
+    let datesArray = $derived(Object.entries(dateMap));
 
 </script>
 <svelte:window bind:scrollY={scrollY} />
@@ -98,7 +107,7 @@
         <tbody>
 
             {#each datesArray as [key, logs], index}
-                <tr id="{key}" class="hover" on:contextmenu|preventDefault={handleContextMenu} >
+                <tr id="{key}" class="hover" oncontextmenu={(e: Event) => handleContextMenu(e)} >
                     <td>
                         <div class="text-gray-400 text-center">
                             { dayjs(key).date() } <br />
@@ -130,7 +139,7 @@
                         </div>
                     </td>
                     {:else}
-                    <td on:click={() => router.visit(route('activities.show',{date: key}))} class="cursor-pointer">
+                    <td onclick={() => router.visit(route('activities.show',{date: key}))} class="cursor-pointer">
                         <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 w-full h-full">
                             <MiniButton color="ghost" class="col-start-3 place-self-end"> Add </MiniButton>
                         </div>

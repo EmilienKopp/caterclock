@@ -11,17 +11,16 @@
   import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
   import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
+  import type { DailyLog } from '$lib/models/DailyLog.svelte';
   import { TaskCategory } from '$lib/models/TaskCategory.svelte';
-  import { TimeLog } from '$lib/models/TimeLog.svelte';
-  import { user } from '$lib/stores.svelte';
   import { Duration } from '$lib/utils/duration';
   import route from '$vendor/tightenco/ziggy/src/js';
-  import { router, useForm } from '@inertiajs/svelte';
+  import { page, router, useForm } from '@inertiajs/svelte';
   import { onDestroy } from 'svelte';
   import { slide } from 'svelte/transition';
 
   interface Props {
-    log: TimeLog;
+    log: DailyLog;
     detailsOpen?: boolean;
     id: string;
     taskCategories: TaskCategory[];
@@ -37,20 +36,24 @@
   let open: boolean = $state(false);
   let projectName: string = log?.project?.name ?? 'No Project';
   let elapsedSeconds: number = $state(0);
+  let selectedLog: any = null;
+  let fillModalOpen: boolean = false;
+  let selectedCategoryId: number = $state(0);
   const interval = setInterval(() => {
     elapsedSeconds++;
   }, 1000);
 
   const form = useForm({
-    user_id: $user.id,
+    user_id: $page.props.auth.user.id,
     project_id: log.project_id,
     date: null,
     in_project_id: null,
     out_project_id: null,
   });
 
-  async function clock(e: MouseEvent) {
-    const logId = log.timeLogs.find((l: any) => l.is_running)?.id;
+  async function clock(e: Event) {
+    e.preventDefault();
+    const logId = log.timeLogs?.find((l: any) => l.is_running)?.id;
     const target = e.target as HTMLAnchorElement;
 
     await $form.put(route('timelog.update', { timelog: logId }), {
@@ -69,11 +72,6 @@
     openPopoverId = open ? id : '';
   }
 
-  let selectedLog: any = null;
-  let fillModalOpen: boolean = false;
-  let fillSteps = {};
-  let selectedCategoryId: number = $state(0);
-
   function handleFill(log: any) {
     selectedLog = log;
   }
@@ -87,7 +85,7 @@
   <h3 class="text-lg font-semibold flex items-center gap-2">
     {projectName}
 
-    <form class="dropdown" onsubmit={preventDefault(clock)}>
+    <form class="dropdown" onsubmit={(e: Event) => clock(e)}>
       <input type="hidden" name="project_id" value={$form.project_id} />
       <button
         type="button"
@@ -128,7 +126,7 @@
         <li><a href={route('activities.show', { date: log.date })}>Edit</a></li>
       </ul>
     </form>
-    {#if log.activities.length}
+    {#if log.activities?.length}
       <button
         {id}
         class="ml-2"
@@ -162,7 +160,7 @@
   </h3>
   {#if detailsOpen}
     <div class="flex flex-col gap-1" transition:slide>
-      {#each log.activities as activity}
+      {#each log.activities ?? [] as activity}
         <ActivityLogItem {activity} />
       {/each}
     </div>

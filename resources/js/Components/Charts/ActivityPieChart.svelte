@@ -8,7 +8,7 @@
 
     interface Props {
         activities?: Activity[];
-        title: string;
+        title?: string;
         width?: number | string;
         height?: number | string;
     }
