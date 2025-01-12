@@ -1,10 +1,10 @@
 <script lang="ts">
     import MonthTable from "$components/Tables/MonthTable.svelte";
     import AuthenticatedLayout from "$layouts/AuthenticatedLayout.svelte";
-    import { DailyLog } from "$lib/models/DailyLog.svelte";
+    import type { DailyLogGroupedByDate } from "$lib/domain/dailyLogs/types";
 
     interface Props {
-        dailyLogs?: {[key:string]: DailyLog[]};
+        dailyLogs: DailyLogGroupedByDate;
         date?: Date;
     }
 

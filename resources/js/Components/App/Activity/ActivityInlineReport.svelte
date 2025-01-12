@@ -23,21 +23,21 @@
     log: DailyLog;
     detailsOpen?: boolean;
     id: string;
-    taskCategories: TaskCategory[];
   }
 
   let {
     log = $bindable(),
     detailsOpen = false,
     id,
-    taskCategories,
   }: Props = $props();
+  $inspect(log);
 
   let open: boolean = $state(false);
-  let projectName: string = log?.project?.name ?? 'No Project';
+  let projectName: string = log?.project_name ?? 'Unknown Project';
   let elapsedSeconds: number = $state(0);
   let selectedLog: any = null;
   let fillModalOpen: boolean = false;
+  let taskCategories: TaskCategory[] = $page.props.taskCategories;
   let selectedCategoryId: number = $state(0);
   const interval = setInterval(() => {
     elapsedSeconds++;
@@ -134,7 +134,7 @@
         onclick={handleClick}
         onmouseenter={() => (openPopoverId = id)}
       >
-        <MiniPie data={log.activities.map((a) => a.duration)} />
+        <MiniPie data={log.activities.map((a) => a.duration ?? 0).filter(Boolean)} />
       </button>
     {:else}
       <a href={route('activities.show', { date: log.date })}>

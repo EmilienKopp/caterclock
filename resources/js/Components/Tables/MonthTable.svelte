@@ -2,7 +2,7 @@
     
     import ActivityInlineReport from "$components/App/Activity/ActivityInlineReport.svelte";
     import MiniButton from "$components/Buttons/MiniButton.svelte";
-    import type { DailyLog } from '$lib/models/DailyLog.svelte';
+    import type { DailyLogGroupedByDate } from "$lib/domain/dailyLogs/types";
     import { leftPad } from "$lib/utils/text";
     import route from "$vendor/tightenco/ziggy/src/js";
     import { router } from '@inertiajs/svelte';
@@ -11,12 +11,9 @@
     import { onMount } from "svelte";
     dayjs.extend(localeData);
 
-    // export let headers: string[] = [];
-    // export let data: any[] = [];
-    // export let date: Date;
     interface Props {
         headers: string[];
-        data: {[key:string]: DailyLog[]};
+        data: DailyLogGroupedByDate;
         date: Date;
     }
 
@@ -122,7 +119,7 @@
                                     
                                     <ActivityInlineReport 
                                         id={`activity_${key.replaceAll('-','')}${index}${logIndex}`}  
-                                        {log}
+                                        log={logs[logIndex]}
                                         detailsOpen={detailsOpen[index]}
                                     />
 

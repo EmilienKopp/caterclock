@@ -65,6 +65,8 @@ export interface IDailyLog {
     total_seconds?: number;
     total_minutes?: number;
     is_running?: boolean;
+    activities?: IActivity[];
+    timeLogs?: ITimeLog[];
 }
 
 export interface IIdentity {

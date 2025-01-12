@@ -1,20 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression or a `{get, set}` pair
-https://svelte.dev/e/bind_invalid_expression -->
 <script lang="ts">
   import MiniButton from '$components/Buttons/MiniButton.svelte';
   import OutlineButton from '$components/Buttons/OutlineButton.svelte';
   import PrimaryButton from '$components/Buttons/PrimaryButton.svelte';
   import { toaster } from '$components/Feedback/Toast/ToastHandler.svelte';
-  import Select from '$components/Inputs/Select.svelte';
   import Dialog from '$components/Modals/Dialog.svelte';
   import TimeZoneInfo from '$components/Widgets/TimeZoneInfo.svelte';
   import { superUseForm } from '$lib/inertia';
-  import { Activity } from '$lib/models/Activity.svelte';
-  import { DailyLog } from '$lib/models/DailyLog.svelte';
   import { TaskCategory } from '$lib/models/TaskCategory.svelte';
   import { collect, Collection } from '$lib/utils/collection';
   import { Duration } from '$lib/utils/duration';
-  import type { IActivity } from '$models';
+  import type { IActivity, IDailyLog } from '$models';
   import route from '$vendor/tightenco/ziggy';
   import { page, useForm } from '@inertiajs/svelte';
   import dayjs from 'dayjs';
@@ -27,10 +22,10 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   interface Props {
     taskCategories: TaskCategory[] | Collection<TaskCategory>;
-    log: DailyLog;
+    log: IDailyLog;
   }
 
-  let { taskCategories, log = $bindable() }: Props = $props();
+  let { taskCategories, log }: Props = $props();
 
   let logEntry = $state(log.timeLogs?.[0]);
   let loading: boolean = false;
@@ -53,19 +48,11 @@ https://svelte.dev/e/bind_invalid_expression -->
     entries,
   });
 
-  const form = superUseForm<DailyLog>({
-    date: log.date,
-    project_id: log.project_id,
-    activities:
-      log.activities
-        ?.filter((a: any) => a.project_id == log.project_id)
-        .map((a) => new Activity(a)) ?? [],
-  });
+  const form = superUseForm<IDailyLog>(log);
   let activitiesTotal = $derived(
-    $form.activities?.reduce(
-      (acc: number, a: IActivity) => acc + (a.duration || 0),
-      0
-    )
+    $form.activities?.reduce((acc, activity) => {
+      return acc + (activity.hours || 0) * 3600 + (activity.minutes || 0) * 60;
+    }, 0)
   );
   let duration = $derived(Duration.toHHMM(log?.total_seconds ?? 0));
   let aboveMax = $derived((activitiesTotal || 0) > (log?.total_seconds ?? 0));
@@ -75,14 +62,6 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   function openTaskModal(activity: any, index: number) {
     console.log(activity, index);
-  }
-
-  function handleKeydown(e: Event, activity: IActivity, index: number) {
-    const key = (e as KeyboardEvent).key;
-    console.log('DailyLogInputForm.svelte: handleKeydown: key: ', key, e);
-    if (key == 'Enter') {
-      addRow(activity.project_id);
-    }
   }
 
   function handleInput(activity: IActivity) {
@@ -98,20 +77,19 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   function addRow(projectId: number | undefined) {
     if (!projectId || !$form.activities) return;
-    const newActivity = new Activity({
+    const newActivity = {
       project_id: projectId,
       user_id: log.user_id || $page.props.auth.user.id,
       task_category_id: 0,
       date: log.date,
       duration: 0,
-    });
+    };
     $form.activities = [...$form.activities, newActivity];
   }
 
   async function save(e: Event) {
     e.preventDefault();
     loading = true;
-    $form.activities = $form.activities?.map((a: IActivity) => a.plain?.()!) ?? [];
     $form.post(route('activities.store'), {
       onSuccess: () => {
         toaster.success('Activities saved successfully');
@@ -160,7 +138,6 @@ https://svelte.dev/e/bind_invalid_expression -->
   }
 
   async function updateClockEntries() {
-    console.log('Updating clock entries', $clockEntriesForm);
     $clockEntriesForm.put(route('timelog.batch-update'), {
       onSuccess: () => {
         toaster.success('Clock entries updated successfully');
@@ -259,112 +236,103 @@ https://svelte.dev/e/bind_invalid_expression -->
         </tr>
       </thead>
       <tbody>
-        {#each $form.activities ?? [] as activity, index}
-          <tr>
-            <td>
-              <Select
-                name="activity_{activity.project_id}[{index}]"
-                label="Task Category"
-                bind:value={$form.activities![index].task_category_id}
-                options={taskCategoriesOptions}
-                mapping={{
-                  labelColumn: 'name',
-                  valueColumn: 'id',
-                }}
-              />
-            </td>
-            <td>
-              <!-- <DurationInput
-                bind:activity={$form.activities[index]}
-                max={log.total_seconds}
-                parentTotal={activitiesTotal}
-                {safetyOn}
-                handleKeydown={(e: Event) => handleKeydown(e, activity, index)}
-                handleChange={handleInput}
-              /> -->
-              <input
-                type="number"
-                class="input input-bordered"
-                min="0"
-                max="23"
-                step="1"
-                name="hours"
-                bind:value={$form.activities![index].hours}
-                onchange={() => handleInput($form.activities![index])}
-              />
-
-              <input
-                type="number"
-                class="input input-bordered"
-                min="0"
-                max="59"
-                step="1"
-                bind:value={$form.activities![index].minutes}
-                name="minutes"
-                onchange={() => handleInput($form.activities![index])}
-              />
-            </td>
-            <td>
-              <div class="dropdown">
-                <div
-                  tabindex="0"
-                  role="button"
-                  class="btn m-1 btn-ghost btn-outline"
+        {#each $form.activities ?? [] as activity, index (activity?.id)}
+          {#if $form.activities?.length}
+            <tr>
+              <td>
+                <select
+                  class="select select-bordered w-full max-w-xs"
+                  bind:value={$form.activities[index].task_category_id}
                 >
-                  <!-- ThreeDots -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-three-dots"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
-                    />
-                  </svg>
-                  Options
+                  <option value="">Select task category</option>
+                  {#each taskCategoriesOptions as option}
+                    <option value={option.value}>{option.label}</option>
+                  {/each}
+                </select>
+              </td>
+              <td>
+                <div class="flex gap-2 items-center justify-center">
+                  <input
+                    class="input input-bordered w-full max-w-xs"
+                    type="number"
+                    min="0"
+                    max="23"
+                    bind:value={$form.activities[index].hours}
+                    oninput={() => handleInput($form.activities![index])}
+                  />
+                  hr
+                  <input
+                    class="input input-bordered w-full max-w-xs"
+                    type="number"
+                    max="59"
+                    min="0"
+                    bind:value={$form.activities[index].minutes}
+                    oninput={() => handleInput($form.activities![index])}
+                  /> min
                 </div>
-                <ul
-                  class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
-                >
-                  {#if Duration.flooredToMinute(activitiesTotal || 0) < Duration.flooredToMinute(log.total_seconds || 0)}
+              </td>
+              <td>
+                <div class="dropdown">
+                  <div
+                    tabindex="0"
+                    role="button"
+                    class="btn m-1 btn-ghost btn-outline"
+                  >
+                    <!-- ThreeDots -->
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-three-dots"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+                      />
+                    </svg>
+                    Options
+                  </div>
+                  <ul
+                    class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                  >
+                    {#if Duration.flooredToMinute(activitiesTotal || 0) < Duration.flooredToMinute(log.total_seconds || 0)}
+                      <li>
+                        <button type="button" onclick={() => fill(index)}
+                          >Fill</button
+                        >
+                      </li>
+                    {/if}
                     <li>
-                      <button type="button" onclick={() => fill(index)}
-                        >Fill</button
+                      <button type="button" onclick={() => clear(index)}
+                        >Clear</button
                       >
                     </li>
-                  {/if}
-                  <li>
-                    <button type="button" onclick={() => clear(index)}
-                      >Clear</button
-                    >
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      class="text-red-300"
-                      onclick={() => removeItem(index)}>Remove</button
-                    >
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      onclick={() => openTaskModal(activity, index)}
-                    >
-                      Link Task
-                    </button>
-                  </li>
-                  <li>
-                    <button type="button" onclick={() => $form.reset()}
-                      >Reset</button
-                    >
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+                    <li>
+                      <button
+                        type="button"
+                        class="text-red-300"
+                        onclick={() => removeItem(index)}>Remove</button
+                      >
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        onclick={() => openTaskModal(activity, index)}
+                      >
+                        Link Task
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button" onclick={() => $form.reset()}
+                        >Reset</button
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          {/if}
         {/each}
         <tr>
           <td colspan="3">
@@ -374,21 +342,19 @@ https://svelte.dev/e/bind_invalid_expression -->
             >
               Add Activity
             </OutlineButton>
-            {#if $form.isDirty}
-              <PrimaryButton
-                type="submit"
-                title={aboveMax
-                  ? 'Total duration cannot be greater than ' +
-                    Duration.toHHMM(log.total_seconds ?? 0)
-                  : 'Save activities'}
-                loading={$form.processing}
-                disabled={aboveMax ||
-                  activitiesTotal == 0 ||
-                  hasUnselectedTaskCategories}
-              >
-                Save
-              </PrimaryButton>
-            {/if}
+            <PrimaryButton
+              type="submit"
+              title={aboveMax
+                ? 'Total duration cannot be greater than ' +
+                  Duration.toHHMM(log.total_seconds ?? 0)
+                : 'Save activities'}
+              loading={$form.processing}
+              disabled={aboveMax ||
+                activitiesTotal == 0 ||
+                hasUnselectedTaskCategories}
+            >
+              Save
+            </PrimaryButton>
           </td>
         </tr>
       </tbody>

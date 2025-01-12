@@ -92,7 +92,7 @@
     {:else}
       {#each dailyLogs as log, i}
         {#if log.activities}
-          <DailyLogInputForm bind:log={dailyLogs[i]} {taskCategories} />
+          <DailyLogInputForm log={dailyLogs[i]} {taskCategories} />
         {/if}
       {/each}
       <div class="2xl:col-span-2 col-span-1">

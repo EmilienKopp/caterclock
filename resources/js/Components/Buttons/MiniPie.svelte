@@ -2,12 +2,10 @@
     import { onMount } from "svelte";
 
     interface Props {
-        data: number[];
+        data?: number[];
     }
 
     let { data }: Props = $props();
-
-    console.log(data);
 
     // get only the 5 largest numbers
     let numbers = data.sort((a, b) => b - a).slice(0, 4);
